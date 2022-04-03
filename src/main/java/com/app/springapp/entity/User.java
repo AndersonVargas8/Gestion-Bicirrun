@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
