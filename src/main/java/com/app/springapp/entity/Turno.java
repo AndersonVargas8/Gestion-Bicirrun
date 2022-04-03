@@ -10,7 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,29 +23,32 @@ public class Turno {
     private long id;
 
     @Column
-    @NotBlank
+    @NotNull
     private int dia;
 
     @Column
-    @NotBlank
+    @NotNull
     private int mes;
 
     @Column
     private String observaciones;
+    
+    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+    private EstadoTurno estado;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
-    EstadoTurno estado;
+    private Estacion estacion;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
-    Estacion estacion;
+    private Estudiante estudiante;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
-    Estudiante estudiante;
+    private Horario horario;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
-    Horario horario;
-
-
+   
+    @Transient
+    private String fecha;
+    
     public Turno() {
     }
 
@@ -123,6 +127,14 @@ public class Turno {
         this.horario = horario;
     }
 
+    
+    public String getFecha() {
+        return this.fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
     @Override
     public boolean equals(Object o) {
         if (o == this)
