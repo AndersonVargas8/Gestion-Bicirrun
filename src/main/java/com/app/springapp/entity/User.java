@@ -22,6 +22,7 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
+@Table(name="user",schema="public")
 public class User implements Serializable{
     private static final long serialVersionUID = -2969524610059270447L;
 
