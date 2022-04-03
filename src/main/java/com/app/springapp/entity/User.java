@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,10 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -39,12 +40,10 @@ public class User implements Serializable{
 	
 	@Column(unique = true) 
 	@Email 
-	@NotBlank
 	private String email;
 	
 	@Column(unique = true) 
 	@NotBlank
-    @Size(min=5,max=10,message="No se cumplen las reglas del tamaño")
 	private String username;
 	
 	@Column 
@@ -54,18 +53,15 @@ public class User implements Serializable{
     @Transient
     @NotBlank
     private String confirmPassword;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles"
-            , joinColumns = @JoinColumn(name="user_id")
-            , inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+
+    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+    private Role role;
 
     public User(){}
 
     public User(Long id){
         this.id = id;
     }
-
 
     public long getId() {
         return this.id;
@@ -123,12 +119,12 @@ public class User implements Serializable{
         this.confirmPassword = confirmPassword;
     }
 
-    public Set<Role> getRoles() {
-        return this.roles;
+    public Role getRole() {
+        return this.role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
@@ -141,7 +137,7 @@ public class User implements Serializable{
             ", username='" + getUsername() + "'" +
             ", password='" + getPassword() + "'" +
             ", confirmPassword='" + getConfirmPassword() + "'" +
-            ", roles='" + getRoles() + "'" +
+            ", roles='" + getRole() + "'" +
             "}";
     }
 
@@ -153,12 +149,12 @@ public class User implements Serializable{
             return false;
         }
         User user = (User) o;
-        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(confirmPassword, user.confirmPassword) && Objects.equals(roles, user.roles);
+        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(confirmPassword, user.confirmPassword) && Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, username, password, confirmPassword, roles);
+        return Objects.hash(id, firstName, lastName, email, username, password, confirmPassword, role);
     }
 
 }

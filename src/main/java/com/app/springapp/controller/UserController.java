@@ -42,7 +42,7 @@ public class UserController {
         return "index";
     }
 
-    @GetMapping("/signup")
+    /*@GetMapping("/signup")
     public String signup(Model model) {
 
         Role userRole = repRole.findByName("USUARIO");
@@ -78,13 +78,13 @@ public class UserController {
         }
         return "index";
 
-    }
+    }*/
 
     @GetMapping("/userForm")
     public String getUserForm(Model model) {
         model.addAttribute("userForm", new User());
         model.addAttribute("userList", serUser.getAllUsers());
-        model.addAttribute("roles", repRole.findAll());
+        model.addAttribute("role", repRole.findAll());
         model.addAttribute("listTab", "active");
         return "user-form/user-view";
     }
@@ -104,18 +104,18 @@ public class UserController {
                 model.addAttribute("userForm", user);
                 model.addAttribute("formTab", "active");
                 model.addAttribute("userList", serUser.getAllUsers());
-                model.addAttribute("roles", repRole.findAll());
+                model.addAttribute("role", repRole.findAll());
             } catch (Exception e) {
                 model.addAttribute("formErrorMessage", e.getMessage());
                 model.addAttribute("userForm", user);
                 model.addAttribute("formTab", "active");
                 model.addAttribute("userList", serUser.getAllUsers());
-                model.addAttribute("roles", repRole.findAll());
+                model.addAttribute("role", repRole.findAll());
             }
         }
 
         model.addAttribute("userList", serUser.getAllUsers());
-        model.addAttribute("roles", repRole.findAll());
+        model.addAttribute("role", repRole.findAll());
         return "user-form/user-view";
     }
 
@@ -125,7 +125,7 @@ public class UserController {
 
         model.addAttribute("userForm", userToEdit);
         model.addAttribute("userList", serUser.getAllUsers());
-        model.addAttribute("roles", repRole.findAll());
+        model.addAttribute("role", repRole.findAll());
         model.addAttribute("formTab", "active");
         model.addAttribute("editMode", true);
         model.addAttribute("passwordForm", new ChangePasswordForm(userToEdit.getId()));
@@ -149,7 +149,7 @@ public class UserController {
                 model.addAttribute("userForm", user);
                 model.addAttribute("formTab", "active");
                 model.addAttribute("userList", serUser.getAllUsers());
-                model.addAttribute("roles", repRole.findAll());
+                model.addAttribute("role", repRole.findAll());
                 model.addAttribute("editMode", true);
                 model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
             } catch (Exception e) {
@@ -157,14 +157,14 @@ public class UserController {
                 model.addAttribute("userForm", user);
                 model.addAttribute("formTab", "active");
                 model.addAttribute("userList", serUser.getAllUsers());
-                model.addAttribute("roles", repRole.findAll());
+                model.addAttribute("role", repRole.findAll());
                 model.addAttribute("editMode", true);
                 model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
             }
         }
 
         model.addAttribute("userList", serUser.getAllUsers());
-        model.addAttribute("roles", repRole.findAll());
+        model.addAttribute("role", repRole.findAll());
         return "user-form/user-view";
     }
 

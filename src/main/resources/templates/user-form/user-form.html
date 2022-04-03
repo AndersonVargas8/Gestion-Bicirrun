@@ -1,11 +1,11 @@
-<div th:with="disableFields=!${editMode} and ${#authorization.expression('hasRole(''ROLE_USER'')')}">
-    <form id="userForm" th:object="${userForm}" method="post" class="form" role="form" autocomplete="off"
+<!--<div th:with="disableFields=!${editMode} and ${#authorization.expression('hasRole(''ROLE_USER'')')}">
+--><form id="userForm" th:object="${userForm}" method="post" class="form" role="form" autocomplete="off"
         th:action="${signup} ? @{/signup} : (${editMode} ? @{/editUser} : @{/userForm})">
         <!--Es necesario para poder pasar la validacion del Model-->
         <input class="form-control" type=hidden th:field="${userForm.id}" th:if="${editMode}">
         <input class="form-control" type=hidden name="password" value="xxxx" th:if="${editMode}">
         <input class="form-control" type=hidden name="confirmPassword" value="xxxx" th:if="${editMode}">
-        <input class="form-control" type=hidden th:field="${userForm.roles}" th:if="${editMode} and ${#authorization.expression('hasRole(''ROLE_USER'')')}">
+        <input class="form-control" type=hidden th:field="${userForm.role}" th:if="${editMode} and ${#authorization.expression('hasRole(''ROLE_USER'')')}">
 
         <div class="form-group row">
             <label class="col-lg-3 col-form-label form-control-label">Nombre</label>
@@ -40,13 +40,13 @@
             </div>
         </div>
         <div class="form-group row">
-            <label th:text="Roles" class="col-lg-3 col-form-label form-control-label"></label>
+            <label th:text="Rol" class="col-lg-3 col-form-label form-control-label"></label>
             <div class="col-lg-9">
-                <select th:field="${userForm.roles}" class="btn btn-light dropdown-toggle col-lg-12" size="1" th:disabled="${disableFields} or ${#authorization.expression('hasRole(''ROLE_USER'')')}">
-                    <option th:each="role :${roles}" th:value="${role.id}" th:text="${role.name}">
+                <select th:field="${userForm.role}" class="btn btn-light dropdown-toggle col-lg-12" size="1" th:disabled="${disableFields} or ${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <option th:each="role :${role}" th:value="${role.id}" th:text="${role.name}">
                     </option>
                 </select>
-                <div class="alert-danger" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Name Error</div>
+                <div class="alert-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Name Error</div>
             </div>
         </div>
         <div class="form-group row" th:if="${editMode == null || editMode == false}">

@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         to.setFirstName(from.getFirstName());
         to.setLastName(from.getLastName());
         to.setEmail(from.getEmail());
-        to.setRoles(from.getRoles());
+        to.setRole(from.getRole());
         to.setConfirmPassword(to.getPassword());
     }
 
