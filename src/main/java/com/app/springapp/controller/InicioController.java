@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class InicioController {
     @GetMapping("/inicio")
     public String inicio( Model model){
-        return "inicio/inicio";
+        return "inicio";
     }
 }
