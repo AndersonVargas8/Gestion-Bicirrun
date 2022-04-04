@@ -1,55 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
- 
+    <title>Turnos</title>
+    <link rel="icon" type="image/x-icon" href="/img/bycicle.png">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <form id="turnosForm" th:object="${nuevoTurno}" method="post" class="form" role="form" autocomplete="off"
-        th:action="@{/turnos}">
-        <!--Es necesario para poder pasar la validacion del Model-->
-        <input class="form-control" hidden th:field="*{id}">
-        <input class="form-control" hidden th:field="*{dia}">
-        <input class="form-control" hidden th:field="*{mes}">
-        <div class="form-group">
-            <label class="lb1">Fecha</label>
-            <input th:field="*{fecha}" placeholder="date" type="date" class="form-control" required />
-        </div>
-        
-        <div class="form-group">
-            <label class="lb1">Obs</label>
-            <textarea th:field="*{observaciones}" placeholder="Observaciones" class="form-control" required ></textarea>
-        </div>
-        <div class="form-group">
-            <label class="lb1">Estacion</label>
-            <select th:field="*{estacion}">
-                <option th:each="estacion:${estaciones}" th:value="${estacion.id}" th:text="${estacion.nombre}"></option>
-            </select></div>
-        <div class="form-group">
-            <label class="lb1">Estado</label>
-            <select th:field="*{estado}">
-                <option th:each="estado:${estadoTurnos}" th:value="${estado.id}" th:text="${estado.descripcion}"></option>
-            </select></div>
-        <div class="form-group">
-            <label class="lb1">Estudiante</label>
-            <select th:field="*{estudiante}">
-                <option th:each="estudiante:${estudiantes}" th:value="${estudiante.id}" th:text="${estudiante.nombres} + ' ' + ${estudiante.apellidos}"></option>
-            </select></div>
-        <div class="form-group">
-            <label class="lb1">Horario</label>
-            <select th:field="*{horario}">
-                <option th:each="horario:${horarios}" th:value="${horario.id}" th:text="${horario.descripcion}"></option>
-            </select>
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Guardar" class="btn btn-success" />
-        </div>
-    </form>
+    <!---->
+</head>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#filtro").change(function(){
+            let mes = document.getElementById("filtro").value;
+            
+            alert(mes);
+            var url = "/actFormTurnos/"+mes;
+            $("#carta").load(url);
+        });
+    
+    });
+</script> 
+<body>
+    <div th:include="navbar.html" th:remove="tag"></div>
+    <p th:text="${meses}"></p>
+    <div id="carta" th:include="formTurnos.html">
+
+    </div>
+    
     <h3>TURNOS</h3>
     <table border="1">
         <tr>
@@ -72,7 +54,9 @@
             <td th:text="${turno.estudiante.carrera.descripcion}">CARRERA</td>
             <td th:text="${turno.observaciones}">OBSERVACIONES</td>
         </tr>
-            
+
     </table>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
 </body>
 </html>

@@ -29,7 +29,7 @@ public class EstudianteController {
         model.addAttribute("carreras", repCarrera.findAll());
         model.addAttribute("estudiantes", repEstudiante.findAll());
         model.addAttribute("estudiante",new Estudiante());
-
+        model.addAttribute("listTab","estudiantes");
         return "estudiante";
     }
 
