@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p th:text="${prueba}"></p>
+    <p th:text="${prueba2}"></p>
+    <p th:text="${prueba3}"></p>
+    <p th:text="${prueba4}"></p>
+
+    <form id="turnosForm" th:object="${turno}" method="post" class="form" role="form" autocomplete="off"
+        th:action="@{/saveTurno}">
+        <!--Es necesario para poder pasar la validacion del Model-->
+        <input class="form-control" th:field="${turno.id}">
+        <div class="form-group">
+            <label class="lb1">Dia</label>
+            <input th:field="${turno.dia}" placeholder="Dia" type="number" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label class="lb1">Mes</label>
+            <input th:field="${turno.mes}" placeholder="Mes" type="number" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label class="lb1">Obs</label>
+            <input th:field="${turno.observaciones}" placeholder="Observaciones" type="text" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label class="lb1">Estacion</label>
+            <input th:field="${turno.estacion}" placeholder="Estacion" type="number" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label class="lb1">Estado</label>
+            <input th:field="${turno.estado}" placeholder="Estado" type="number" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label class="lb1">Estudiante</label>
+            <input th:field="${turno.estudiante}" placeholder="Estudiante" type="number" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label class="lb1">Horario</label>
+            <input th:field="${turno.horario}" placeholder="Horario" type="number" class="form-control" required />
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Guardar" class="btn btn-success" />
+        </div>
+    </form>
+</body>
+</html>
