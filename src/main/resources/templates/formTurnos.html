@@ -1,71 +1,33 @@
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#filtro").change(function(){
-            let mes = document.getElementById("filtro").value;
-            
-            alert(mes);
-            var url = "/actFormTurnos/"+mes;
-            $("#carta").load(url);
-        });
-    
-    });
-</script> 
-<form id="turnosForm" th:object="${nuevoTurno}" method="post" class="form" role="form" autocomplete="off"
-        th:action="@{/turnos}">
-        <!--Es necesario para poder pasar la validacion del Model-->
-        <input class="form-control" hidden th:field="*{id}">
-        <div class="form-group">
-            <label class="lb1">Estudiante</label>
-            <select th:field="*{estudiante}" id="filtro">
-                <option th:each="estudiante:${estudiantes}" th:value="${estudiante.id}"
-                    th:text="${estudiante.nombres} + ' ' + ${estudiante.apellidos}"></option>
-            </select>
-            
-        </div>
-        <div class="form-group">
-            <label class="lb1">Estado</label>
-            <select th:field="*{estado}">
-                <option th:each="estado:${estadoTurnos}" th:value="${estado.id}" th:text="${estado.descripcion}">
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="lb1">Mes</label>
-            <input th:field="*{mes}" id="filtro" placeholder="mes" type="number" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="lb1">Dia</label>
-            <input th:field="*{dia}" placeholder="dia" type="number" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="lb1">Horario</label>
-            <select th:field="*{horario}">
-                <option th:each="horario:${horarios}" th:value="${horario.id}" th:text="${horario.descripcion}">
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="lb1">Estacion</label>
-            <select th:field="*{estacion}">
-                <option th:each="estacion:${estaciones}" th:value="${estacion.id}" th:text="${estacion.nombre}">
-                </option>
-            </select>
-        </div>
-        
-        
-        <div class="form-group">
-            <label class="lb1">Obs</label>
-            <textarea th:field="*{observaciones}" placeholder="Observaciones" class="form-control" required></textarea>
-        </div>
-        <!--<div class="form-group">
-            <label class="lb1">Fecha</label>
-            <input th:field="*{fecha}" placeholder="date" type="date" class="form-control" required />
-        </div>-->
-        
-        
+<div id="carta">
+    <div class="form-group">
+        <label class="lb1">Mes</label>
+        <select th:field="${nuevoTurno.mes}" id="selMes" required>
+            <option th:each="mesS:${mesSel}" th:value="${mesS.key}" th:text="${mesS.value}">Mes seleccionado
+            </option>
+            <option th:each="mes:${meses}" th:value="${mesStat.index + 1}" th:text="${mes}"></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="lb1">Dia</label>
+        <select th:field="${nuevoTurno.dia}">
+            <option th:each="dia:${dias}" th:value="${dia.key}" th:text="${dia.key} + ' - ' + ${dia.value}">
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="lb1">Horario</label>
+        <select th:field="${nuevoTurno.horario}">
+            <option th:each="horario:${horarios}" th:value="${horario.id}" th:text="${horario.descripcion}">
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="lb1">Estacion</label>
+        <select th:field="${nuevoTurno.estacion}">
+            <option th:each="estacion:${estaciones}" th:value="${estacion.id}" th:text="${estacion.nombre}">
+            </option>
+        </select>
+    </div>
 
-       
-        <div class="card-footer">
-            <input type="submit" value="Guardar" class="btn btn-success" />
-        </div>
-    </form>
+</div>
+<script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
