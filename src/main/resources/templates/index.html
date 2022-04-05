@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Gestión Bicirrun | Inicio de sesión</title>
-    <link rel="icon" type="image/x-icon" href="../static/img/bycicle.png" th:href="@{/img/bycicle.png}">
 
     <!--JQUERY-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -20,14 +19,18 @@
 
     <!-- Nuestro css-->
     <link rel="stylesheet" type="text/css" href="../static/css/index.css" th:href="@{/css/index.css}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.png}">
 </head>
 
 <body>
     <div class="modal-dialog text-center">
-        <div class="col-sm-8 main-section">
+        <div class="col-sm-9 main-section">
             <div class="modal-content">
                 <div class="col-12 user-img">
                     <img src="../static/img/avatar.png" th:src="@{img/avatar.png}"/>
+                    <br><br>
+                    <h2>Gestión Bicirrun</h2>
+                    <h3>Inicio de sesión</h3>
                 </div>
                 <form class="col-12" th:action="@{/login}" method="post">
                     <div class="form-group" id="user-group">

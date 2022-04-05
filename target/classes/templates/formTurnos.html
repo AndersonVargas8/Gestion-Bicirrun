@@ -1,0 +1,33 @@
+<div id="carta">
+    <div class="form-group">
+        <label class="lb1">Mes</label>
+        <select th:field="${nuevoTurno.mes}" id="selMes" required>
+            <option th:each="mesS:${mesSel}" th:value="${mesS.key}" th:text="${mesS.value}">Mes seleccionado
+            </option>
+            <option th:each="mes:${meses}" th:value="${mesStat.index + 1}" th:text="${mes}"></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="lb1">Dia</label>
+        <select th:field="${nuevoTurno.dia}">
+            <option th:each="dia:${dias}" th:value="${dia.key}" th:text="${dia.key} + ' - ' + ${dia.value}">
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="lb1">Horario</label>
+        <select th:field="${nuevoTurno.horario}">
+            <option th:each="horario:${horarios}" th:value="${horario.id}" th:text="${horario.descripcion}">
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="lb1">Estacion</label>
+        <select th:field="${nuevoTurno.estacion}">
+            <option th:each="estacion:${estaciones}" th:value="${estacion.id}" th:text="${estacion.nombre}">
+            </option>
+        </select>
+    </div>
+
+</div>
+<script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
