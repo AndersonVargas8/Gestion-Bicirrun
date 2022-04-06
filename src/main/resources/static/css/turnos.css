@@ -1,0 +1,7 @@
+.search_select_box button{
+    background-color: white !important;
+}
+
+select{
+    cursor:pointer;
+}
