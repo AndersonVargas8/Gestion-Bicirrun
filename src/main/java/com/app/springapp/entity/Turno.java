@@ -32,27 +32,24 @@ public class Turno {
 
     @Column
     private String observaciones;
-    
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private EstadoTurno estado;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Estacion estacion;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Estudiante estudiante;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Horario horario;
 
-   
-    @Transient
-    private String fecha;
-    
     public Turno() {
     }
 
-    public Turno(long id, int dia, int mes, String observaciones, EstadoTurno estado, Estacion estacion, Estudiante estudiante, Horario horario) {
+    public Turno(long id, int dia, int mes, String observaciones, EstadoTurno estado, Estacion estacion,
+            Estudiante estudiante, Horario horario) {
         this.id = id;
         this.dia = dia;
         this.mes = mes;
@@ -127,14 +124,6 @@ public class Turno {
         this.horario = horario;
     }
 
-    
-    public String getFecha() {
-        return this.fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -143,7 +132,10 @@ public class Turno {
             return false;
         }
         Turno turno = (Turno) o;
-        return id == turno.id && dia == turno.dia && mes == turno.mes && Objects.equals(observaciones, turno.observaciones) && Objects.equals(estado, turno.estado) && Objects.equals(estacion, turno.estacion) && Objects.equals(estudiante, turno.estudiante) && Objects.equals(horario, turno.horario);
+        return id == turno.id && dia == turno.dia && mes == turno.mes
+                && Objects.equals(observaciones, turno.observaciones) && Objects.equals(estado, turno.estado)
+                && Objects.equals(estacion, turno.estacion) && Objects.equals(estudiante, turno.estudiante)
+                && Objects.equals(horario, turno.horario);
     }
 
     @Override
@@ -154,15 +146,15 @@ public class Turno {
     @Override
     public String toString() {
         return "{" +
-            " id='" + getId() + "'" +
-            ", dia='" + getDia() + "'" +
-            ", mes='" + getMes() + "'" +
-            ", observaciones='" + getObservaciones() + "'" +
-            ", estado='" + getEstado() + "'" +
-            ", estacion='" + getEstacion() + "'" +
-            ", estudiante='" + getEstudiante() + "'" +
-            ", horario='" + getHorario() + "'" +
-            "}";
+                " id='" + getId() + "'" +
+                ", dia='" + getDia() + "'" +
+                ", mes='" + getMes() + "'" +
+                ", observaciones='" + getObservaciones() + "'" +
+                ", estado='" + getEstado() + "'" +
+                ", estacion='" + getEstacion() + "'" +
+                ", estudiante='" + getEstudiante() + "'" +
+                ", horario='" + getHorario() + "'" +
+                "}";
     }
 
 }
