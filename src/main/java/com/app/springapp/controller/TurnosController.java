@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.app.springapp.entity.Cupo;
+import com.app.springapp.entity.Disponibilidad;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.repository.CupoRepository;
+import com.app.springapp.repository.DisponibilidadRepository;
 import com.app.springapp.repository.EstacionRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
@@ -20,7 +25,6 @@ import com.app.springapp.repository.TurnoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +46,12 @@ public class TurnosController {
     @Autowired
     EstadoTurnoRepository repEstadoTurno;
 
+    @Autowired
+    CupoRepository repCupo;
+
+    @Autowired
+    DisponibilidadRepository repDisponibilidad;
+    
     @Autowired
     TurnoRepository repTurno;
 
@@ -66,8 +76,24 @@ public class TurnosController {
         } else {
             try {
                 repTurno.save(turno);
+                Optional<Disponibilidad> respuestaDisp;
+                Cupo cupo = repCupo.findByEstacionAndHorario(turno.getEstacion(), turno.getHorario()).get();
+                if(cupo.getCupoGrupo() != 0)//Verifica si el Cupo comparte número de cupos con otro Cupo  (si es 0, no tiene cupoGrupo)
+                    cupo = repCupo.findById(new Long(cupo.getCupoGrupo())); //asigna el cupoGrupo al cupo
+                
+
+                respuestaDisp = repDisponibilidad.findByMesAndDiaAndCupo(turno.getMes(), turno.getDia(), cupo);
+                Disponibilidad disponibilidad;
+
+                if(respuestaDisp.isPresent())
+                    disponibilidad = respuestaDisp.get();
+                else//Crear un nuevo registro de disponibilidad
+                    disponibilidad = new Disponibilidad(0, turno.getMes(), turno.getDia(), cupo, cupo.getNum_cupos());
+                
+                disponibilidad.setNum_disponibles(disponibilidad.getNum_disponibles() - 1);
+                repDisponibilidad.save(disponibilidad);
             } catch (Exception e) {
-                model.addAttribute("error", e.getMessage());
+                model.addAttribute("error", "Error: " + e.getMessage());
             }
         }
 

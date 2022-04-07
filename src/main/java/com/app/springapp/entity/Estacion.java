@@ -22,18 +22,12 @@ public class Estacion {
     @NotBlank
     private String nombre;
 
-    @Column
-    @NotBlank
-    private int cupos;
-
-
     public Estacion() {
     }
 
-    public Estacion(long id, String nombre, int cupos) {
+    public Estacion(long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-        this.cupos = cupos;
     }
 
     public long getId() {
@@ -52,14 +46,6 @@ public class Estacion {
         this.nombre = nombre;
     }
 
-    public int getCupos() {
-        return this.cupos;
-    }
-
-    public void setCupos(int cupos) {
-        this.cupos = cupos;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -68,12 +54,12 @@ public class Estacion {
             return false;
         }
         Estacion estacion = (Estacion) o;
-        return id == estacion.id && Objects.equals(nombre, estacion.nombre) && cupos == estacion.cupos;
+        return id == estacion.id && Objects.equals(nombre, estacion.nombre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nombre, cupos);
+        return Objects.hash(id, nombre);
     }
 
     @Override
@@ -81,7 +67,6 @@ public class Estacion {
         return "{" +
             " id='" + getId() + "'" +
             ", nombre='" + getNombre() + "'" +
-            ", cupos='" + getCupos() + "'" +
             "}";
     }
 
