@@ -30,11 +30,11 @@ public class Cupo {
     @JoinColumn(name = "hor_id")
     private Horario horario;
 
-    @Column(columnDefinition = "bigint(20) default '0'")
+    @Column
     private int num_cupos;
 
     
-    @Column(name = "cupo_grupo", columnDefinition = "bigint(20) default '0'") 
+    @Column(name = "cupo_grupo") 
     private int cupoGrupo; 
     
 
