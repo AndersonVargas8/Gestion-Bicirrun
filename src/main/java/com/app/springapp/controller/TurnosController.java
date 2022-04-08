@@ -9,15 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
 import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Disponibilidad;
+import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
 import com.app.springapp.repository.CupoRepository;
-import com.app.springapp.repository.DisponibilidadRepository;
 import com.app.springapp.repository.EstacionRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
@@ -104,8 +103,8 @@ public class TurnosController {
         return "turnos";
     }
 
-    @GetMapping("/actFormTurnos/{mes}")
-    public String reporteCompras(ModelMap model, @PathVariable int mes) {
+    @GetMapping("/actFormTurnosMes/{mes}")
+    public String actFormTurnosMes(ModelMap model, @PathVariable int mes) {
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(mes));
         model.addAttribute("mesSel", getMes(mes));
@@ -113,6 +112,18 @@ public class TurnosController {
         model.addAttribute("nuevoTurno", new Turno());
         return "formTurnos";
     }
+
+    @GetMapping("/actFormTurnosDiaMes/{dia}/{mes}")
+    public String actFormTurnosDiaMes(ModelMap model, @PathVariable int dia, @PathVariable int mes){
+        model = addAttributesTurnos(model);
+        model.addAttribute("dias", generarDiasHabiles(mes));
+        model.addAttribute("mesSel", getMes(mes));
+        model.addAttribute("horarios",getHorarios(dia, mes));
+        model.addAttribute("diaSel", getDia(dia,mes));
+
+        return "formTurnos";
+    }
+
 
     private List<String> generarMeses() {
         if (meses != null)
@@ -139,6 +150,7 @@ public class TurnosController {
         model.addAttribute("meses", generarMeses());
         model.addAttribute("dias", generarDiasHabiles(0));
         model.addAttribute("mesSel", getMes(0));
+        model.addAttribute("diaSel", getDia(0,0));
 
         Turno turno = new Turno();
         model.addAttribute("nuevoTurno", new Turno());
@@ -194,5 +206,28 @@ public class TurnosController {
         HashMap<Integer, String> mesSel = new HashMap<>();
         mesSel.put(mes.getValue(), nombre.substring(0, 1).toUpperCase() + nombre.substring(1));
         return mesSel;
+    }
+
+    private HashMap<Integer, String> getDia(int dia, int mesValor){
+        int anioActual = LocalDate.now().getYear();
+        int diaValor = (dia == 0) ? 1 : dia;
+        Month mes = (mesValor == 0) ? LocalDate.now().getMonth() : Month.of(mesValor);
+        
+        LocalDate fechaActual = LocalDate.of(anioActual, mes.getValue(), diaValor);
+
+        int valorDiaActual = DayOfWeek.from(fechaActual).getValue();
+
+        String diaNombre = (dia == 0) ? "Seleccione" : DayOfWeek.of(valorDiaActual % 7).getDisplayName(TextStyle.FULL,
+        new Locale("es", "ES"));
+
+        HashMap<Integer, String> diaSel = new HashMap<>();
+        diaSel.put(dia, diaNombre.substring(0, 1).toUpperCase() + diaNombre.substring(1));
+
+        return diaSel;
+    }
+
+    private List<Horario> getHorarios(int dia, int mes){
+        List<Horario> horarios = serDisponibilidad.horariosDisponiblesDiaMes(dia, mes);
+        return horarios;
     }
 }

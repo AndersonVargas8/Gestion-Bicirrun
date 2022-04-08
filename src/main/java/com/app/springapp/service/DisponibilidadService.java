@@ -1,13 +1,15 @@
 package com.app.springapp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Disponibilidad;
+import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioDisponibilidad;
-import com.app.springapp.repository.CupoRepository;
 import com.app.springapp.repository.DisponibilidadRepository;
+import com.app.springapp.repository.HorarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,10 @@ public class DisponibilidadService implements IServicioDisponibilidad {
     DisponibilidadRepository repDisponibilidad;
 
     @Autowired
-    CupoRepository repCupo;
+    CupoService serCupo;
+
+    @Autowired
+    HorarioService serHorario;
 
     @Override
     public int guardarDisponibilidad(Disponibilidad disponibilidad) {
@@ -44,7 +49,7 @@ public class DisponibilidadService implements IServicioDisponibilidad {
 
     @Override
     public void actualizarCuposDia(int dia, int mes) {
-        List<Cupo> cupos = (List<Cupo>)repCupo.findAll();
+        List<Cupo> cupos = serCupo.obtenerTodos();
         
         for(Cupo cupo: cupos){
             if(cupo.getCupoGrupo() == 0){
@@ -52,6 +57,26 @@ public class DisponibilidadService implements IServicioDisponibilidad {
             }
         }
     }
+
+    @Override
+    public List<Horario> horariosDisponiblesDiaMes(int dia, int mes) {
+
+        List<Integer> idHorarios = repDisponibilidad.findFreeByDiaAndMes(dia, mes);
+        List<Horario> horarios = new ArrayList<>();
+
+        for(int id: idHorarios){
+            Horario horario = serHorario.buscarPorId(id);
+            Cupo cupo = serCupo.buscarPorId(serCupo.buscarIdPorCupoGrupoHoraroi((int)horario.getId()));
+            if(cupo != null)
+                horarios.add(serHorario.buscarPorId(cupo.getCupoGrupo()));
+            horarios.add(horario);
+        }
+        return horarios;
+    }
+
+    
+
+    
 
     
 
