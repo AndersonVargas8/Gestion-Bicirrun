@@ -9,7 +9,6 @@ import com.app.springapp.entity.Disponibilidad;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioDisponibilidad;
 import com.app.springapp.repository.DisponibilidadRepository;
-import com.app.springapp.repository.HorarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

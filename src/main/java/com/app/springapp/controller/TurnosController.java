@@ -152,7 +152,6 @@ public class TurnosController {
         model.addAttribute("mesSel", getMes(0));
         model.addAttribute("diaSel", getDia(0,0));
 
-        Turno turno = new Turno();
         model.addAttribute("nuevoTurno", new Turno());
 
         return model;
