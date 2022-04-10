@@ -10,10 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
+//@Table(name="cupo",schema="public") //PRODUCCIÓN
 public class Cupo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -28,12 +30,14 @@ public class Cupo {
     @JoinColumn(name = "hor_id")
     private Horario horario;
 
-    @Column(columnDefinition = "bigint(20) default '0'")
+    @Column(columnDefinition = "bigint(20) default '0'") //DESARROLLO
+    //@Column //PRODUCCIÓN
     private int num_cupos;
 
     
-    @Column(name = "cupo_grupo", columnDefinition = "bigint(20) default '0'") 
-    private int cupoGrupo; 
+    @Column(name = "cupo_grupo", columnDefinition = "bigint(20) default '0'") //DESARROLLO
+    //@Column(name = "cupo_grupo") //PRODUCCIÓN
+    private int cupoGrupo;
     
 
     public Cupo() {

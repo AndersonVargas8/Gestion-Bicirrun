@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Disponibilidad;
+import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioDisponibilidad;
 import com.app.springapp.repository.DisponibilidadRepository;
@@ -23,6 +24,9 @@ public class DisponibilidadService implements IServicioDisponibilidad {
 
     @Autowired
     HorarioService serHorario;
+
+    @Autowired
+    EstacionService serEstacion;
 
     @Override
     public int guardarDisponibilidad(Disponibilidad disponibilidad) {
@@ -60,17 +64,40 @@ public class DisponibilidadService implements IServicioDisponibilidad {
     @Override
     public List<Horario> horariosDisponiblesDiaMes(int dia, int mes) {
 
-        List<Integer> idHorarios = repDisponibilidad.findFreeByDiaAndMes(dia, mes);
+        List<Integer> idHorarios = repDisponibilidad.idHorariosDisponiblesDiaAndMes(dia, mes);
         List<Horario> horarios = new ArrayList<>();
 
+        if(idHorarios.isEmpty()){
+            return serHorario.obtenerTodos();
+        }
         for(int id: idHorarios){
             Horario horario = serHorario.buscarPorId(id);
-            Cupo cupo = serCupo.buscarPorId(serCupo.buscarIdPorCupoGrupoHoraroi((int)horario.getId()));
+            Cupo cupo = serCupo.buscarPorId(serCupo.buscarIdPorCupoGrupoHorario((int)horario.getId()));
             if(cupo != null)
                 horarios.add(serHorario.buscarPorId(cupo.getCupoGrupo()));
             horarios.add(horario);
         }
         return horarios;
+    }
+
+    @Override
+    public List<Estacion> estacionesDisponiblesDiaMesHorario(int dia, int mes, int idHorario) {
+        if(this.cuposDisponiblesEnDia(dia, mes) == null)
+            return serEstacion.obtenerTodas();
+                    
+        List<Integer> idEstaciones = repDisponibilidad.idEstacionesDisponiblesDiaAndMesAndHorario(dia, mes, idHorario);
+        List<Estacion> estaciones = new ArrayList<>();
+        
+        for(int id: idEstaciones){
+            Estacion estacion = serEstacion.buscarPorId(id);
+            estaciones.add(estacion);
+        }
+        return estaciones;
+    }
+
+    @Override
+    public List<Integer> diasSinDisponibilidadEnHorario(int mes, int idHorario) {
+        return repDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
     }
 
     
