@@ -1,7 +1,6 @@
 package com.app.springapp.controller;
 
 import com.app.springapp.entity.Estudiante;
-import com.app.springapp.entity.Turno;
 import com.app.springapp.repository.CarreraRepository;
 import com.app.springapp.repository.EstudianteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
