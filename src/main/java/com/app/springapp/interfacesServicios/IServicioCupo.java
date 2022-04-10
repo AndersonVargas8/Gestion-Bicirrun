@@ -9,6 +9,6 @@ public interface IServicioCupo {
     public List<Cupo> obtenerTodos();
     public Cupo buscarPorHorario(Horario horario);
     public Cupo buscarPorCupoGrupo(int cupoGrupoId);
-    public int buscarIdPorCupoGrupoHoraroi(int idHorario);
+    public int buscarIdPorCupoGrupoHorario(int idHorario);
     public Cupo buscarPorId(int id);
 }

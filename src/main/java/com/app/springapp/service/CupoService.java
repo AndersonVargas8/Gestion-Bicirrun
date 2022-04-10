@@ -36,7 +36,7 @@ public class CupoService implements IServicioCupo{
     }
 
     @Override
-    public int buscarIdPorCupoGrupoHoraroi(int idHorario) {
+    public int buscarIdPorCupoGrupoHorario(int idHorario) {
         Optional<Integer> respuesta = repCupo.findIdByCupoGrupoHorario(idHorario);
         if(respuesta.isPresent())
             return respuesta.get();

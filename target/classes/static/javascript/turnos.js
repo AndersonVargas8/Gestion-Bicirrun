@@ -10,7 +10,21 @@ $(document).ready(function () {
         document.getElementById("selHorario").setAttribute("disabled","disabled");
         let mes = document.getElementById("selMes").value;
         let dia = document.getElementById("selDia").value;
-        var url = "/actFormTurnosDiaMes/" + dia + "/" + mes;
+        let idHorario = document.getElementById("selHorario").value;
+        var url = "/actFormTurnosDiaMes/" + dia + "/" + mes + "/" + idHorario;
+        $("#carta").load(url);
+    });
+
+    $("#selHorario").change(function () {
+        document.getElementById("selEstacion").setAttribute("disabled","disabled");
+        let mes = document.getElementById("selMes").value;
+        let dia = document.getElementById("selDia").value;
+        if(dia == 0){
+            document.getElementById("selDia").setAttribute("disabled","disabled");
+        }
+        let idHorario = document.getElementById("selHorario").value;
+
+        var url = "/actFormTurnosDiaMesHorario/" + dia + "/" + mes + "/" + idHorario;
         $("#carta").load(url);
     });
 
