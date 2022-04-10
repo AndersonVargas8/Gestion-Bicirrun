@@ -26,6 +26,6 @@ $(document).ready(function () {
 
         var url = "/actFormTurnosDiaMesHorario/" + dia + "/" + mes + "/" + idHorario;
         $("#carta").load(url);
-    });
+    }); 
 
 });
