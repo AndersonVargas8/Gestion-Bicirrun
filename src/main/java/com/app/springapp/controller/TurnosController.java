@@ -4,11 +4,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -17,10 +17,10 @@ import com.app.springapp.entity.Disponibilidad;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
-import com.app.springapp.repository.CupoRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.repository.TurnoRepository;
+import com.app.springapp.service.CupoService;
 import com.app.springapp.service.DisponibilidadService;
 import com.app.springapp.service.EstacionService;
 import com.app.springapp.service.HorarioService;
@@ -49,7 +49,7 @@ public class TurnosController {
     EstadoTurnoRepository repEstadoTurno;
 
     @Autowired
-    CupoRepository repCupo;
+    CupoService serCupo;
 
     @Autowired
     DisponibilidadService serDisponibilidad;
@@ -61,6 +61,8 @@ public class TurnosController {
 
     @GetMapping("/turnos")
     public String index(ModelMap model) {
+        model.addAttribute("infoCalendar", informacionCalendar(0));
+        model.addAttribute("mesCalendar",getMesCalendar(0,0));
         model = addAttributesTurnos(model);
 
         model.addAttribute("dias", generarDiasHabiles(0));
@@ -79,10 +81,10 @@ public class TurnosController {
         } else {
             try {
                 repTurno.save(turno);
-                Cupo cupo = repCupo.findByEstacionAndHorario(turno.getEstacion(), turno.getHorario()).get();
+                Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
                 if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
                                              // tiene cupoGrupo)
-                    cupo = repCupo.findById(new Long(cupo.getCupoGrupo())); // asigna el cupoGrupo al cupo
+                    cupo = serCupo.buscarPorId(cupo.getCupoGrupo()); // asigna el cupoGrupo al cupo
 
                 Disponibilidad disponibilidad = serDisponibilidad.consultarDisponibilidadMesDia(turno.getMes(),
                         turno.getDia(), cupo);
@@ -132,9 +134,9 @@ public class TurnosController {
     public String actFormTurnosDiaMesHorario(ModelMap model, @PathVariable int dia, @PathVariable int mes,
             @PathVariable int idHorario) {
         model = addAttributesTurnos(model);
-        if(dia == 0){
-            model.addAttribute("dias", generarDiasDisponibles(mes,idHorario));
-        }else{       
+        if (dia == 0) {
+            model.addAttribute("dias", generarDiasDisponibles(mes, idHorario));
+        } else {
             model.addAttribute("dias", generarDiasHabiles(mes));
         }
         model.addAttribute("mesSel", getMes(mes));
@@ -206,10 +208,10 @@ public class TurnosController {
     }
 
     private HashMap<Integer, String> generarDiasDisponibles(int mes, int idHorario) {
-        HashMap<Integer,String> diasHabiles = this.generarDiasHabiles(mes);
+        HashMap<Integer, String> diasHabiles = this.generarDiasHabiles(mes);
         List<Integer> diasOcupados = serDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
 
-        for(Integer dia: diasOcupados){
+        for (Integer dia : diasOcupados) {
             diasHabiles.remove(dia);
         }
         return diasHabiles;
@@ -263,5 +265,99 @@ public class TurnosController {
     private List<Estacion> getEstaciones(int dia, int mes, int idHorario) {
         List<Estacion> estaciones = serDisponibilidad.estacionesDisponiblesDiaMesHorario(dia, mes, idHorario);
         return estaciones;
+    }
+
+    private HashMap<Integer,HashMap<String,HashMap<Integer,Integer>>> informacionCalendar(int mesActual){
+        //Si el argumento es 0, entonces se toma el valor del mes como el mes actual
+        if (mesActual == 0) {
+            Month mesActualClase = LocalDate.now().getMonth();
+            mesActual = mesActualClase.getValue();
+        }
+        //Obtener la fecha con un mes dado
+        int anioActual = LocalDate.now().getYear();
+        LocalDate fechaActual = LocalDate.of(anioActual, mesActual, 1);
+        int diasDelMes = fechaActual.lengthOfMonth();
+        
+        //Obtener cantidad de semanas del mes
+        LocalDate ultimoDia = fechaActual.withDayOfMonth(diasDelMes);
+		int cantSemanas = ultimoDia.get(WeekFields.ISO.weekOfMonth()) + 1;
+
+        /*El HashMap contendrá n llaves las n semanas, cada llave contiene la el número de semana y su valor
+        será una lista con la info de cada día: [0] = lunes, [2] = martes,..., en cada campo se almacena un
+        HashMap con el número de día como llave y la cantidad de cupos disponibles como valor
+        */
+        HashMap<Integer,HashMap<String,HashMap<Integer,Integer>>> infoCalendario = new HashMap<>();
+        
+        
+        for(int i = 1; i <= cantSemanas; i++){
+            HashMap<String, HashMap<Integer,Integer>> mapa = new HashMap<>();
+            mapa.put("Lu",null);
+            mapa.put("Ma",null);
+            mapa.put("Mi",null);
+            mapa.put("Ju",null);
+            mapa.put("Vi",null);
+              
+            infoCalendario.put(i, mapa);  
+        }
+        int valorDiaActual = DayOfWeek.from(fechaActual).getValue();
+        Integer totalCupos = serCupo.cantidadCupos();
+
+        for (int i = 1; i <= diasDelMes; i++) {
+            if (valorDiaActual % 7 != 6 && valorDiaActual % 7 != 0) {//Si el día no es sábado ni domingo
+                //Obtener la semana a la que pertenece
+                LocalDate dia = fechaActual.withDayOfMonth(i);
+		        int numSemana = dia.get(WeekFields.ISO.weekOfMonth()) + 1;
+                
+                //Se obtiene el HashMap de la semana correspondiente
+                HashMap<String,HashMap<Integer,Integer>> mapaSemana = infoCalendario.get(numSemana);
+                
+                //Se agrega la info del día con sus cupos disponibles
+                HashMap<Integer,Integer> mapaDia = new HashMap<>();
+                Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
+                if(num_disponibles == null)
+                    num_disponibles = totalCupos;
+
+                mapaDia.put(i, num_disponibles);
+
+                //asignar el mapa Día al día correspondiente de la semana
+                switch(valorDiaActual % 7){
+                    case 1:
+                        mapaSemana.put("Lu", mapaDia);
+                        break;
+                    case 2:
+                        mapaSemana.put("Ma", mapaDia);
+                        break;
+                    case 3:
+                        mapaSemana.put("Mi", mapaDia);
+                        break;
+                    case 4:
+                        mapaSemana.put("Ju", mapaDia);
+                        break;
+                    case 5:
+                        mapaSemana.put("Vi", mapaDia);
+                        break;
+
+                }
+                
+                infoCalendario.put(numSemana, mapaSemana);
+            }
+            valorDiaActual++;
+        }
+
+        return infoCalendario;
+    }
+
+    private String getMesCalendar(int anio, int mes){
+        mes = (mes == 0) ? LocalDate.now().getMonth().getValue() : mes;
+        anio = (anio == 0) ?  LocalDate.now().getYear(): anio;
+
+        String mesCalendar = Integer.toString(anio) + "-";
+
+        if(mes < 10)
+            mesCalendar = mesCalendar.concat("0");
+        
+        mesCalendar = mesCalendar.concat(Integer.toString(mes));
+
+        return mesCalendar;
     }
 }

@@ -28,4 +28,10 @@ $(document).ready(function () {
         $("#carta").load(url);
     }); 
 
+
 });
+
+function mensaje(num,nam){
+    alert("Este es un mensaje " +num + " " + nam);
+    $("#modalFormTurnos").modal();
+}

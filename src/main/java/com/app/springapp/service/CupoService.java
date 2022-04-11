@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.app.springapp.entity.Cupo;
+import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioCupo;
 import com.app.springapp.repository.CupoRepository;
@@ -46,6 +47,16 @@ public class CupoService implements IServicioCupo{
     @Override
     public Cupo buscarPorId(int id) {
         return repCupo.findById(new Long(id));
+    }
+
+    @Override
+    public Integer cantidadCupos() {
+        return repCupo.sumNumCupos();
+    }
+
+    @Override
+    public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario) {
+        return repCupo.findByEstacionAndHorario(estacion, horario).get();
     }
 
     

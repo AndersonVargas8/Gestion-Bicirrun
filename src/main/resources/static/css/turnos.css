@@ -5,3 +5,49 @@
 select{
     cursor:pointer;
 }
+
+thead{
+    text-align: center;
+}
+
+.diaDisponible{
+    background-color: #baf8ba;
+}
+.diaDisponible:hover{
+    background-color: #95f795;
+}
+
+.diaOcupado{
+    background-color: #ffcccb;
+}
+.diaOcupado:hover{
+    background-color: #f8a5a4;
+}
+
+.numeroDia{
+    text-align: right;
+    padding-right: 5%;
+    font-size:20px;
+}
+
+.numeroCupos{
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.diaDisponible .numeroCupos{
+    color: rgb(11, 61, 11);
+}
+.diaOcupado .numeroCupos{
+    color: rgb(75, 5, 5);
+}
+
+.diaCalendar{
+    padding: 0 !important;
+    /* border: 1px solid!important; */
+}
+
+td div{
+    padding: 5px;
+}

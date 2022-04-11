@@ -23,4 +23,7 @@ public interface CupoRepository extends CrudRepository<Cupo,Integer>{
     @Query(value = "SELECT c.id FROM cupo c JOIN cupo cg ON cg.id = c.cupo_grupo WHERE c.cupo_grupo <> 0 AND cg.hor_id = ?1 GROUP BY c.hor_id;", nativeQuery = true)//DESARROLLO
     //@Query(value = "SELECT DISTINCT ON (c.hor_id) c.id FROM cupo c JOIN cupo cg ON cg.id = c.cupo_grupo WHERE c.cupo_grupo <> 0 AND cg.hor_id = ?1 GROUP BY c.id,c.hor_id", nativeQuery = true)//PRODUCCIÓN
     public Optional<Integer> findIdByCupoGrupoHorario(int idHorario);
+
+    @Query(value = "SELECT SUM(c.num_cupos) FROM cupo c WHERE c.cupo_grupo = 0",nativeQuery = true)
+    public Integer sumNumCupos();
 }
