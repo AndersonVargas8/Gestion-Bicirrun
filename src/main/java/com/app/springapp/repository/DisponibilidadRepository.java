@@ -20,6 +20,9 @@ public interface DisponibilidadRepository extends CrudRepository<Disponibilidad,
     @Query(value = "SELECT horario.id FROM disponibilidad d JOIN cupo ON cupo.id = d.cupo_id JOIN horario ON horario.id = cupo.hor_id WHERE d.num_disponibles > 0 AND d.dia = ?1 AND d.mes = ?2 GROUP BY horario.id",nativeQuery = true)
     public List<Integer> idHorariosDisponiblesDiaAndMes(int dia, int mes);
     
+    @Query(value = "SELECT horario.id FROM disponibilidad d JOIN cupo ON cupo.id = d.cupo_id JOIN horario ON horario.id = cupo.hor_id WHERE d.num_disponibles > 0 AND d.dia = ?1 AND d.mes = ?2 AND cupo.hor_id <> 4 GROUP BY horario.id",nativeQuery = true)
+    public List<Integer> idHorariosDisponiblesDiaAndMesViernes(int dia, int mes);
+    
     @Query(value = "SELECT e.id FROM disponibilidad d JOIN cupo c ON (c.id = d.cupo_id OR c.cupo_grupo = d.cupo_id) JOIN horario h ON h.id = c.hor_id JOIN estacion e ON e.id = c.est_id WHERE d.num_disponibles > 0 AND d.dia = ?1 AND d.mes = ?2 AND h.id= ?3 GROUP BY e.id",nativeQuery = true)
     public List<Integer> idEstacionesDisponiblesDiaAndMesAndHorario(int dia, int mes, int idHorario);
 

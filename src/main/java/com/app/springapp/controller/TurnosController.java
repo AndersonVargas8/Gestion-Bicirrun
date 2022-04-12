@@ -62,7 +62,7 @@ public class TurnosController {
     @GetMapping("/turnos")
     public String index(ModelMap model) {
         model.addAttribute("infoCalendar", informacionCalendar(0));
-        model.addAttribute("mesCalendar",getMesCalendar(0,0));
+        model.addAttribute("mesCalendar", getMesCalendar(0, 0));
         model = addAttributesTurnos(model);
 
         model.addAttribute("dias", generarDiasHabiles(0));
@@ -75,6 +75,8 @@ public class TurnosController {
         if (result.hasErrors()) {
             model = addAttributesTurnos(model);
 
+            model.addAttribute("infoCalendar", informacionCalendar(0));
+            model.addAttribute("mesCalendar", getMesCalendar(0, 0));
             model.addAttribute("dias", generarDiasHabiles(0));
             model.addAttribute("nuevoTurno", new Turno());
             return "turno";
@@ -103,7 +105,9 @@ public class TurnosController {
                 model.addAttribute("error", "Error: " + e.getMessage());
             }
         }
-
+        
+        model.addAttribute("infoCalendar", informacionCalendar(turno.getMes()));
+        model.addAttribute("mesCalendar",getMesCalendar(0,turno.getMes()));
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(0));
         return "turnos";
@@ -267,60 +271,68 @@ public class TurnosController {
         return estaciones;
     }
 
-    private HashMap<Integer,HashMap<String,HashMap<Integer,Integer>>> informacionCalendar(int mesActual){
-        //Si el argumento es 0, entonces se toma el valor del mes como el mes actual
+    private HashMap<Integer, HashMap<String, HashMap<Integer, Integer>>> informacionCalendar(int mesActual) {
+        // Si el argumento es 0, entonces se toma el valor del mes como el mes actual
         if (mesActual == 0) {
             Month mesActualClase = LocalDate.now().getMonth();
             mesActual = mesActualClase.getValue();
         }
-        //Obtener la fecha con un mes dado
+        // Obtener la fecha con un mes dado
         int anioActual = LocalDate.now().getYear();
         LocalDate fechaActual = LocalDate.of(anioActual, mesActual, 1);
         int diasDelMes = fechaActual.lengthOfMonth();
-        
-        //Obtener cantidad de semanas del mes
-        LocalDate ultimoDia = fechaActual.withDayOfMonth(diasDelMes);
-		int cantSemanas = ultimoDia.get(WeekFields.ISO.weekOfMonth()) + 1;
 
-        /*El HashMap contendrá n llaves las n semanas, cada llave contiene la el número de semana y su valor
-        será una lista con la info de cada día: [0] = lunes, [2] = martes,..., en cada campo se almacena un
-        HashMap con el número de día como llave y la cantidad de cupos disponibles como valor
-        */
-        HashMap<Integer,HashMap<String,HashMap<Integer,Integer>>> infoCalendario = new HashMap<>();
-        
-        
-        for(int i = 1; i <= cantSemanas; i++){
-            HashMap<String, HashMap<Integer,Integer>> mapa = new HashMap<>();
-            mapa.put("Lu",null);
-            mapa.put("Ma",null);
-            mapa.put("Mi",null);
-            mapa.put("Ju",null);
-            mapa.put("Vi",null);
-              
-            infoCalendario.put(i, mapa);  
+        // Obtener cantidad de semanas del mes
+        LocalDate ultimoDia = fechaActual.withDayOfMonth(diasDelMes);
+        int cantSemanas = ultimoDia.get(WeekFields.ISO.weekOfMonth()) + 1;
+
+        /*
+         * El HashMap contendrá n llaves las n semanas, cada llave contiene la el número
+         * de semana y su valor
+         * será un Hashmap con la info de cada día: [0] = lunes, [2] = martes,..., en
+         * cada campo se almacena un
+         * HashMap con el número de día como llave y la cantidad de cupos disponibles
+         * como valor
+         */
+        HashMap<Integer, HashMap<String, HashMap<Integer, Integer>>> infoCalendario = new HashMap<>();
+
+        for (int i = 1; i <= cantSemanas; i++) {
+            HashMap<String, HashMap<Integer, Integer>> mapa = new HashMap<>();
+            mapa.put("Lu", null);
+            mapa.put("Ma", null);
+            mapa.put("Mi", null);
+            mapa.put("Ju", null);
+            mapa.put("Vi", null);
+
+            infoCalendario.put(i, mapa);
         }
         int valorDiaActual = DayOfWeek.from(fechaActual).getValue();
         Integer totalCupos = serCupo.cantidadCupos();
 
         for (int i = 1; i <= diasDelMes; i++) {
-            if (valorDiaActual % 7 != 6 && valorDiaActual % 7 != 0) {//Si el día no es sábado ni domingo
-                //Obtener la semana a la que pertenece
+            if (valorDiaActual % 7 != 6 && valorDiaActual % 7 != 0) {// Si el día no es sábado ni domingo
+                // Obtener la semana a la que pertenece
                 LocalDate dia = fechaActual.withDayOfMonth(i);
-		        int numSemana = dia.get(WeekFields.ISO.weekOfMonth()) + 1;
-                
-                //Se obtiene el HashMap de la semana correspondiente
-                HashMap<String,HashMap<Integer,Integer>> mapaSemana = infoCalendario.get(numSemana);
-                
-                //Se agrega la info del día con sus cupos disponibles
-                HashMap<Integer,Integer> mapaDia = new HashMap<>();
+                int numSemana = dia.get(WeekFields.ISO.weekOfMonth()) + 1;
+
+                // Se obtiene el HashMap de la semana correspondiente
+                HashMap<String, HashMap<Integer, Integer>> mapaSemana = infoCalendario.get(numSemana);
+
+                // Se agrega la info del día con sus cupos disponibles
+                HashMap<Integer, Integer> mapaDia = new HashMap<>();
                 Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
-                if(num_disponibles == null)
-                    num_disponibles = totalCupos;
+                if (num_disponibles == null){
+                    if(valorDiaActual % 7 == 5)
+                        num_disponibles = serCupo.cantidadCuposViernes();
+                    else
+                        num_disponibles = totalCupos;
+                }
+                    
 
                 mapaDia.put(i, num_disponibles);
 
-                //asignar el mapa Día al día correspondiente de la semana
-                switch(valorDiaActual % 7){
+                // asignar el mapa Día al día correspondiente de la semana
+                switch (valorDiaActual % 7) {
                     case 1:
                         mapaSemana.put("Lu", mapaDia);
                         break;
@@ -338,7 +350,7 @@ public class TurnosController {
                         break;
 
                 }
-                
+
                 infoCalendario.put(numSemana, mapaSemana);
             }
             valorDiaActual++;
@@ -347,17 +359,26 @@ public class TurnosController {
         return infoCalendario;
     }
 
-    private String getMesCalendar(int anio, int mes){
+    private String getMesCalendar(int anio, int mes) {
         mes = (mes == 0) ? LocalDate.now().getMonth().getValue() : mes;
-        anio = (anio == 0) ?  LocalDate.now().getYear(): anio;
+        anio = (anio == 0) ? LocalDate.now().getYear() : anio;
 
         String mesCalendar = Integer.toString(anio) + "-";
 
-        if(mes < 10)
+        if (mes < 10)
             mesCalendar = mesCalendar.concat("0");
-        
+
         mesCalendar = mesCalendar.concat(Integer.toString(mes));
 
         return mesCalendar;
     }
+
+    @GetMapping("/actCalendario/{mes}")
+    public String actFormTurnosMes(ModelMap model, @PathVariable String mes) {
+        String[] datos = mes.split("-");
+        model.addAttribute("infoCalendar", informacionCalendar(Integer.parseInt(datos[1])));
+        model.addAttribute("mesCalendar", getMesCalendar(Integer.parseInt(datos[0]), Integer.parseInt(datos[1])));
+        return "calendario";
+    }
+
 }

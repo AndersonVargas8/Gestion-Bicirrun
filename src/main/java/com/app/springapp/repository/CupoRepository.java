@@ -1,5 +1,6 @@
 package com.app.springapp.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.app.springapp.entity.Cupo;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CupoRepository extends CrudRepository<Cupo,Integer>{
+    @Query(value = "SELECT c FROM Cupo c WHERE c.horario.id <> 4")
+    public List<Cupo> findAllViernes();
+
     public Optional<Cupo> findByEstacionAndHorario(Estacion estacion, Horario horario);
 
     public Cupo findById(Long id);
@@ -26,4 +30,10 @@ public interface CupoRepository extends CrudRepository<Cupo,Integer>{
 
     @Query(value = "SELECT SUM(c.num_cupos) FROM cupo c WHERE c.cupo_grupo = 0",nativeQuery = true)
     public Integer sumNumCupos();
+
+    @Query(value = "SELECT SUM(c.num_cupos) FROM cupo c WHERE c.cupo_grupo = 0 AND c.hor_id <> 4",nativeQuery = true)
+    public Integer sumNumCuposViernes();
+
+    @Query(value = "SELECT e.id FROM cupo c JOIN estacion e ON c.est_id = e.id WHERE c.hor_id = ?1", nativeQuery = true)
+    public List<Integer> idEstacionesPorHorario(Long idHorario);
 }

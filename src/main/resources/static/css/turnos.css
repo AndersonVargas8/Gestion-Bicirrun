@@ -17,6 +17,13 @@ thead{
     background-color: #95f795;
 }
 
+.diaDisponibleAlert{
+    background-color: #f8edba;
+}
+.diaDisponibleAlert:hover{
+    background-color: #f0dc86;
+}
+
 .diaOcupado{
     background-color: #ffcccb;
 }
@@ -38,6 +45,9 @@ thead{
 
 .diaDisponible .numeroCupos{
     color: rgb(11, 61, 11);
+}
+.diaDisponibleAlert .numeroCupos{
+    color: rgb(56, 53, 3);
 }
 .diaOcupado .numeroCupos{
     color: rgb(75, 5, 5);

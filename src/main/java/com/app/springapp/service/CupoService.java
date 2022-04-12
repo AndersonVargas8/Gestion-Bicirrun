@@ -21,6 +21,10 @@ public class CupoService implements IServicioCupo{
     public List<Cupo> obtenerTodos() {  
         return (List<Cupo>)repCupo.findAll();
     }
+    @Override
+    public List<Cupo> obtenerTodosViernes() {  
+        return (List<Cupo>)repCupo.findAllViernes();
+    }
 
     @Override
     public Cupo buscarPorHorario(Horario horario) {
@@ -55,8 +59,18 @@ public class CupoService implements IServicioCupo{
     }
 
     @Override
+    public Integer cantidadCuposViernes() {
+        return repCupo.sumNumCuposViernes();
+    }
+
+    @Override
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario) {
         return repCupo.findByEstacionAndHorario(estacion, horario).get();
+    }
+
+    @Override
+    public List<Integer> idEstacionesPorHorario(int idHorario){
+        return repCupo.idEstacionesPorHorario(new Long(idHorario));
     }
 
     

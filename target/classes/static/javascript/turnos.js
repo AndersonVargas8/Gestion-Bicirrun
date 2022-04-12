@@ -27,6 +27,12 @@ $(document).ready(function () {
         var url = "/actFormTurnosDiaMesHorario/" + dia + "/" + mes + "/" + idHorario;
         $("#carta").load(url);
     }); 
+    $("#selMesCalendar").change(function () {
+        let mes = document.getElementById("selMesCalendar").value;
+        
+        var url = "/actCalendario/" + mes;
+        $("#divCalendario").load(url);
+    }); 
 
 
 });
