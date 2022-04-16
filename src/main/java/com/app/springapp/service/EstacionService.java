@@ -16,7 +16,7 @@ public class EstacionService implements IServicioEstacion{
     
     @Override
     public List<Estacion> obtenerTodas() {
-        return (List<Estacion>)repEstacion.findAll();
+        return (List<Estacion>)repEstacion.findAllByOrderByIdAsc();
     }
 
     @Override

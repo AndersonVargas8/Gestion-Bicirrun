@@ -72,6 +72,9 @@ public class DisponibilidadService implements IServicioDisponibilidad {
 
     @Override
     public List<Horario> horariosDisponiblesDiaMes(int dia, int mes) {
+        if(dia == 0){
+            return serHorario.obtenerTodos();
+        }
         // Obtener la fecha con un mes y dia dado
         int anioActual = LocalDate.now().getYear();
         LocalDate fecha = LocalDate.of(anioActual, mes, dia);
@@ -104,6 +107,9 @@ public class DisponibilidadService implements IServicioDisponibilidad {
 
     @Override
     public List<Estacion> estacionesDisponiblesDiaMesHorario(int dia, int mes, int idHorario) {
+        if(dia == 0){
+            return serEstacion.obtenerTodas();
+        }
         List<Integer> idEstaciones = new ArrayList<>();
         if(this.cuposDisponiblesEnDia(dia, mes) == null)
             idEstaciones = serCupo.idEstacionesPorHorario(idHorario);

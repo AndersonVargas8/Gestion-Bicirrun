@@ -38,47 +38,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body p-4 d-flex justify-content-center">
-                        <form id="turnosForm" th:object="${nuevoTurno}" method="post" class="form col-lg" role="form"
-                            autocomplete="off" th:action="@{/turnos}">
-                            <!--Es necesario para poder pasar la validacion del Model-->
-                            <input class="form-control" hidden th:field="*{id}">
-                            <div class="form-group" hidden>
-                                <select th:field="*{estado}">
-                                    <option th:each="estado:${estadoTurnos.get(0)}" th:value="${estado.id}"
-                                        th:text="${estado.descripcion}">
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-lg form-label form-control-label"><b>Estudiante</b></label>
-
-                                <div class="col-lg-7 search_select_box">
-                                    <select th:field="*{estudiante}" class="w-100 border" data-live-search="true"
-                                        data-none-results-text="No se encontró {0}">
-                                        <option th:each="estudiante:${estudiantes}" th:value="${estudiante.id}"
-                                            th:text="${estudiante.nombres} + ' ' + ${estudiante.apellidos}"></option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-                            <div id="carta" th:include="formTurnos.html" th:remove="tag">
-
-                            </div>
-                            <div class="form-group row pl--1">
-                                <label class="col-lg-3 col-form-label 	form-control-label"><b>Observaciones</b></label>
-                                <div class="col-lg-9">
-                                    <textarea th:field="*{observaciones}" placeholder="Observaciones"
-                                        class="form-control"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="form-group row d-flex justify-content-center">
-                                <input type="submit" value="Guardar" class="btn btn-success" />
-                            </div>
-                        </form>
+                    <div th:include="turnos/nuevoTurno.html" class="modal-body p-4 d-flex justify-content-center">
+                        
                     </div>
                 </div>
             </div>
@@ -87,7 +48,25 @@
             Nuevo Turno
         </button>
         <!--TABLA CALENDARIO-->
-        <div id="divCalendario" th:include="calendario.html"></div>
+        <div id="divCalendario" th:include="turnos/calendario.html"></div>
+
+        <!--Modal turnos en estaciones-->
+        <div class="modal fade" tabindex="-1" role="dialog" id="modalTurnosEstaciones">
+            <div class="modal-dialog modal-xl d-flex justify-content-center" role="document">
+                <div class="modal-content" style="max-width:100%">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Turnos programados</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:include="turnos/turnosEstaciones.html" class="modal-body p-4 d-flex justify-content-center" id="divTurnosEstaciones">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!--TABLA TURNOS-->
         <br><h3>Turnos programados</h3>
         <table class="table">
