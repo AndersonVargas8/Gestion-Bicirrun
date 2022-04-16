@@ -24,6 +24,7 @@ import com.app.springapp.service.CupoService;
 import com.app.springapp.service.DisponibilidadService;
 import com.app.springapp.service.EstacionService;
 import com.app.springapp.service.HorarioService;
+import com.app.springapp.service.TurnoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,7 +56,7 @@ public class TurnosController {
     DisponibilidadService serDisponibilidad;
 
     @Autowired
-    TurnoRepository repTurno;
+    TurnoService serTurno;
 
     private List<String> meses;
 
@@ -66,7 +67,7 @@ public class TurnosController {
         model = addAttributesTurnos(model);
 
         model.addAttribute("dias", generarDiasHabiles(0));
-        return "turnos";
+        return "turnos/turnos";
     }
 
     @PostMapping("/turnos")
@@ -82,7 +83,7 @@ public class TurnosController {
             return "turno";
         } else {
             try {
-                repTurno.save(turno);
+                serTurno.guardarTurno(turno);
                 Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
                 if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
                                              // tiene cupoGrupo)
@@ -105,12 +106,12 @@ public class TurnosController {
                 model.addAttribute("error", "Error: " + e.getMessage());
             }
         }
-        
+
         model.addAttribute("infoCalendar", informacionCalendar(turno.getMes()));
-        model.addAttribute("mesCalendar",getMesCalendar(0,turno.getMes()));
+        model.addAttribute("mesCalendar", getMesCalendar(0, turno.getMes()));
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(0));
-        return "turnos";
+        return "turnos/turnos";
     }
 
     @GetMapping("/actFormTurnosMes/{mes}")
@@ -120,7 +121,7 @@ public class TurnosController {
         model.addAttribute("mesSel", getMes(mes));
 
         model.addAttribute("nuevoTurno", new Turno());
-        return "formTurnos";
+        return "turnos/formTurnos";
     }
 
     @GetMapping("/actFormTurnosDiaMes/{dia}/{mes}")
@@ -131,7 +132,7 @@ public class TurnosController {
         model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("diaSel", getDia(dia, mes));
 
-        return "formTurnos";
+        return "turnos/formTurnos";
     }
 
     @GetMapping("/actFormTurnosDiaMesHorario/{dia}/{mes}/{idHorario}")
@@ -149,7 +150,7 @@ public class TurnosController {
         model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("estaciones", getEstaciones(dia, mes, idHorario));
 
-        return "formTurnos";
+        return "turnos/formTurnos";
     }
 
     private List<String> generarMeses() {
@@ -173,7 +174,7 @@ public class TurnosController {
         model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("estudiantes", repEstudiante.findAll());
         model.addAttribute("estadoTurnos", repEstadoTurno.findAll());
-        model.addAttribute("turnos", repTurno.findAll());
+        model.addAttribute("turnos", serTurno.obtenerTodos());
         model.addAttribute("meses", generarMeses());
         model.addAttribute("mesSel", getMes(0));
         model.addAttribute("diaSel", getDia(0, 0));
@@ -321,13 +322,12 @@ public class TurnosController {
                 // Se agrega la info del día con sus cupos disponibles
                 HashMap<Integer, Integer> mapaDia = new HashMap<>();
                 Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
-                if (num_disponibles == null){
-                    if(valorDiaActual % 7 == 5)
+                if (num_disponibles == null) {
+                    if (valorDiaActual % 7 == 5)
                         num_disponibles = serCupo.cantidadCuposViernes();
                     else
                         num_disponibles = totalCupos;
                 }
-                    
 
                 mapaDia.put(i, num_disponibles);
 
@@ -378,7 +378,48 @@ public class TurnosController {
         String[] datos = mes.split("-");
         model.addAttribute("infoCalendar", informacionCalendar(Integer.parseInt(datos[1])));
         model.addAttribute("mesCalendar", getMesCalendar(Integer.parseInt(datos[0]), Integer.parseInt(datos[1])));
-        return "calendario";
+        return "turnos/calendario";
+    }
+
+    @GetMapping("/turnosEstacionesDia/{dia}/{mesAnio}")
+    public String turnosEstacionesDia(ModelMap model,@PathVariable int dia, @PathVariable String mesAnio) {
+        String[] datos = mesAnio.split("-");
+        int mes = Integer.parseInt(datos[1]);
+
+        HashMap<Integer,HashMap<Integer,List<Turno>>> totalEstaciones = new HashMap<>();
+
+        List<Estacion> estaciones = serEstacion.obtenerTodas();
+        List<Horario> horarios = serHorario.obtenerTodos();
+
+        
+        HashMap<Integer,List<Turno>> mapHorarios = new HashMap<>();
+        for(Horario horario: horarios){
+            mapHorarios.put((int)horario.getId(), null);
+        }
+
+        for(Estacion estacion:estaciones){
+            totalEstaciones.put((int)estacion.getId(),(HashMap<Integer,List<Turno>>)mapHorarios.clone());    
+        }
+
+        List<Turno> turnos = serTurno.obtenerPorDiaMes(dia, mes);
+        if(turnos == null){
+            model.addAttribute("totalEstaciones",totalEstaciones);
+            return "turnos/turnosEstaciones";
+        }
+
+        for(Turno turno: turnos){
+            HashMap<Integer,List<Turno>> mapEstacion = totalEstaciones.get((int)turno.getEstacion().getId());
+            List<Turno> listaTurnos = mapEstacion.get((int)turno.getHorario().getId());
+            if(listaTurnos == null){
+                listaTurnos = new ArrayList<>();
+            }
+            listaTurnos.add(turno);
+            mapEstacion.put((int)turno.getHorario().getId(), listaTurnos);
+            totalEstaciones.put((int)turno.getEstacion().getId(), mapEstacion);
+        }
+
+        model.addAttribute("totalEstaciones",totalEstaciones);
+        return "turnos/turnosEstaciones";
     }
 
 }

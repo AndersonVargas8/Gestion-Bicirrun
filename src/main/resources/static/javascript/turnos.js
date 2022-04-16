@@ -26,7 +26,8 @@ $(document).ready(function () {
 
         var url = "/actFormTurnosDiaMesHorario/" + dia + "/" + mes + "/" + idHorario;
         $("#carta").load(url);
-    }); 
+    });
+
     $("#selMesCalendar").change(function () {
         let mes = document.getElementById("selMesCalendar").value;
         
@@ -37,7 +38,10 @@ $(document).ready(function () {
 
 });
 
-function mensaje(num,nam){
-    alert("Este es un mensaje " +num + " " + nam);
-    $("#modalFormTurnos").modal();
+function mensaje(dia){
+    let mes = document.getElementById("selMesCalendar").value;
+    var url = "/turnosEstacionesDia/" + dia + "/" + mes;
+        $("#divTurnosEstaciones").load(url);
+    
+    $("#modalTurnosEstaciones").modal();
 }
