@@ -15,4 +15,5 @@ public interface IServicioDisponibilidad {
     public List<Horario> horariosDisponiblesDiaMes(int dia, int mes);
     public List<Estacion> estacionesDisponiblesDiaMesHorario(int dia, int mes, int idHorario);
     public List<Integer> diasSinDisponibilidadEnHorario(int mes, int idHorario);
+    public List<Disponibilidad> obtenerTodasPorDiaMes(int dia, int mes);
 }

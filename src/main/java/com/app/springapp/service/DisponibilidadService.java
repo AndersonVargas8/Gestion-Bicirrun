@@ -130,6 +130,11 @@ public class DisponibilidadService implements IServicioDisponibilidad {
         return repDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
     }
 
+    @Override
+    public List<Disponibilidad> obtenerTodasPorDiaMes(int dia, int mes) {
+        return repDisponibilidad.findByDiaAndMes(dia, mes);
+    }
+
     
 
     
