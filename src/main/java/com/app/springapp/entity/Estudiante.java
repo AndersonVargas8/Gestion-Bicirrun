@@ -29,22 +29,34 @@ public class Estudiante {
 	@NotBlank
 	private String apellidos;
 
-    @Column 
+    @Column (unique=true)
 	@NotBlank
 	private String documento;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
     private Carrera carrera;
 
+    @Column
+    private String telefono;
+
     public Estudiante() {
     }
 
-    public Estudiante(long id, String nombres, String apellidos, String documento, Carrera carrera) {
+    public Estudiante(long id, String nombres, String apellidos, String documento, Carrera carrera, String telefono) {
         this.id = id;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.documento = documento;
         this.carrera = carrera;
+        this.telefono = telefono;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public long getId() {
