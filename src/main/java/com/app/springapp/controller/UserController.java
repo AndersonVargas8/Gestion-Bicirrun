@@ -1,7 +1,5 @@
 package com.app.springapp.controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -9,7 +7,6 @@ import javax.validation.Valid;
 import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.Exception.UsernameOrIdNotFound;
 import com.app.springapp.dto.ChangePasswordForm;
-import com.app.springapp.entity.Role;
 import com.app.springapp.entity.User;
 import com.app.springapp.repository.RoleRepository;
 import com.app.springapp.service.UserService;

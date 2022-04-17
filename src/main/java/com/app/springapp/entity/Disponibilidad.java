@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 
-@Entity
+@Entity(name="disponibilidad")
 public class Disponibilidad {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

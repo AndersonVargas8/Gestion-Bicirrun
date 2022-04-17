@@ -1,0 +1,67 @@
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th colspan="5" class="bg-secondary border border-dark">
+                <div class="text-center">
+                    <input type="month" id="selMesCalendar" class="form-control d-inline" th:value="${mesCalendar}"
+                        style="max-width: 20%; ">
+
+                </div>
+            </th>
+        </tr>
+        <tr class="border border-dark">
+            <th class="border-right">Lunes</th>
+            <th class="border-right">Martes</th>
+            <th class="border-right">Miércoles</th>
+            <th class="border-right">Jueves</th>
+            <th class="border-left">Viernes </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="semana:${infoCalendar}">
+            <td class="border border-secondary diaCalendar">
+                <div th:each="diaSemana:${semana.value.get('Lu')}"
+                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
+                    th:onclick="mensaje([[${diaSemana.key}]])">
+                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
+                    <div th:text="${'Cupos: '+ diaSemana.value}" class="numeroCupos">Cupos:0</div>
+                </div>
+            </td>
+            <td class="border border-secondary diaCalendar">
+                <div th:each="diaSemana:${semana.value.get('Ma')}"
+                    th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
+                    th:onclick="mensaje([[${diaSemana.key}]])">
+                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
+                    <div th:text="${'Cupos: '+ diaSemana.value}" class="numeroCupos">Cupos:0</div>
+                </div>
+            </td>
+            <td class="border border-secondary diaCalendar">
+                <div th:each="diaSemana:${semana.value.get('Mi')}"
+                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
+                    th:onclick="mensaje([[${diaSemana.key}]])">
+                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
+                    <div th:text="${'Cupos: '+ diaSemana.value}" class="numeroCupos">Cupos:0</div>
+                </div>
+            </td>
+            <td class="border border-secondary diaCalendar">
+                <div th:each="diaSemana:${semana.value.get('Ju')}"
+                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
+                    th:onclick="mensaje([[${diaSemana.key}]])">
+                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
+                    <div th:text="${'Cupos: '+ diaSemana.value}" class="numeroCupos">Cupos:0</div>
+                </div>
+            </td>
+            <td class="border border-secondary diaCalendar">
+                <div th:each="diaSemana:${semana.value.get('Vi')}"
+                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
+                    th:onclick="mensaje([[${diaSemana.key}]])">
+                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
+                    <div th:text="${'Cupos: '+ diaSemana.value}" class="numeroCupos">Cupos:0</div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+
+</table>
+
+<script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
