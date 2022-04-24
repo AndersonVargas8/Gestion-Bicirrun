@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class EstudianteController {
@@ -47,14 +48,16 @@ public class EstudianteController {
         model.addAttribute("estudiantes", serEstudiante.obtenerTodos());
         return "estudiante";
     }
-    @GetMapping( "/eliminarEstudiante/{id}")
-    public String eliminarEstudiante(Model model,@PathVariable int id) {
-        
-        serEstudiante.eliminarEstudiante(id);
-        model.addAttribute("listTab","estudiantes");
-        model.addAttribute("estudiante",new Estudiante());
+    @PostMapping( "/eliminarEstudiante")
+    public void eliminarEstudiante(@RequestParam int id) {
+        serEstudiante.eliminarEstudiante(id); 
+    }
+    @GetMapping("/editarEstudiante/{id}")
+    public String editarEstudiante(Model model,@PathVariable int id){
+        model.addAttribute("estudiante", serEstudiante.buscarPorId(id));
         model.addAttribute("carreras", repCarrera.findAll());
         model.addAttribute("estudiantes", serEstudiante.obtenerTodos());
+        model.addAttribute("listTab","estudiantes");
         return "/estudiantes";
     }
 }

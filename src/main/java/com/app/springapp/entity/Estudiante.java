@@ -33,7 +33,7 @@ public class Estudiante {
 	@NotBlank
 	private String documento;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,  fetch= FetchType.EAGER)
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST,CascadeType.REFRESH},  fetch= FetchType.EAGER)
     private Carrera carrera;
 
     @Column
