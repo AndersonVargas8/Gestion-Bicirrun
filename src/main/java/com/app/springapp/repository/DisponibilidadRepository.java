@@ -29,4 +29,6 @@ public interface DisponibilidadRepository extends CrudRepository<Disponibilidad,
     @Query(value = "SELECT d.dia FROM disponibilidad d JOIN cupo c ON (c.id = d.cupo_id OR c.cupo_grupo = d.cupo_id) WHERE d.mes = ?1 AND c.hor_id = ?2 GROUP BY d.dia HAVING SUM(d.num_disponibles) = 0",nativeQuery = true)
     public List<Integer> diasSinDisponibilidadEnHorario(int mes, int idHorario);
 
+    public List<Disponibilidad> findByDiaAndMes(int dia, int mes);
+
 }
