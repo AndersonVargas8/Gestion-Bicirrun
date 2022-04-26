@@ -12,6 +12,7 @@ thead{
 
 .diaDisponible{
     background-color: #baf8ba;
+    cursor: pointer;
 }
 .diaDisponible:hover{
     background-color: #95f795;

@@ -383,9 +383,12 @@ public class TurnosController {
 
     @GetMapping("/turnosEstacionesDia/{dia}/{mesAnio}")
     public String turnosEstacionesDia(ModelMap model,@PathVariable int dia, @PathVariable String mesAnio) {
+        
         String[] datos = mesAnio.split("-");
         int mes = Integer.parseInt(datos[1]);
 
+        model.addAttribute("diaSelCal",dia);
+        model.addAttribute("mesSelCal", mes);
         HashMap<Integer,HashMap<Integer,List<Turno>>> totalEstaciones = new HashMap<>();
 
         List<Estacion> estaciones = serEstacion.obtenerTodas();

@@ -38,7 +38,7 @@ $(document).ready(function () {
 
 });
 
-function mensaje(dia){
+function verDia(dia){
     let mes = document.getElementById("selMesCalendar").value;
     var url = "/turnosEstacionesDia/" + dia + "/" + mes;
         $("#divTurnosEstaciones").load(url);
