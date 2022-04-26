@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-public class Turno {
+public class Turno implements Comparable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -154,6 +154,32 @@ public class Turno {
                 ", estudiante='" + getEstudiante() + "'" +
                 ", horario='" + getHorario() + "'" +
                 "}";
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Turno turno = (Turno) o;
+
+        if(turno.getMes() == this.mes){
+            if(turno.dia == this.dia){
+                if(this.horario.getId() > turno.getHorario().getId())
+                    return 1;
+                
+                if(this.horario.getId() < turno.getHorario().getId())
+                    return -1;
+                
+                return 0;
+            }
+            if(this.dia > turno.getDia())
+                return 1;
+
+            return -1;
+        }
+
+        if(this.mes > turno.getMes())
+            return 1;
+
+        return -1;
     }
 
 }

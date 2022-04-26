@@ -1,7 +1,7 @@
 package com.app.springapp.service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Turno;
@@ -39,6 +39,7 @@ public class TurnoService implements IServicioTurno{
     @Override
     public List<Turno> obtenerPorEstudiante(Estudiante estudiante) {
         List<Turno> respuesta = repTurno.findByEstudiante(estudiante);
+        Collections.sort(respuesta);
         return respuesta;
     }
 }
