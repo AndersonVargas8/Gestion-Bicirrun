@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded",()=>{
                 jsPDF:{
                     unit:"in",
                     format:"a4",
-                    orientation:'landscape '
+                    orientation:'landscape'
                 },
                 
             })
