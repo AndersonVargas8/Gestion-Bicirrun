@@ -1,0 +1,33 @@
+<table class="table border border-2" id="tablaHorario">
+    <input th:value="${estudiante.nombres}+${estudiante.apellidos}" hidden id="nombrePDF"></input>
+   
+    <thead>
+        <tr >
+            <th class="border-0 pb-0" colspan="5" th:text="'Nombre: '+${estudiante.nombres}+' '+${estudiante.apellidos}">
+            </th>
+        </tr>
+        <tr>
+            <th class="border-0 pt-0" colspan="5" th:text="'Teléfono: '+${estudiante.telefono}">
+            </th>
+        </tr>
+        <tr>            
+            <th class="border" scope="col">Estación</th>
+            <th class="border" scope="col">Fecha</th>
+            <th class="border" scope="col">Hora</th>
+            <th class="border" scope="col">Valor horas</th>
+            <th class="border" scope="col">Observaciones</th>
+            <th class="border" scope="col" width="150px">Firma</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="turno:${turnos}">
+            <td class="border" th:text="${turno.estacion.nombre}"></td>
+            <td class="border" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${anio}"></td>
+            <td class="border" th:text="${turno.horario.descripcion}"></td>
+            <td class="border" th:text="${turno.horario.valor_horas}"></td>
+            <td class="border" th:text="${turno.observaciones}"></td>
+            <td class="border" ></td>
+        </tr>
+    </tbody>
+    
+</table>

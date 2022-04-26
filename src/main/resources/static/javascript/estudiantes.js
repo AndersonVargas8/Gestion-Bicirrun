@@ -24,4 +24,38 @@ let table = new DataTable('#userList', {
 });
 
 
+function horario(estudiante){
+    var url = "/estudiantes/horarioEstudiante/" + estudiante.id;
+        $("#divHorarioEstudiante").load(url);
+    
+    $("#ModalEstudiante").modal();
+}
 
+document.addEventListener("DOMContentLoaded",()=>{
+    const $boton = document.querySelector("#botonImprimir");
+    $boton.addEventListener("click",()=>{
+        const $elementoParaConvertir = document.getElementById("tablaHorario");
+        html2pdf()
+            .set({
+                margin:1,
+                filename:document.getElementById("nombrePDF").value+"horario.pdf",
+                image:{
+                    type:'jpeg',
+                    quality:0.98
+                },
+                html2canvas:{
+                    scale:3,
+                    letterRendering:true,
+                },
+                jsPDF:{
+                    unit:"in",
+                    format:"a4",
+                    orientation:'landscape '
+                },
+                
+            })
+            .from($elementoParaConvertir)
+            .save()
+            .catch(err => console.log(err));
+    });
+});

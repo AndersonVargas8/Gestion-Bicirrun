@@ -31,7 +31,7 @@ public class EstudianteService implements IServicioEstudiante {
     }
 
     @Override
-    public Estudiante buscarPorId(int id) {
+    public Estudiante buscarPorId(Long id) {
         return repEstudiante.findById(new Long(id)).get();
     }
     
