@@ -1,14 +1,14 @@
 <div class="modal-body p-4  justify-content-center" th:if="${totalEstaciones != null}">
 
-    <!-- <div th:each="turnos: ${totalEstaciones}">
-        <p th:text="${turnos}"></p>
+    <!-- <div th:each="turnos: ${totalDispEstaciones}">
+        <p th:text="${totalDispEstaciones}"></p>
     </div> -->
     
     <!--CyT-->
-    <table class="table">
-        <thead class="thead-dark">
+    <table class="table border border-dark">
+        <thead class="theadCyT">
             <tr>
-                <th colspan="4" class="bg-secondary border border-dark">
+                <th colspan="4" class="bg bg-dark tableCyT border border-dark">
                     <div class="text-center">
                         <h4>CyT</h4>
 
@@ -29,17 +29,41 @@
                 <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(1).get(2)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(2)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(1).get(2)}" class="border-top">
                 <td>7:00 AM - 10:00 AM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(1).get(3)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(2)}">
+                <td>7:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(1).get(3)}" >
                 <td>10:00 AM - 1:00 PM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(3)}">
+                <td>10:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
             </tr>
             <tr th:each="turno: ${totalEstaciones.get(1).get(4)}">
                 <td>1:00 PM - 4:00 PM</td>
@@ -47,14 +71,20 @@
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(3)}">
+                <td>1:00 PM - 4:00 PM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </tbody>
     </table>
     <br>
     <!--Calle 45-->
-    <table class="table">
-        <thead class="thead-dark">
+    <table class="table border border-dark">
+        <thead class="thead45">
             <tr>
-                <th colspan="4" class="bg-secondary border border-dark">
+                <th colspan="4" class="bg-secondary border border-dark table45">
                     <div class="text-center">
                         <h4>Calle 45</h4>
 
@@ -72,20 +102,44 @@
             <tr th:each="turno: ${totalEstaciones.get(2).get(1)}">
                 <td>6:30 AM - 10:00 AM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
+                <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(2).get(2)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(2)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(2).get(2)}" class="border-top">
                 <td>7:00 AM - 10:00 AM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(2).get(3)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(2)}">
+                <td>7:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(2).get(3)}" >
                 <td>10:00 AM - 1:00 PM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(3)}">
+                <td>10:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
             </tr>
             <tr th:each="turno: ${totalEstaciones.get(2).get(4)}">
                 <td>1:00 PM - 4:00 PM</td>
@@ -93,14 +147,20 @@
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(3)}">
+                <td>1:00 PM - 4:00 PM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </tbody>
     </table>
     <br>
     <!--Calle 26-->
-    <table class="table">
-        <thead class="thead-dark">
+    <table class="table border border-dark">
+        <thead class="thead26">
             <tr>
-                <th colspan="4" class="bg-secondary border border-dark">
+                <th colspan="4" class="bg-secondary border border-dark table26">
                     <div class="text-center">
                         <h4>Calle 26</h4>
 
@@ -115,17 +175,47 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(3).get(2)}">
+            <tr th:each="turno: ${totalEstaciones.get(3).get(1)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
+                <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
+                <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(2)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(3).get(2)}" class="border-top">
                 <td>7:00 AM - 10:00 AM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(3).get(3)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(2)}">
+                <td>7:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(3).get(3)}" >
                 <td>10:00 AM - 1:00 PM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(3)}">
+                <td>10:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
             </tr>
             <tr th:each="turno: ${totalEstaciones.get(3).get(4)}">
                 <td>1:00 PM - 4:00 PM</td>
@@ -133,14 +223,20 @@
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(3)}">
+                <td>1:00 PM - 4:00 PM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </tbody>
     </table>
     <br>
     <!--Uriel-->
-    <table class="table">
-        <thead class="thead-dark">
+    <table class="table border border-dark">
+        <thead class="theadUriel">
             <tr>
-                <th colspan="4" class="bg-secondary border border-dark">
+                <th colspan="4" class="bg-secondary border border-dark tableUriel">
                     <div class="text-center">
                         <h4>Uriel</h4>
 
@@ -155,17 +251,47 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(4).get(2)}">
+            <tr th:each="turno: ${totalEstaciones.get(4).get(1)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
+                <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
+                <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(2)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(4).get(2)}" class="border-top">
                 <td>7:00 AM - 10:00 AM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(4).get(3)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(2)}">
+                <td>7:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(4).get(3)}" >
                 <td>10:00 AM - 1:00 PM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(3)}">
+                <td>10:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
             </tr>
             <tr th:each="turno: ${totalEstaciones.get(4).get(4)}">
                 <td>1:00 PM - 4:00 PM</td>
@@ -173,13 +299,19 @@
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(3)}">
+                <td>1:00 PM - 4:00 PM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </tbody>
     </table><br>
     <!--Calle 53-->
-    <table class="table">
-        <thead class="thead-dark">
+    <table class="table border border-dark">
+        <thead class="thead53">
             <tr>
-                <th colspan="4" class="bg-secondary border border-dark">
+                <th colspan="4" class="bg-secondary border border-dark table53">
                     <div class="text-center">
                         <h4>Calle 53</h4>
 
@@ -194,17 +326,47 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(5).get(2)}">
-                <td>7:00 AM - 10:00 AM</td>
+            <tr th:each="turno: ${totalEstaciones.get(5).get(1)}">
+                <td>6:30 AM - 10:00 AM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"  style="max-width: 35%;"></td>
+                <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
-            <tr th:each="turno: ${totalEstaciones.get(5).get(3)}">
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(2)}">
+                <td>6:30 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(5).get(2)}" class="border-top">
+                <td>7:00 AM - 10:00 AM</td>
+                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
+                <td th:text="${turno.observaciones}"></td>
+                <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(2)}">
+                <td>7:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
+            </tr>
+            <tr th:each="turno: ${totalEstaciones.get(5).get(3)}" >
                 <td>10:00 AM - 1:00 PM</td>
                 <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
+            </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(3)}">
+                <td>10:00 AM - 10:00 AM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bg bg-dark">
+                <td colspan="4" class="p-0 pt-1"></td>
             </tr>
             <tr th:each="turno: ${totalEstaciones.get(5).get(4)}">
                 <td>1:00 PM - 4:00 PM</td>
@@ -212,8 +374,21 @@
                 <td th:text="${turno.observaciones}"></td>
                 <td th:text="${turno.estado.descripcion}"></td>
             </tr>
+            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(3)}">
+                <td>1:00 PM - 4:00 PM</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </tbody>
     </table>
 
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+        <link href="../static/css/turnos.css" th:href="@{/css/turnos.css}" rel="stylesheet" />
 
