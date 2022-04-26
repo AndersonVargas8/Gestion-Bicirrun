@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         html2pdf()
             .set({
                 margin:1,
-                filename:document.getElementById("nombrePDF").value+"horario.pdf",
+                filename:document.getElementById("nombrePDF").value+"-horario.pdf",
                 image:{
                     type:'jpeg',
                     quality:0.98
