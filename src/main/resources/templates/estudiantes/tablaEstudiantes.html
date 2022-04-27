@@ -6,7 +6,7 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Carrera</th>
                 <th scope="col">Teléfono</th>
-                <th scope="col">Modificar</th>
+                <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -16,7 +16,7 @@
                 <td th:text="${estudiante.carrera.descripcion}"></td>
                 <td th:text="${estudiante.telefono}"></td>
                 <td >
-                    <button  type="button" class="btn btn-secondary m-1 text-white fa fa-calendar-check-o" th:onclick="horario([[${estudiante}]])"></button>
+                    <button  type="button" class="btn btn-secondary m-1 text-white fa fa-calendar-check" th:onclick="horario([[${estudiante}]])"></button>
                     <button  type="button" class="btn btn-info m-1 text-white fa fa-pencil " ></button>  
                     <button  type="button" class="btn btn-danger m-1 text-white fa fa-trash" ></button>
                 </td>

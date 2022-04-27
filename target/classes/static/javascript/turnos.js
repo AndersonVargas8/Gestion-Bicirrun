@@ -45,3 +45,25 @@ function verDia(dia){
     
     $("#modalTurnosEstaciones").modal();
 }
+
+function eliminarTurno(){
+    
+    let id = $("#turnoIdHiddenInput").val();
+    
+    $('#deleteModalTurno').modal('hide');
+    window.location = "/eliminarTurno/" + id;
+    
+}
+
+function abrirVerdia(){
+    $("#modalTurnosEstaciones").modal();
+}
+
+function abrirConfirm(id){
+    $('#deleteModalTurno').modal();
+    
+	$("#turnoIdHiddenInput").val(id);
+}
+function cerrarConfirm(){
+    $('#deleteModalTurno').modal('hide');
+}

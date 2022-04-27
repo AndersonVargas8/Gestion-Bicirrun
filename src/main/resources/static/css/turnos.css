@@ -102,3 +102,15 @@ td div{
     background-color: rgb(143, 117, 5);
     color: white;
 }
+
+.btnEliminarTurno{
+    cursor: pointer;
+}
+
+.btnEliminarTurno span{
+    color:crimson;
+}
+.btnEliminarTurno span:hover{
+    color:red;
+    font-size: 22px;
+}

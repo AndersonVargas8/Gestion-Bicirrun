@@ -17,6 +17,11 @@ public class TurnoService implements IServicioTurno{
     TurnoRepository repTurno;
 
     @Override
+    public Turno obtenerPorId(long id){
+        return repTurno.findById(id).get();
+    }
+
+    @Override
     public List<Turno> obtenerTodos() {
         return (List<Turno>)repTurno.findAll();
     }
@@ -41,5 +46,10 @@ public class TurnoService implements IServicioTurno{
         List<Turno> respuesta = repTurno.findByEstudiante(estudiante);
         Collections.sort(respuesta);
         return respuesta;
+    }
+
+    @Override
+    public void eliminarTurno(Turno turno) {
+        repTurno.delete(turno);
     }
 }
