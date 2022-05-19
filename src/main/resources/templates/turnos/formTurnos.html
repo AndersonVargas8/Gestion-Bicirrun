@@ -34,7 +34,10 @@
     <div class="form-group row">
         <label class="col-lg-3 col-form-label 	form-control-label"><b>Estación</b></label>
         <div class="col-lg-9">
-            <select th:field="${nuevoTurno.estacion}" id="selEstacion" class="btn dropdown-toggle border">
+            <select th:field="${nuevoTurno.estacion}" id="selEstacion" class="btn dropdown-toggle border" required>
+                <option th:if="${estacionSel == null}" th:value="${null}">Seleccione</option>
+                <option th:if="${estacionSel != null}" th:value="${estacionSel.id}" th:text="${estacionSel.nombre}">Dia seleccionado
+                </option>
                 <option th:each="estacion:${estaciones}" th:value="${estacion.id}" th:text="${estacion.nombre}">
                 </option>
             </select>

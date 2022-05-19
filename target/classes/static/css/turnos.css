@@ -35,7 +35,9 @@ thead{
 .numeroDia{
     text-align: right;
     padding-right: 5%;
-    font-size:20px;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    font-size:25px;
 }
 
 .numeroCupos{
@@ -113,4 +115,17 @@ td div{
 .btnEliminarTurno span:hover{
     color:red;
     font-size: 22px;
+}
+
+.btnAgregarTurno{
+    cursor: pointer;
+}
+
+.btnAgregarTurno span{
+    color:forestgreen;  
+    font-size: 20px;
+}
+.btnAgregarTurno span:hover{
+    color:green;
+    font-size: 21px;
 }

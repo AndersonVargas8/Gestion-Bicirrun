@@ -140,13 +140,17 @@ public class TurnosController {
         return "turnos/formTurnos";
     }
 
-    @GetMapping("/actFormTurnosDiaMes/{dia}/{mes}")
-    public String actFormTurnosDiaMes(ModelMap model, @PathVariable int dia, @PathVariable int mes) {
+    @GetMapping("/actFormTurnosDiaMes/{dia}/{mes}/{idHorario}")
+    public String actFormTurnosDiaMes(ModelMap model, @PathVariable int dia, @PathVariable int mes,
+            @PathVariable int idHorario) {
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(mes));
         model.addAttribute("mesSel", getMes(mes));
         model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("diaSel", getDia(dia, mes));
+
+        if (idHorario != 0)
+            model.addAttribute("horSel", getHorario(idHorario));
 
         return "turnos/formTurnos";
     }
@@ -166,6 +170,19 @@ public class TurnosController {
         model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("estaciones", getEstaciones(dia, mes, idHorario));
 
+        return "turnos/formTurnos";
+    }
+
+    @GetMapping("/crearTurnoDefinido/{mes}/{dia}/{idHorario}/{idEstacion}")
+    public String crearTurnoDefinido(@PathVariable int mes, @PathVariable int dia, @PathVariable int idHorario,
+            @PathVariable int idEstacion, ModelMap model) {
+        model = addAttributesTurnos(model);
+        
+        model.addAttribute("dias", generarDiasHabiles(0));
+        model.addAttribute("mesSel", getMes(mes));
+        model.addAttribute("diaSel", getDia(dia, mes));
+        model.addAttribute("horSel", getHorario(idHorario));
+        model.addAttribute("estacionSel", serEstacion.buscarPorId(idEstacion));
         return "turnos/formTurnos";
     }
 
@@ -231,6 +248,16 @@ public class TurnosController {
     private HashMap<Integer, String> generarDiasDisponibles(int mes, int idHorario) {
         HashMap<Integer, String> diasHabiles = this.generarDiasHabiles(mes);
         List<Integer> diasOcupados = serDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
+
+        HashMap<Integer, String> diasHabilesCopy = (HashMap<Integer, String>) diasHabiles.clone();
+        // Quitar los viernes si el horario es de 1PM
+        if (idHorario == 4) {
+            for (Integer diaHabil : diasHabilesCopy.keySet()) {
+                if (diasHabilesCopy.get(diaHabil).equals("Viernes")) {
+                    diasHabiles.remove(diaHabil);
+                }
+            }
+        }
 
         for (Integer dia : diasOcupados) {
             diasHabiles.remove(dia);
@@ -459,9 +486,11 @@ public class TurnosController {
 
         List<Disponibilidad> disponibilidades = serDisponibilidad.obtenerTodasPorDiaMes(dia, mes);
 
-        if (disponibilidades == null) {
-            model.addAttribute("totalDispEstaciones", totalDispEstaciones);
-            return model;
+        if (disponibilidades == null || disponibilidades.size() == 0) {
+            serDisponibilidad.actualizarCuposDia(dia, mes);
+            disponibilidades = serDisponibilidad.obtenerTodasPorDiaMes(dia, mes);
+            // model.addAttribute("totalDispEstaciones", totalDispEstaciones);
+            // return model;
         }
 
         for (Disponibilidad disponibilidad : disponibilidades) {

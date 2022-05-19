@@ -11,7 +11,7 @@ $(document).ready(function () {
         let mes = document.getElementById("selMes").value;
         let dia = document.getElementById("selDia").value;
         let idHorario = document.getElementById("selHorario").value;
-        var url = "/actFormTurnosDiaMes/" + dia + "/" + mes;
+        var url = "/actFormTurnosDiaMes/" + dia + "/" + mes + "/" + idHorario;
         $("#carta").load(url);
     });
 
@@ -66,4 +66,11 @@ function abrirConfirm(id){
 }
 function cerrarConfirm(){
     $('#deleteModalTurno').modal('hide');
+}
+
+function abrirNuevoTurno(mes, dia, idHorario, idEstacion){
+    var url = "/crearTurnoDefinido/" + mes + "/" + dia + "/" + idHorario + "/" + idEstacion;
+    $("#carta").load(url);
+    $("#modalTurnosEstaciones").modal('hide');
+    $("#modalFormTurnos").modal();
 }

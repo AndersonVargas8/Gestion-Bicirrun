@@ -14,7 +14,8 @@
 
         <div class="col-lg-7 search_select_box">
             <select th:field="*{estudiante}" class="w-100 border" data-live-search="true"
-                data-none-results-text="No se encontró {0}">
+                data-none-results-text="No se encontró {0}" required>
+                <option th:value="${null}">Seleccione</option>
                 <option th:each="estudiante:${estudiantes}" th:value="${estudiante.id}"
                     th:text="${estudiante.nombres} + ' ' + ${estudiante.apellidos}"></option>
             </select>
