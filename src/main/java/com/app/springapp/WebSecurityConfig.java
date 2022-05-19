@@ -23,16 +23,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers(resources).permitAll()
-                .antMatchers("/", "/index", "/prueba", "/turnos", "/inicio", "/estudiantes","/eliminarEstudiante/{id}","/editarEstudiante/{id}", "/actFormTurnosMes/{mes}",
-                        "/actFormTurnosDiaMes/{dia}/{mes}",
-                        "/actFormTurnosDiaMesHorario/{dia}/{mes}/{idHorario}","/actCalendario/{mes}","/turnosEstacionesDia/{dia}/{mesAnio}")
+                .antMatchers("/", "/login")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/estudiantes")
+                .defaultSuccessUrl("/turnos")
                 .failureUrl("/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
