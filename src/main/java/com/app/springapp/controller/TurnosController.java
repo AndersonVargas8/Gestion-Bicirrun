@@ -71,7 +71,7 @@ public class TurnosController {
     }
 
     @PostMapping("/turnos")
-    public String createUser(@Valid @ModelAttribute("turno") Turno turno, BindingResult result, ModelMap model) {
+    public String crearTurno(@Valid @ModelAttribute("turno") Turno turno, BindingResult result, ModelMap model) {
 
         if (result.hasErrors()) {
             model = addAttributesTurnos(model);
@@ -111,7 +111,23 @@ public class TurnosController {
         model.addAttribute("mesCalendar", getMesCalendar(0, turno.getMes()));
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(0));
-        return "turnos/turnos";
+        return "redirect:/turnos";
+    }
+
+    @GetMapping("/eliminarTurno/{id}")
+    public String eliminarTurno(@PathVariable int id, ModelMap model) {
+        Turno turno = serTurno.obtenerPorId(id);
+        serTurno.eliminarTurno(turno);
+        Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
+        if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
+                                     // tiene cupoGrupo)
+            cupo = serCupo.buscarPorId(cupo.getCupoGrupo()); // asigna el cupoGrupo al cupo
+
+        Disponibilidad disponibilidad = serDisponibilidad.consultarDisponibilidadMesDia(turno.getMes(),
+                turno.getDia(), cupo);
+        disponibilidad.setNum_disponibles(disponibilidad.getNum_disponibles() + 1);
+        serDisponibilidad.guardarDisponibilidad(disponibilidad);
+        return "redirect:/turnos";
     }
 
     @GetMapping("/actFormTurnosMes/{mes}")
@@ -124,13 +140,17 @@ public class TurnosController {
         return "turnos/formTurnos";
     }
 
-    @GetMapping("/actFormTurnosDiaMes/{dia}/{mes}")
-    public String actFormTurnosDiaMes(ModelMap model, @PathVariable int dia, @PathVariable int mes) {
+    @GetMapping("/actFormTurnosDiaMes/{dia}/{mes}/{idHorario}")
+    public String actFormTurnosDiaMes(ModelMap model, @PathVariable int dia, @PathVariable int mes,
+            @PathVariable int idHorario) {
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(mes));
         model.addAttribute("mesSel", getMes(mes));
         model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("diaSel", getDia(dia, mes));
+
+        if (idHorario != 0)
+            model.addAttribute("horSel", getHorario(idHorario));
 
         return "turnos/formTurnos";
     }
@@ -150,6 +170,19 @@ public class TurnosController {
         model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("estaciones", getEstaciones(dia, mes, idHorario));
 
+        return "turnos/formTurnos";
+    }
+
+    @GetMapping("/crearTurnoDefinido/{mes}/{dia}/{idHorario}/{idEstacion}")
+    public String crearTurnoDefinido(@PathVariable int mes, @PathVariable int dia, @PathVariable int idHorario,
+            @PathVariable int idEstacion, ModelMap model) {
+        model = addAttributesTurnos(model);
+        
+        model.addAttribute("dias", generarDiasHabiles(0));
+        model.addAttribute("mesSel", getMes(mes));
+        model.addAttribute("diaSel", getDia(dia, mes));
+        model.addAttribute("horSel", getHorario(idHorario));
+        model.addAttribute("estacionSel", serEstacion.buscarPorId(idEstacion));
         return "turnos/formTurnos";
     }
 
@@ -215,6 +248,16 @@ public class TurnosController {
     private HashMap<Integer, String> generarDiasDisponibles(int mes, int idHorario) {
         HashMap<Integer, String> diasHabiles = this.generarDiasHabiles(mes);
         List<Integer> diasOcupados = serDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
+
+        HashMap<Integer, String> diasHabilesCopy = (HashMap<Integer, String>) diasHabiles.clone();
+        // Quitar los viernes si el horario es de 1PM
+        if (idHorario == 4) {
+            for (Integer diaHabil : diasHabilesCopy.keySet()) {
+                if (diasHabilesCopy.get(diaHabil).equals("Viernes")) {
+                    diasHabiles.remove(diaHabil);
+                }
+            }
+        }
 
         for (Integer dia : diasOcupados) {
             diasHabiles.remove(dia);
@@ -382,90 +425,90 @@ public class TurnosController {
     }
 
     @GetMapping("/turnosEstacionesDia/{dia}/{mesAnio}")
-    public String turnosEstacionesDia(ModelMap model,@PathVariable int dia, @PathVariable String mesAnio) {
-        
+    public String turnosEstacionesDia(ModelMap model, @PathVariable int dia, @PathVariable String mesAnio) {
+
         String[] datos = mesAnio.split("-");
         int mes = Integer.parseInt(datos[1]);
 
-        model.addAttribute("diaSelCal",dia);
+        model.addAttribute("diaSelCal", dia);
         model.addAttribute("mesSelCal", mes);
-        HashMap<Integer,HashMap<Integer,List<Turno>>> totalEstaciones = new HashMap<>();
+        HashMap<Integer, HashMap<Integer, List<Turno>>> totalEstaciones = new HashMap<>();
 
         List<Estacion> estaciones = serEstacion.obtenerTodas();
         List<Horario> horarios = serHorario.obtenerTodos();
 
-        
-        HashMap<Integer,List<Turno>> mapHorarios = new HashMap<>();
-        for(Horario horario: horarios){
-            mapHorarios.put((int)horario.getId(), null);
+        HashMap<Integer, List<Turno>> mapHorarios = new HashMap<>();
+        for (Horario horario : horarios) {
+            mapHorarios.put((int) horario.getId(), null);
         }
 
-        for(Estacion estacion:estaciones){
-            totalEstaciones.put((int)estacion.getId(),(HashMap<Integer,List<Turno>>)mapHorarios.clone());    
+        for (Estacion estacion : estaciones) {
+            totalEstaciones.put((int) estacion.getId(), (HashMap<Integer, List<Turno>>) mapHorarios.clone());
         }
         model = disponibilidadEstacionesDia(model, dia, mes);
 
         List<Turno> turnos = serTurno.obtenerPorDiaMes(dia, mes);
-        if(turnos == null){
-            model.addAttribute("totalEstaciones",totalEstaciones);
+        if (turnos == null) {
+            model.addAttribute("totalEstaciones", totalEstaciones);
             return "turnos/turnosEstaciones";
         }
 
-        for(Turno turno: turnos){
-            HashMap<Integer,List<Turno>> mapEstacion = totalEstaciones.get((int)turno.getEstacion().getId());
-            List<Turno> listaTurnos = mapEstacion.get((int)turno.getHorario().getId());
-            if(listaTurnos == null){
+        for (Turno turno : turnos) {
+            HashMap<Integer, List<Turno>> mapEstacion = totalEstaciones.get((int) turno.getEstacion().getId());
+            List<Turno> listaTurnos = mapEstacion.get((int) turno.getHorario().getId());
+            if (listaTurnos == null) {
                 listaTurnos = new ArrayList<>();
             }
             listaTurnos.add(turno);
-            mapEstacion.put((int)turno.getHorario().getId(), listaTurnos);
-            totalEstaciones.put((int)turno.getEstacion().getId(), mapEstacion);
+            mapEstacion.put((int) turno.getHorario().getId(), listaTurnos);
+            totalEstaciones.put((int) turno.getEstacion().getId(), mapEstacion);
         }
 
-        model.addAttribute("totalEstaciones",totalEstaciones);
+        model.addAttribute("totalEstaciones", totalEstaciones);
         return "turnos/turnosEstaciones";
     }
 
     public ModelMap disponibilidadEstacionesDia(ModelMap model, int dia, int mes) {
-        
-        HashMap<Integer,HashMap<Integer,List<Integer>>> totalDispEstaciones = new HashMap<>();
+
+        HashMap<Integer, HashMap<Integer, List<Integer>>> totalDispEstaciones = new HashMap<>();
 
         List<Estacion> estaciones = serEstacion.obtenerTodas();
         List<Horario> horarios = serHorario.obtenerTodos();
 
-        
-        HashMap<Integer,List<Integer>> mapHorarios = new HashMap<>();
-        for(Horario horario: horarios){
-            mapHorarios.put((int)horario.getId(), null);
+        HashMap<Integer, List<Integer>> mapHorarios = new HashMap<>();
+        for (Horario horario : horarios) {
+            mapHorarios.put((int) horario.getId(), null);
         }
 
-        for(Estacion estacion:estaciones){
-            totalDispEstaciones.put((int)estacion.getId(),(HashMap<Integer,List<Integer>>)mapHorarios.clone());    
+        for (Estacion estacion : estaciones) {
+            totalDispEstaciones.put((int) estacion.getId(), (HashMap<Integer, List<Integer>>) mapHorarios.clone());
         }
 
         List<Disponibilidad> disponibilidades = serDisponibilidad.obtenerTodasPorDiaMes(dia, mes);
 
-        if(disponibilidades == null){
-            model.addAttribute("totalDispEstaciones",totalDispEstaciones);
-            return model;
+        if (disponibilidades == null || disponibilidades.size() == 0) {
+            serDisponibilidad.actualizarCuposDia(dia, mes);
+            disponibilidades = serDisponibilidad.obtenerTodasPorDiaMes(dia, mes);
+            // model.addAttribute("totalDispEstaciones", totalDispEstaciones);
+            // return model;
         }
 
-        for(Disponibilidad disponibilidad: disponibilidades){
-            HashMap<Integer,List<Integer>> mapEstacion = totalDispEstaciones.get((int)disponibilidad.getCupo().getEstacion().getId());
+        for (Disponibilidad disponibilidad : disponibilidades) {
+            HashMap<Integer, List<Integer>> mapEstacion = totalDispEstaciones
+                    .get((int) disponibilidad.getCupo().getEstacion().getId());
 
-            
-            List<Integer> listaTurnos = mapEstacion.get((int)disponibilidad.getCupo().getHorario().getId());
-            if(listaTurnos == null){
+            List<Integer> listaTurnos = mapEstacion.get((int) disponibilidad.getCupo().getHorario().getId());
+            if (listaTurnos == null) {
                 listaTurnos = new ArrayList<>();
             }
-            for(int i = 0; i < disponibilidad.getNum_disponibles(); i++)
+            for (int i = 0; i < disponibilidad.getNum_disponibles(); i++)
                 listaTurnos.add(1);
 
-            mapEstacion.put((int)disponibilidad.getCupo().getHorario().getId(), listaTurnos);
-            totalDispEstaciones.put((int)disponibilidad.getCupo().getEstacion().getId(), mapEstacion);
+            mapEstacion.put((int) disponibilidad.getCupo().getHorario().getId(), listaTurnos);
+            totalDispEstaciones.put((int) disponibilidad.getCupo().getEstacion().getId(), mapEstacion);
         }
 
-        model.addAttribute("totalDispEstaciones",totalDispEstaciones);
+        model.addAttribute("totalDispEstaciones", totalDispEstaciones);
         return model;
     }
 

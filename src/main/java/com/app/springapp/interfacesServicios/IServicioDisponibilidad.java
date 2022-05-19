@@ -8,6 +8,7 @@ import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 
 public interface IServicioDisponibilidad {
+    public Disponibilidad obtenerPorId(int id);
     public int guardarDisponibilidad(Disponibilidad disponibilidad);
     public Disponibilidad consultarDisponibilidadMesDia(int mes, int dia, Cupo cupo);
     public Integer cuposDisponiblesEnDia(int dia, int mes);

@@ -135,6 +135,11 @@ public class DisponibilidadService implements IServicioDisponibilidad {
         return repDisponibilidad.findByDiaAndMes(dia, mes);
     }
 
+    @Override
+    public Disponibilidad obtenerPorId(int id) {
+       return repDisponibilidad.findById(id).get();
+    }
+
     
 
     

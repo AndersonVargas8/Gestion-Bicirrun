@@ -10,4 +10,6 @@ public interface IServicioTurno {
     public List<Turno> obtenerPorDiaMes(int dia, int mes);
     public int guardarTurno(Turno turno);
     public List<Turno> obtenerPorEstudiante(Estudiante estudiante);
+    public void eliminarTurno(Turno turno);
+    public Turno obtenerPorId(long id);
 }
