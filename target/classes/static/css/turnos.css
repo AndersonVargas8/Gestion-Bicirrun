@@ -1,3 +1,4 @@
+
 .search_select_box button{
     background-color: white !important;
 }
@@ -6,63 +7,17 @@ select{
     cursor:pointer;
 }
 
-thead{
+thead,tbody{
     text-align: center;
+    border: none;
 }
 
-.diaDisponible{
-    background-color: #baf8ba;
-    cursor: pointer;
-}
-.diaDisponible:hover{
-    background-color: #95f795;
-}
-
-.diaDisponibleAlert{
-    background-color: #f8edba;
-}
-.diaDisponibleAlert:hover{
-    background-color: #f0dc86;
-}
 
 .diaOcupado{
     background-color: #ffcccb;
 }
 .diaOcupado:hover{
     background-color: #f8a5a4;
-}
-
-.numeroDia{
-    text-align: right;
-    padding-right: 5%;
-    padding-top: 5%;
-    padding-bottom: 5%;
-    font-size:25px;
-}
-
-.numeroCupos{
-    text-align: center;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-.diaDisponible .numeroCupos{
-    color: rgb(11, 61, 11);
-}
-.diaDisponibleAlert .numeroCupos{
-    color: rgb(56, 53, 3);
-}
-.diaOcupado .numeroCupos{
-    color: rgb(75, 5, 5);
-}
-
-.diaCalendar{
-    padding: 0 !important;
-    /* border: 1px solid!important; */
-}
-
-td div{
-    padding: 5px;
 }
 
 .tableCyT{
@@ -128,4 +83,94 @@ td div{
 .btnAgregarTurno span:hover{
     color:green;
     font-size: 21px;
+}
+
+.calendario{
+    padding: 0.2%;
+    background-color: darkgray;
+    border-radius: 4px;
+    border: none;
+}
+
+
+.tituloMes .banner{
+    padding: 1px !important;
+    background-color: darkgray;
+    border-radius: 2% 0 0 0;
+    
+}
+
+.tituloMes .banner-content{
+    border-radius: 5px 5px 0 0;
+    padding: 1%;
+    background-color:#6c757d;
+}
+
+.tituloDias td{
+    padding: 1px !important;
+    background-color: darkgray;
+}
+
+.tituloDias td div{
+    display: grid;
+    min-height: 2em;
+    background-color: #343a40;
+    border-radius: 2px;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    min-height: 3em;
+}
+
+tbody td{
+    width: 20%;
+    border: 1px solid darkgray;
+}
+
+
+.diaCalendar{
+    padding: 1px !important;
+    background-color: darkgray;
+}
+
+td .grid{
+    display: grid;
+    min-height: 8em;
+    grid-template-rows: 40% 30% 30%;
+    border-radius: 2%;
+}
+
+.diaDisponible{
+    background-color: #baf8ba;
+}
+.diaDisponible:hover{
+    filter: brightness(90%);
+    cursor: pointer;
+}
+
+.grid .numeroDia{
+    display: grid;
+    font-size: x-large;
+    justify-items: center;
+    align-items: end;
+    padding: 0 20px;
+}
+
+.grid .turnosProgramados{
+    display: grid;
+    align-items: end;
+    justify-items: center;
+    font-size: medium;
+
+}
+
+.grid .barra{
+    display: grid;
+    align-items: top;
+    padding: 5px 15px 0px 15px;
+
+}
+
+.progress-bar{
+    font-weight: 500;
 }

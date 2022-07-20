@@ -35,6 +35,7 @@ $(document).ready(function () {
         $("#divCalendario").load(url);
     }); 
 
+    $('[data-toggle="tooltip"]').tooltip();
 
 });
 

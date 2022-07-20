@@ -1,67 +1,112 @@
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th colspan="5" class="bg-secondary border border-dark">
-                <div class="text-center">
-                    <input type="month" id="selMesCalendar" class="form-control d-inline" th:value="${mesCalendar}"
-                        style="max-width: 20%; ">
+<div class="card calendario">
 
+
+<table class="table table-borderless m-0">
+    <tr class="tituloMes">
+        <td colspan="5" class="banner">
+            <div class="text-center banner-content">
+                <input type="month" id="selMesCalendar" class="form-control
+                    d-inline" th:value="${mesCalendar}"
+                    style="max-width: 20%;">
+
+            </div>
+        </td>
+    </tr>
+    <tr class="tituloDias">
+        <td>
+            <div>Lunes</div></td>
+        <td>
+            <div>Martes</div>
+        </td>
+        <td>
+            <div>Miércoles</div>
+        </td>
+        <td>
+            <div>Jueves</div>
+        </td>
+        <td>
+            <div>Viernes</div>
+        </td>
+    </tr>
+    <tr th:each="semana,itemStat:${infoCalendar}">
+        <td class="diaCalendar">
+            <div class="grid diaDisponible">
+                <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                <div class="turnosProgramados">Turnos programados:</div>
+                <div class="barra" data-toggle="tooltip" data-placement="bottom"
+                    title="n / n">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped"
+                            role="progressbar"
+                            style="width: 25%;" aria-valuenow="25"
+                            aria-valuemin="0" aria-valuemax="100">n / n</div>
+                    </div>
                 </div>
-            </th>
-        </tr>
-        <tr class="border border-dark">
-            <th class="border-right">Lunes</th>
-            <th class="border-right">Martes</th>
-            <th class="border-right">Miércoles</th>
-            <th class="border-right">Jueves</th>
-            <th class="border-left">Viernes </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="semana:${infoCalendar}">
-            <td class="border border-secondary diaCalendar">
-                <div th:each="diaSemana:${semana.value.get('Lu')}"
-                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
-                    th:onclick="verDia([[${diaSemana.key}]])">
-                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
-                    <div th:text="${'Cupos disp: '+ diaSemana.value + '/21'}" class="numeroCupos disp">Cupos disp:0</div>
+            </div>
+        </td>
+        <td class="diaCalendar">
+            <div class="grid diaDisponible">
+                <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                <div class="turnosProgramados">Turnos programados:</div>
+                <div class="barra" data-toggle="tooltip" data-placement="bottom"
+                    title="n / n">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped"
+                            role="progressbar"
+                            style="width: 19%;" aria-valuenow="25"
+                            aria-valuemin="0" aria-valuemax="100">n / n</div>
+                    </div>
                 </div>
-            </td>
-            <td class="border border-secondary diaCalendar">
-                <div th:each="diaSemana:${semana.value.get('Ma')}"
-                    th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
-                    th:onclick="verDia([[${diaSemana.key}]])">
-                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
-                    <div th:text="${'Cupos disp: '+ diaSemana.value + '/21'}" class="numeroCupos disp">Cupos disp:0</div>
+            </div>
+        </td>
+        <td class="diaCalendar">
+            <div class="grid diaDisponible">
+                <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                <div class="turnosProgramados">Turnos programados:</div>
+                <div class="barra" data-toggle="tooltip" data-placement="bottom"
+                    title="n / n">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped"
+                            role="progressbar"
+                            style="width: 25%;" aria-valuenow="25"
+                            aria-valuemin="0" aria-valuemax="100">n / n</div>
+                    </div>
                 </div>
-            </td>
-            <td class="border border-secondary diaCalendar">
-                <div th:each="diaSemana:${semana.value.get('Mi')}"
-                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
-                    th:onclick="verDia([[${diaSemana.key}]])">
-                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
-                    <div th:text="${'Cupos disp: '+ diaSemana.value + '/21'}" class="numeroCupos disp">Cupos disp:0</div>
+            </div>
+        </td>
+        <td class="diaCalendar">
+            <div class="grid diaDisponible">
+                <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                <div class="turnosProgramados">Turnos programados:</div>
+                <div class="barra" data-toggle="tooltip" data-placement="bottom"
+                    title="n / n">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped"
+                            role="progressbar"
+                            style="width: 25%;" aria-valuenow="25"
+                            aria-valuemin="0" aria-valuemax="100">n / n</div>
+                    </div>
                 </div>
-            </td>
-            <td class="border border-secondary diaCalendar">
-                <div th:each="diaSemana:${semana.value.get('Ju')}"
-                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
-                    th:onclick="verDia([[${diaSemana.key}]])">
-                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
-                    <div th:text="${'Cupos disp: '+ diaSemana.value + '/21'}" class="numeroCupos disp">Cupos disp:0</div>
+            </div>
+        </td>
+        <td class="diaCalendar">
+            <div class="grid diaDisponible">
+                <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                <div class="turnosProgramados">Turnos programados:</div>
+                <div class="barra" data-toggle="tooltip" data-placement="bottom"
+                    title="n / n">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped"
+                            role="progressbar"
+                            style="width: 25%;" aria-valuenow="25"
+                            aria-valuemin="0" aria-valuemax="100">n / n</div>
+                    </div>
                 </div>
-            </td>
-            <td class="border border-secondary diaCalendar">
-                <div th:each="diaSemana:${semana.value.get('Vi')}"
-                th:class="${diaSemana.value ==0} ? 'diaOcupado' : (${diaSemana.value <= 3} ? 'diaDisponibleAlert' : 'diaDisponible')"
-                    th:onclick="verDia([[${diaSemana.key}]])">
-                    <div th:text="${diaSemana.key}" class="numeroDia"></div>
-                    <div th:text="${'Cupos disp: '+ diaSemana.value + '/14'}" class="numeroCupos disp">Cupos disp:0</div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
+            </div>
+        </td>
+    </tr>
 
 </table>
-
-<script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
+</div>
+<script src="../../static/javascript/turnos.js"
+    th:src="@{javascript/turnos.js}"></script>
