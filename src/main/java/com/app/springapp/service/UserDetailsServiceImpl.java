@@ -4,8 +4,9 @@ package com.app.springapp.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.app.springapp.entity.Role;
-import com.app.springapp.repository.UserRepository;
+import com.app.springapp.entity.Rol;
+import com.app.springapp.entity.Usuario;
+import com.app.springapp.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,16 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceImpl implements  UserDetailsService{
 
     @Autowired
-    UserRepository repUser;
+    UsuarioRepository repUser;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.app.springapp.entity.User appUser = repUser.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username inválido"));
+        Usuario appUser = repUser.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username inválido"));
 
         Set<GrantedAuthority> grantList = new HashSet<GrantedAuthority>();
 
-        Role role = appUser.getRole();
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getDescription());
+        Rol role = appUser.getRol();
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getDescripcion());
         grantList.add(grantedAuthority);
         
 

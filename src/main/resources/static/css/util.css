@@ -1,0 +1,75 @@
+:root{
+    --color-principal:#1c6f7a;
+}
+.dropdown button {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid rgb(228, 226, 226) !important;
+}
+.dropdown {
+  padding: 0 !important;
+  border-radius: 5px;
+}
+
+
+select {
+  cursor: pointer;
+}
+
+input.selectCalendar{
+    cursor:pointer;
+    border-radius: 4px 0 0 4px;
+    color:black;
+}
+
+input.selectCalendar::placeholder{
+    color:black;
+}
+
+input.selectCalendar:read-only{
+    background-color: white;
+}
+
+input.selectCalendar:read-only:focus{
+    outline: none;
+    border-color: lightgrey;
+    box-shadow: none;
+}
+
+.btn-calendar-form:focus, input.selectCalendar:read-only:focus + .btn-calendar-form{
+    background-color: rgb(194, 231, 253);
+}
+
+.btn-calendar-form{
+    background-color: lightgrey;
+    border:none;
+    padding: 0 6px 0 5px;
+    border-radius: 0 4px 4px 0;
+
+}
+
+.guardar{
+    background-color: var(--color-principal);
+    color:white;
+}
+
+.guardar:hover{
+    filter: brightness(85%);
+    color: white;
+}
+
+.modal-form-header{
+    background-color: var(--color-principal);
+    color:white
+}
+
+.modal-form-header .modal-title{
+    width: 100%;
+    text-align: center;
+}
+
+.modal-form-header .close{
+    text-shadow: none;
+    color:white
+}
+

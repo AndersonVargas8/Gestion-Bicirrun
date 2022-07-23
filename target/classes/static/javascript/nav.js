@@ -7,6 +7,12 @@ function test(){
     var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
     var itemPosNewAnimTop = activeItemNewAnim.position();
     var itemPosNewAnimLeft = activeItemNewAnim.position();
+
+    let tituloNav = activeItemNewAnim.find('a');
+
+    tituloNav.css({
+        color:"#017375"
+    })
     $(".hori-selector").css({
         "top":itemPosNewAnimTop.top + "px",
         "left":itemPosNewAnimLeft.left + "px",
@@ -29,7 +35,7 @@ function test(){
     // });
 }
 $(document).ready(function(){
-    setTimeout(function(){ test(); });
+    setTimeout(function(){ test(); },500);
 });
 $(window).on('resize', function(){
     setTimeout(function(){ test(); }, 500);

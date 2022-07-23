@@ -1,12 +1,4 @@
 
-.search_select_box button{
-    background-color: white !important;
-}
-
-select{
-    cursor:pointer;
-}
-
 thead,tbody{
     text-align: center;
     border: none;
@@ -146,6 +138,7 @@ td .grid{
 .diaDisponible:hover{
     filter: brightness(90%);
     cursor: pointer;
+    transition-duration: 0.3s;
 }
 
 .grid .numeroDia{
@@ -174,3 +167,49 @@ td .grid{
 .progress-bar{
     font-weight: 500;
 }
+
+#selMesCalendar{
+    cursor: pointer;
+    text-align: center;
+    margin-right: 0;
+    border-radius: 5px 0 0 5px;
+    width: 15%;
+}
+
+.btn-calendar{
+    padding: 0 1px 0 9px;
+    margin: 0;
+    background-color: lightgrey;
+    border:none;
+    border-radius: 0 5px 5px 0;
+    margin-right: 5px;
+}
+
+
+
+.flecha-calendar{
+    color:white;
+    font-size: 25px !important;
+    margin-left: 5px;
+    cursor: pointer;
+    margin-top: 7px;
+}
+
+.flecha-calendar:hover{
+    filter: brightness(90%);
+}
+
+.crear{
+    border: 2px solid mediumseagreen !important;
+}
+
+#selMesCalendar:focus{
+    border: none !important;
+    outline: none !important;
+    box-shadow: none;
+}
+
+#selMesCalendar:focus + .btn-calendar, .btn-calendar:focus{
+    background-color: rgb(194, 231, 253);
+}
+

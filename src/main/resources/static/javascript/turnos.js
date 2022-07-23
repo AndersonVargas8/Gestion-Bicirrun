@@ -36,9 +36,61 @@ $(document).ready(function () {
     }); 
 
     $('[data-toggle="tooltip"]').tooltip();
+    
+    $("#selMesCalendar").datepicker("setDate",new Date());
+    document.getElementById("mesAtras").addEventListener("click",mesAtras);
+    document.getElementById("mesAdelante").addEventListener("click",mesAdelante);
+ 
+
 
 });
 
+function mesAtras(){
+    
+    let mes = document.getElementById("selMesCalendar").value.split(" ");
+    let nuevoMes = cambiarMes(mes[0],mes[1],false)
+    $("#selMesCalendar").datepicker("setDate",new Date(nuevoMes));
+}
+function mesAdelante(){
+    let mes = document.getElementById("selMesCalendar").value.split(" ");
+    let nuevoMes = cambiarMes(mes[0], mes[1])
+    $("#selMesCalendar").datepicker("setDate",new Date(nuevoMes));
+}
+
+function cambiarMes(mes, anio, adelantar = true){
+    meses = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    ]
+    
+    for(let i = 0; i < meses.length; i++){
+        if(meses[i] == mes){
+            if(adelantar){
+                if(i == 11){
+                    return "01-01-"+ ++anio;
+                }
+                return  "" +(++i +1) + "-01-"+ anio;
+            }else{
+                if(i == 0){
+                    return "12-01-" + --anio;
+                }
+                return "" + i + "-01-"+ anio;
+            }
+        }
+    }
+
+    return mes;
+}
 function verDia(dia){
     let mes = document.getElementById("selMesCalendar").value;
     var url = "/turnosEstacionesDia/" + dia + "/" + mes;

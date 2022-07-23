@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+:root{
+  --color-principal:#1c6f7a;
+}
 i {
   margin-right: 10px;
 }
@@ -10,7 +13,7 @@ i {
   color: #fff;
 }
 .navbar-mainbg {
-  background-color: #017375;
+  background-color: var(--color-principal);
   padding: 0;
 }
 #navbarSupportedContent {
@@ -39,9 +42,8 @@ i {
   position: relative;
 }
 #navbarSupportedContent > ul > li.active > a {
-  color: #017375;
   background-color: transparent;
-  transition: all 0.7s;
+  transition: all 2.5s;
 }
 #navbarSupportedContent a:not(:only-child):after {
   content: "\f105";
@@ -65,8 +67,7 @@ i {
   height: 100%;
   top: 0;
   left: 0;
-  transition-duration: 0.6s;
-  transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition-duration: 1.2s;
   background-color: #fff;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
@@ -93,7 +94,7 @@ i {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #017375;
+  background-color: var(--color-principal);
 }
 .hori-selector .right:before {
   bottom: 0;
