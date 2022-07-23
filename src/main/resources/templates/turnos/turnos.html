@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <title>Turnos</title>
 
         <link rel="icon" type="image/x-icon" href="/img/favicon.png"
@@ -29,20 +30,24 @@
         <div th:include="navbar.html" th:remove="tag"></div>
 
         <div class="container mt-4 p-4">
+            <!--Botón agregar turno-->
+            <button type="button" class="btn btn-outline-success mb-2 crear"
+                data-toggle="modal" data-target="#modalFormTurnos">
+                <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno
+            </button>
+
             <!--Formulario-->
-            <div class="modal fade" tabindex="-1" role="dialog"
-                id="modalFormTurnos">
-                <div class="modal-dialog modal-lg d-flex justify-content-center"
-                    role="document">
-                    <div class="modal-content" style="max-width:80%">
+            <div class="modal fade" tabindex="-1" role="dialog" id="modalFormTurnos">
+                <div class="modal-dialog modal-lg d-flex justify-content-center" role="document">
+                    <div class="modal-content w-75">
                         <div class="modal-header modal-form-header">
                             <h5 class="modal-title">Programar nuevo turno</h5>
-                            <button type="button" class="close"
-                                data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div th:include="turnos/nuevoTurno.html"
+                        <!--Inputs-->
+                        <div th:include="turnos/formularioTurnos.html"
                             class="modal-body p-4 d-flex
                             justify-content-center">
 
@@ -50,15 +55,12 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-success mb-2 crear"
-                data-toggle="modal" data-target="#modalFormTurnos">
-                <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno
-            </button>
-            <!--TABLA CALENDARIO-->
+
+            <!--Calendario-->
             <div id="divCalendario" th:include="turnos/calendario.html"></div>
+
             <!--Modal turnos en estaciones-->
-            <div class="modal fade" tabindex="-1" role="dialog"
-                id="modalTurnosEstaciones">
+            <div class="modal fade" tabindex="-1" role="dialog" id="modalTurnosEstaciones">
                 <div class="modal-dialog modal-xl d-flex justify-content-center"
                     role="document">
                     <div class="modal-content" style="max-width:100%">
@@ -86,7 +88,6 @@
         <!--SELECTPICKER-->
         <div th:replace="includes.html::selectpicker"></div>
 
-
         <script type="text/javascript">
         $(document).ready(function () {
             $('.search_select_box select').selectpicker({
@@ -98,8 +99,8 @@
                 virtualScroll: true
             });
         })
-    </script>
-    <script type="text/javascript">
+        </script>
+        <script type="text/javascript">
         $("#selMesCalendar").datepicker({
             language: 'es',
             autoclose: true,
@@ -119,10 +120,9 @@
             weekStart: 0,
             orientation: "bottom"
         })
-    </script>
-        <!--JAVASCRIPT-->
-        <script src="../../static/javascript/turnos.js"
-            th:src="@{javascript/turnos.js}"></script>
-    </body>
+        </script>
 
+        <!--JAVASCRIPT-->
+        <script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
+    </body>
 </html>

@@ -1,6 +1,20 @@
 :root{
     --color-principal:#1c6f7a;
 }
+
+@font-face {
+    font-family: "Ancizar Sans";
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fuentes/Ancizar\ Sans-Light.otf") format("opentype");
+  }
+  
+  body {
+    font-family: "Ancizar Sans", "Segoe UI";
+    font-size: 16px;
+  }
+ 
+/*Estilos para los botones selectpicker*/
 .dropdown button {
   background-color: white !important;
   color: black !important;
@@ -11,11 +25,11 @@
   border-radius: 5px;
 }
 
-
 select {
   cursor: pointer;
 }
 
+/*Estilos para el input tipo texto que usa datepicker IMPORTANTE: el input debe tener la clase "selectCalendar"*/
 input.selectCalendar{
     cursor:pointer;
     border-radius: 4px 0 0 4px;
@@ -36,6 +50,8 @@ input.selectCalendar:read-only:focus{
     box-shadow: none;
 }
 
+
+/*Estilos para el botón que acompaña el imput datepicker (contiene el icono de calendario) IMPORTANTE: el botón debe tener la clase "btn-calendar"*/
 .btn-calendar-form:focus, input.selectCalendar:read-only:focus + .btn-calendar-form{
     background-color: rgb(194, 231, 253);
 }
@@ -48,6 +64,8 @@ input.selectCalendar:read-only:focus{
 
 }
 
+
+/*Estilos para el botón guardar de un formulario IMPORTANTE: el botón debe tener la clase "guardar"*/
 .guardar{
     background-color: var(--color-principal);
     color:white;
@@ -58,16 +76,19 @@ input.selectCalendar:read-only:focus{
     color: white;
 }
 
+/*Estilos para el header del modal form IMPORTANTE: el div debe tener la clase modal-form-header*/
 .modal-form-header{
     background-color: var(--color-principal);
     color:white
 }
 
-.modal-form-header .modal-title{
+
+.modal-form-header .modal-title{ /* "modal title" es la clase que debe tener el h5, h4, p, etc que contenga el título del modal header*/
     width: 100%;
     text-align: center;
 }
 
+/*Estilos para el botón de cerrar modal*/
 .modal-form-header .close{
     text-shadow: none;
     color:white
