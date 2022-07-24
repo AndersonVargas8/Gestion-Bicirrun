@@ -32,7 +32,7 @@
         <div class="container mt-4 p-4">
             <!--Botón agregar turno-->
             <button type="button" class="btn btn-outline-success mb-2 crear"
-                data-toggle="modal" data-target="#modalFormTurnos">
+                data-bs-toggle="modal" data-bs-target="#modalFormTurnos">
                 <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno
             </button>
 
@@ -42,7 +42,7 @@
                     <div class="modal-content w-75">
                         <div class="modal-header modal-form-header">
                             <h5 class="modal-title">Programar nuevo turno</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -55,7 +55,23 @@
                     </div>
                 </div>
             </div>
-
+            <div class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
             <!--Calendario-->
             <div id="divCalendario" th:include="turnos/calendario.html"></div>
 
@@ -90,38 +106,9 @@
 
         <script type="text/javascript">
         $(document).ready(function () {
-            $('.search_select_box select').selectpicker({
-                noneResultsText: 'No se encontró {0}',
-                liveSearchPlaceholder: 'Buscar...',
-                liveSearchStyle: 'startsWith',
-                liveSearch: true,
-                title: 'Seleccione',
-                virtualScroll: true
-            });
+            
         })
         </script>
-        <script type="text/javascript">
-        $("#selMesCalendar").datepicker({
-            language: 'es',
-            autoclose: true,
-            format: "MM yyyy",
-            minViewMode: 'months',
-            todayHighlight: true,
-            weekStart: 0,
-        });
-
-        $("#inputDiaForm").datepicker({
-            language: 'es',
-            format: "dd MM yyyy",
-            todayHighlight: true,
-            startDate: new Date(),
-            autoclose: true,
-            daysOfWeekDisabled: [0,6],
-            weekStart: 0,
-            orientation: "bottom"
-        })
-        </script>
-
         <!--JAVASCRIPT-->
         <script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
     </body>

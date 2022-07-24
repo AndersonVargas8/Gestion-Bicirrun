@@ -1,3 +1,42 @@
+//Activar Datepickers
+$("#selMesCalendar").datepicker({
+    language: 'es',
+    autoclose: true,
+    format: "MM yyyy",
+    minViewMode: 'months',
+    todayHighlight: true,
+    weekStart: 0,
+});
+
+$("#selMesCalendar").datepicker("setDate",new Date());
+
+$("#inputDiaForm").datepicker({
+    language: 'es',
+    format: "dd MM yyyy",
+    todayHighlight: true,
+    startDate: new Date(),
+    autoclose: true,
+    daysOfWeekDisabled: [0,6],
+    weekStart: 0,
+    orientation: "bottom"
+})
+
+//Activar Selectpickers
+$('select.selectpicker.selEstudiante').selectpicker({
+    noneResultsText: 'No se encontró {0}',
+    liveSearchPlaceholder: 'Buscar...',
+    liveSearchStyle: 'startsWith',
+    liveSearch: true,
+    title: 'Seleccione',
+    virtualScroll: true
+});
+
+//Activar tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+
 $(document).ready(function () {
     $("#selMes").change(function () {
         document.getElementById("selDia").setAttribute("disabled","disabled");
@@ -30,14 +69,12 @@ $(document).ready(function () {
 
     $("#selMesCalendar").change(function () {
         let mes = document.getElementById("selMesCalendar").value;
-        
         var url = "/actCalendario/" + mes;
         $("#divCalendario").load(url);
     }); 
 
     $('[data-toggle="tooltip"]').tooltip();
     
-    $("#selMesCalendar").datepicker("setDate",new Date());
     document.getElementById("mesAtras").addEventListener("click",mesAtras);
     document.getElementById("mesAdelante").addEventListener("click",mesAdelante);
  

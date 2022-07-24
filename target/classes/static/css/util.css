@@ -6,13 +6,13 @@
     font-family: "Ancizar Sans";
     font-style: normal;
     font-weight: normal;
-    src: url("../fuentes/Ancizar\ Sans-Light.otf") format("opentype");
+    src: url("../fuentes/Ancizar Sans-Light.otf") format("opentype");
   }
-  
-  body {
-    font-family: "Ancizar Sans", "Segoe UI";
+
+body {    
+    font-family: "Ancizar Sans","Segoe UI";
     font-size: 16px;
-  }
+}
  
 /*Estilos para los botones selectpicker*/
 .dropdown button {

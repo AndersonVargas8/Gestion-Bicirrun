@@ -11,11 +11,11 @@
         </select>
     </div>
 
+    <!--Estudiante-->
     <div class="form-group row">
         <label class="col-lg-3 col-lg form-label form-control-label"><b>Estudiante</b></label>
-        <div class="col-lg-8 search_select_box">
-            <select th:field="*{estudiante}" class="w-100"
-                required>
+        <div class="col-lg-8">
+            <select th:field="*{estudiante}" class="w-100 selectpicker selEstudiante" required>
                 <option th:each="estudiante:${estudiantes}"
                     th:value="${estudiante.id}"
                     th:text="${estudiante.nombres} + ' ' +

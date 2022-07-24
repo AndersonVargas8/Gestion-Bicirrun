@@ -3,15 +3,17 @@
         <tr class="tituloMes">
             <td colspan="5" class="banner">
                 <div class="text-center banner-content">
-                    <div class="row flex justify-content-center">
-                        <i class="fa-solid fa-caret-left flecha-calendar" id="mesAtras" data-toggle="tooltip" data-placement="left" title="Retroceder un mes"></i>
-                        <input type="text" id="selMesCalendar" class="form-control
-                        d-inline" 
-                        style="max-width: 20%;" readonly="readonly">
-                        <button class="btn-calendar" onclick="$('#selMesCalendar').datepicker('show')">
-                            <i class="fa-solid fa-calendar-minus"></i>
-                        </button> 
-                        <i class="fa-solid fa-caret-right flecha-calendar" id="mesAdelante" data-toggle="tooltip" data-placement="right" title="Avanzar un mes"></i>
+                    <div class="row justify-content-center">
+                        <div class="d-flex justify-content-center">
+                            <i class="fa-solid fa-caret-left flecha-calendar" id="mesAtras" data-bs-toggle="tooltip" data-bs-placement="left" title="Retroceder un mes"></i>
+                            <input type="text" id="selMesCalendar" class="form-control
+                            d-inline" 
+                            style="max-width: 20%;" readonly="readonly">
+                            <button class="btn-calendar" onclick="$('#selMesCalendar').datepicker('show')">
+                                <i class="fa-solid fa-calendar-minus"></i>
+                            </button> 
+                            <i class="fa-solid fa-caret-right flecha-calendar" id="mesAdelante" data-bs-toggle="tooltip" data-bs-placement="right" title="Avanzar un mes"></i>
+                        </div>
                     </div>
                 </div>
             </td>
@@ -37,8 +39,8 @@
                 <div class="grid diaDisponible">
                     <div class="numeroDia" th:text="${itemStat.index}">Día</div>
                     <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-toggle="tooltip"
-                        data-placement="bottom"
+                    <div class="barra" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         title="n / n">
                         <div class="progress">
                             <div class="progress-bar progress-bar-striped"
@@ -53,8 +55,8 @@
                 <div class="grid diaDisponible">
                     <div class="numeroDia" th:text="${itemStat.index}">Día</div>
                     <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-toggle="tooltip"
-                        data-placement="bottom"
+                    <div class="barra" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         title="n / n">
                         <div class="progress">
                             <div class="progress-bar progress-bar-striped"
@@ -69,8 +71,8 @@
                 <div class="grid diaDisponible">
                     <div class="numeroDia" th:text="${itemStat.index}">Día</div>
                     <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-toggle="tooltip"
-                        data-placement="bottom"
+                    <div class="barra" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         title="n / n">
                         <div class="progress">
                             <div class="progress-bar progress-bar-striped"
@@ -85,8 +87,8 @@
                 <div class="grid diaDisponible">
                     <div class="numeroDia" th:text="${itemStat.index}">Día</div>
                     <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-toggle="tooltip"
-                        data-placement="bottom"
+                    <div class="barra" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         title="n / n">
                         <div class="progress">
                             <div class="progress-bar progress-bar-striped"
@@ -101,8 +103,8 @@
                 <div class="grid diaDisponible">
                     <div class="numeroDia" th:text="${itemStat.index}">Día</div>
                     <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-toggle="tooltip"
-                        data-placement="bottom"
+                    <div class="barra" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         title="n / n">
                         <div class="progress">
                             <div class="progress-bar progress-bar-striped"
@@ -117,6 +119,7 @@
 
     </table>
 </div>
+
 
 
 
