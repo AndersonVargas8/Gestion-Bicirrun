@@ -1,7 +1,9 @@
 package com.app.springapp.entity;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * Esta clase permite manejar la persistenia de los horarios para los turnos 
@@ -30,7 +33,7 @@ public class Horario {
     private int valor_horas;
 
     @ElementCollection
-    private List<String> diasNoDisponibles;
+    private Set<String> diasNoDisponibles = new HashSet<>();
 
     public Horario() {
     }
@@ -41,8 +44,7 @@ public class Horario {
         this.valor_horas = valor_horas;
     }
 
-
-    public Horario(long id, String descripcion, int valor_horas, List<String> diasNoDisponibles) {
+    public Horario(long id, String descripcion, int valor_horas, Set<String> diasNoDisponibles) {
         this.id = id;
         this.descripcion = descripcion;
         this.valor_horas = valor_horas;
@@ -100,9 +102,9 @@ public class Horario {
 
     
     /** 
-     * @return List<String>
+     * @return Set<String>
      */
-    public List<String> getDiasNoDisponibles() {
+    public Set<String> getDiasNoDisponibles() {
         return this.diasNoDisponibles;
     }
 
@@ -110,10 +112,9 @@ public class Horario {
     /** 
      * @param diasNoDisponibles
      */
-    public void setDiasNoDisponibles(List<String> diasNoDisponibles) {
+    public void setDiasNoDisponibles(Set<String> diasNoDisponibles) {
         this.diasNoDisponibles = diasNoDisponibles;
     }
-
     
     /** 
      * @param o
