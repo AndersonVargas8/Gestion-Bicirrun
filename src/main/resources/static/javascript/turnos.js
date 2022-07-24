@@ -37,7 +37,15 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
+for(let i = 0; i<25; i++){
+
+    document.getElementById("placeholders").innerHTML += "<div class='placeholder col bg-secondar' style='height: 130px; width:19.4%; margin:3px'></div>"
+}
 $(document).ready(function () {
+
+    setTimeout(() => {
+        document.getElementById("placeholders").innerHTML = "";
+    },2000)
     $("#selMes").change(function () {
         document.getElementById("selDia").setAttribute("disabled","disabled");
         let mes = document.getElementById("selMes").value;
@@ -73,7 +81,6 @@ $(document).ready(function () {
         $("#divCalendario").load(url);
     }); 
 
-    $('[data-toggle="tooltip"]').tooltip();
     
     document.getElementById("mesAtras").addEventListener("click",mesAtras);
     document.getElementById("mesAdelante").addEventListener("click",mesAdelante);

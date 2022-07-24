@@ -1,5 +1,6 @@
 package com.app.springapp.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -9,17 +10,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.CascadeType;
 
+/**
+ * Esta clase permite manejar la persistencia de los cupos que tiene cada estación.
+ * Un cupo está compuesto por una estación un horario y una número de cupos
+ */
 @Entity
-@Table(name="cupo",schema="public") //PRODUCCIÓN
 public class Cupo {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -30,67 +34,141 @@ public class Cupo {
     @JoinColumn(name = "hor_id")
     private Horario horario;
 
-    //@Column(columnDefinition = "bigint(20) default '0'") //DESARROLLO
-    @Column //PRODUCCIÓN
+    @Column 
     private int num_cupos;
 
-    
-    //@Column(name = "cupo_grupo", columnDefinition = "bigint(20) default '0'") //DESARROLLO
-    @Column(name = "cupo_grupo") //PRODUCCIÓN
-    private int cupoGrupo; 
-    
+    //Creación de la tabla de cupos compartidos, cuando dos horarios comparten los mismos cupos
+    @ManyToMany
+    @JoinTable(name = "cupos_compartidos",
+    joinColumns = @JoinColumn(name = "cupo_dependiente"),
+    inverseJoinColumns = @JoinColumn(name = "cupo_independiente"))
+    private List<Cupo> cupos_independientes;
 
-    public Cupo() {
-    }
+    @ManyToMany(mappedBy = "cupos_independientes")
+    private List<Cupo> cupos_dependientes;
 
-    public Cupo(long id, Estacion estacion, Horario horario, int num_cupos, int cupoGrupo) {
+
+    public Cupo(long id, Estacion estacion, Horario horario, int num_cupos, List<Cupo> cupos_independientes, List<Cupo> cupos_dependientes) {
         this.id = id;
         this.estacion = estacion;
         this.horario = horario;
         this.num_cupos = num_cupos;
-        this.cupoGrupo = cupoGrupo;
+        this.cupos_independientes = cupos_independientes;
+        this.cupos_dependientes = cupos_dependientes;
     }
 
+    
+    public Cupo() {
+    }
+
+    public Cupo(long id, Estacion estacion, Horario horario, int num_cupos) {
+        this.id = id;
+        this.estacion = estacion;
+        this.horario = horario;
+        this.num_cupos = num_cupos;
+    }
+
+    
+    /** 
+     * @return long
+     */
     public long getId() {
         return this.id;
     }
 
+    
+    /** 
+     * @param id
+     */
     public void setId(long id) {
         this.id = id;
     }
-
+    
+    
+    /** 
+     * @return Estacion
+     */
     public Estacion getEstacion() {
         return this.estacion;
     }
 
+    
+    /** 
+     * @param estacion
+     */
     public void setEstacion(Estacion estacion) {
         this.estacion = estacion;
     }
-
+    
+    
+    /** 
+     * @return Horario
+     */
     public Horario getHorario() {
         return this.horario;
     }
-
+    
+    
+    /** 
+     * @param horario
+     */
     public void setHorario(Horario horario) {
         this.horario = horario;
     }
-
+    
+    
+    /** 
+     * @return int
+     */
     public int getNum_cupos() {
         return this.num_cupos;
     }
-
+    
+    
+    /** 
+     * @param num_cupos
+     */
     public void setNum_cupos(int num_cupos) {
         this.num_cupos = num_cupos;
     }
-
-    public int getCupoGrupo() {
-        return this.cupoGrupo;
+    
+    
+    /** 
+     * @return List<Cupo>
+     */
+    public List<Cupo> getCupos_independientes() {
+        return this.cupos_independientes;
     }
 
-    public void setCupoGrupo(int cupoGrupo) {
-        this.cupoGrupo = cupoGrupo;
+    
+    /** 
+     * @param cupos_independientes
+     */
+    public void setCupos_independientes(List<Cupo> cupos_independientes) {
+        this.cupos_independientes = cupos_independientes;
     }
 
+    
+    /** 
+     * @return List<Cupo>
+     */
+    public List<Cupo> getCupos_dependientes() {
+        return this.cupos_dependientes;
+    }
+
+    
+    /** 
+     * @param cupos_dependientes
+     */
+    public void setCupos_dependientes(List<Cupo> cupos_dependientes) {
+        this.cupos_dependientes = cupos_dependientes;
+    }
+
+    
+    /** 
+     * @param o
+     * @return boolean
+     */
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -99,14 +177,22 @@ public class Cupo {
             return false;
         }
         Cupo cupo = (Cupo) o;
-        return id == cupo.id && Objects.equals(estacion, cupo.estacion) && Objects.equals(horario, cupo.horario) && num_cupos == cupo.num_cupos && cupoGrupo == cupo.cupoGrupo;
+        return id == cupo.id && Objects.equals(estacion, cupo.estacion) && Objects.equals(horario, cupo.horario) && num_cupos == cupo.num_cupos;
     }
 
+    
+    /** 
+     * @return int
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id, estacion, horario, num_cupos, cupoGrupo);
+        return Objects.hash(id, estacion, horario, num_cupos);
     }
 
+    
+    /** 
+     * @return String
+     */
     @Override
     public String toString() {
         return "{" +
@@ -114,7 +200,6 @@ public class Cupo {
             ", estacion='" + getEstacion() + "'" +
             ", horario='" + getHorario() + "'" +
             ", num_cupos='" + getNum_cupos() + "'" +
-            ", cupoGrupo='" + getCupoGrupo() + "'" +
             "}";
     }
 

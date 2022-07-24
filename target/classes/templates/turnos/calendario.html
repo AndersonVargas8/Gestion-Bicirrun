@@ -1,126 +1,142 @@
 <div class="calendario">
     <table class="table table-borderless m-0">
-        <tr class="tituloMes">
-            <td colspan="5" class="banner">
-                <div class="text-center banner-content">
-                    <div class="row justify-content-center">
-                        <div class="d-flex justify-content-center">
-                            <i class="fa-solid fa-caret-left flecha-calendar" id="mesAtras" data-bs-toggle="tooltip" data-bs-placement="left" title="Retroceder un mes"></i>
-                            <input type="text" id="selMesCalendar" class="form-control
-                            d-inline" 
-                            style="max-width: 20%;" readonly="readonly">
-                            <button class="btn-calendar" onclick="$('#selMesCalendar').datepicker('show')">
-                                <i class="fa-solid fa-calendar-minus"></i>
-                            </button> 
-                            <i class="fa-solid fa-caret-right flecha-calendar" id="mesAdelante" data-bs-toggle="tooltip" data-bs-placement="right" title="Avanzar un mes"></i>
+        <thead>
+            <tr class="tituloMes">
+                <td colspan="5" class="banner">
+                    <div class="text-center banner-content">
+                        <div class="row justify-content-center">
+                            <div class="d-flex justify-content-center">
+                                <i class="fa-solid fa-caret-left
+                                    flecha-calendar"
+                                    id="mesAtras" data-bs-toggle="tooltip"
+                                    data-bs-placement="left" title="Retroceder
+                                    un
+                                    mes"></i>
+                                <input type="text" id="selMesCalendar"
+                                    class="form-control
+                                    d-inline"
+                                    style="max-width: 20%;" readonly="readonly">
+                                <button class="btn-calendar"
+                                    onclick="$('#selMesCalendar').datepicker('show')">
+                                    <i class="fa-solid fa-calendar-minus"></i>
+                                </button>
+                                <i class="fa-solid fa-caret-right
+                                    flecha-calendar"
+                                    id="mesAdelante" data-bs-toggle="tooltip"
+                                    data-bs-placement="right" title="Avanzar un
+                                    mes"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-        </tr>
-        <tr class="tituloDias">
-            <td>
-                <div>Lunes</div></td>
-            <td>
-                <div>Martes</div>
-            </td>
-            <td>
-                <div>Miércoles</div>
-            </td>
-            <td>
-                <div>Jueves</div>
-            </td>
-            <td>
-                <div>Viernes</div>
-            </td>
-        </tr>
-        <tr th:each="semana,itemStat:${infoCalendar}">
-            <td class="diaCalendar">
-                <div class="grid diaDisponible">
-                    <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                    <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="n / n">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped"
-                                role="progressbar"
-                                style="width: 25%;" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100">n / n</div>
+                </td>
+            </tr>
+            <tr class="tituloDias">
+                <td>
+                    <div>Lunes</div></td>
+                <td>
+                    <div>Martes</div>
+                </td>
+                <td>
+                    <div>Miércoles</div>
+                </td>
+                <td>
+                    <div>Jueves</div>
+                </td>
+                <td>
+                    <div>Viernes</div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="5" class="p-0" >
+                        <div class="placeholder-glow" id="placeholders">
+                        </div>
+                    
+                </td>
+            </tr>
+            <tr th:each="semana,itemStat:${infoCalendar}">
+                <td class="diaCalendar">
+                    <div class="grid diaDisponible">
+                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                        <div class="turnosProgramados">Turnos programados:</div>
+                        <div class="barra" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            title="n / n">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped"
+                                    role="progressbar"
+                                    style="width: 25%;" aria-valuenow="25"
+                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td class="diaCalendar">
-                <div class="grid diaDisponible">
-                    <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                    <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="n / n">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped"
-                                role="progressbar"
-                                style="width: 19%;" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100">n / n</div>
+                </td>
+                <td class="diaCalendar">
+                    <div class="grid diaDisponible">
+                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                        <div class="turnosProgramados">Turnos programados:</div>
+                        <div class="barra" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            title="n / n">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped"
+                                    role="progressbar"
+                                    style="width: 19%;" aria-valuenow="25"
+                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td class="diaCalendar">
-                <div class="grid diaDisponible">
-                    <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                    <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="n / n">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped"
-                                role="progressbar"
-                                style="width: 25%;" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100">n / n</div>
+                </td>
+                <td class="diaCalendar">
+                    <div class="grid diaDisponible">
+                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                        <div class="turnosProgramados">Turnos programados:</div>
+                        <div class="barra" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            title="n / n">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped"
+                                    role="progressbar"
+                                    style="width: 25%;" aria-valuenow="25"
+                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td class="diaCalendar">
-                <div class="grid diaDisponible">
-                    <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                    <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="n / n">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped"
-                                role="progressbar"
-                                style="width: 25%;" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100">n / n</div>
+                </td>
+                <td class="diaCalendar">
+                    <div class="grid diaDisponible">
+                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                        <div class="turnosProgramados">Turnos programados:</div>
+                        <div class="barra" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            title="n / n">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped"
+                                    role="progressbar"
+                                    style="width: 25%;" aria-valuenow="25"
+                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td class="diaCalendar">
-                <div class="grid diaDisponible">
-                    <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                    <div class="turnosProgramados">Turnos programados:</div>
-                    <div class="barra" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="n / n">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped"
-                                role="progressbar"
-                                style="width: 25%;" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100">n / n</div>
+                </td>
+                <td class="diaCalendar">
+                    <div class="grid diaDisponible">
+                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+                        <div class="turnosProgramados">Turnos programados:</div>
+                        <div class="barra" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            title="n / n">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped"
+                                    role="progressbar"
+                                    style="width: 25%;" aria-valuenow="25"
+                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </td>
-        </tr>
-
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>
-
-
-
-
-  

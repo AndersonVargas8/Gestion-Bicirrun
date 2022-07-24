@@ -13,7 +13,7 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import com.app.springapp.entity.Cupo;
-import com.app.springapp.entity.Disponibilidad;
+//import com.app.springapp.entity.Disponibilidad;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
@@ -21,7 +21,7 @@ import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.repository.TurnoRepository;
 import com.app.springapp.service.CupoService;
-import com.app.springapp.service.DisponibilidadService;
+//import com.app.springapp.service.DisponibilidadService;
 import com.app.springapp.service.EstacionService;
 import com.app.springapp.service.HorarioService;
 import com.app.springapp.service.TurnoService;
@@ -52,8 +52,6 @@ public class TurnosController {
     @Autowired
     CupoService serCupo;
 
-    @Autowired
-    DisponibilidadService serDisponibilidad;
 
     @Autowired
     TurnoService serTurno;
@@ -85,7 +83,7 @@ public class TurnosController {
             try {
                 serTurno.guardarTurno(turno);
                 Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
-                if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
+                /*if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
                                              // tiene cupoGrupo)
                     cupo = serCupo.buscarPorId(cupo.getCupoGrupo()); // asigna el cupoGrupo al cupo
 
@@ -101,7 +99,7 @@ public class TurnosController {
                 }
 
                 disponibilidad.setNum_disponibles(disponibilidad.getNum_disponibles() - 1);
-                serDisponibilidad.guardarDisponibilidad(disponibilidad);
+                serDisponibilidad.guardarDisponibilidad(disponibilidad);*/
             } catch (Exception e) {
                 model.addAttribute("error", "Error: " + e.getMessage());
             }
@@ -119,14 +117,14 @@ public class TurnosController {
         Turno turno = serTurno.obtenerPorId(id);
         serTurno.eliminarTurno(turno);
         Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
-        if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
+        /*if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
                                      // tiene cupoGrupo)
             cupo = serCupo.buscarPorId(cupo.getCupoGrupo()); // asigna el cupoGrupo al cupo
 
         Disponibilidad disponibilidad = serDisponibilidad.consultarDisponibilidadMesDia(turno.getMes(),
                 turno.getDia(), cupo);
         disponibilidad.setNum_disponibles(disponibilidad.getNum_disponibles() + 1);
-        serDisponibilidad.guardarDisponibilidad(disponibilidad);
+        serDisponibilidad.guardarDisponibilidad(disponibilidad);*/
         return "redirect:/turnos";
     }
 
@@ -146,7 +144,7 @@ public class TurnosController {
         model = addAttributesTurnos(model);
         model.addAttribute("dias", generarDiasHabiles(mes));
         model.addAttribute("mesSel", getMes(mes));
-        model.addAttribute("horarios", getHorarios(dia, mes));
+        //model.addAttribute("horarios", getHorarios(dia, mes));
         model.addAttribute("diaSel", getDia(dia, mes));
 
         if (idHorario != 0)
@@ -167,8 +165,8 @@ public class TurnosController {
         model.addAttribute("mesSel", getMes(mes));
         model.addAttribute("diaSel", getDia(dia, mes));
         model.addAttribute("horSel", getHorario(idHorario));
-        model.addAttribute("horarios", getHorarios(dia, mes));
-        model.addAttribute("estaciones", getEstaciones(dia, mes, idHorario));
+        //model.addAttribute("horarios", getHorarios(dia, mes));
+       // model.addAttribute("estaciones", getEstaciones(dia, mes, idHorario));
 
         return "turnos/formTurnos";
     }
@@ -231,13 +229,13 @@ public class TurnosController {
 
         for (int i = 1; i <= diasDelMes; i++) {
             if (valorDiaActual % 7 != 6 && valorDiaActual % 7 != 0) {
-                Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
+                /*Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
                 if (num_disponibles == null || num_disponibles > 0) {
                     String nombreDiaActual = DayOfWeek.of(valorDiaActual % 7).getDisplayName(TextStyle.FULL,
                             new Locale("es", "ES"));
                     dias.put(i, nombreDiaActual.substring(0, 1).toUpperCase() + nombreDiaActual.substring(1));
 
-                }
+                }*/
             }
             valorDiaActual++;
         }
@@ -247,7 +245,7 @@ public class TurnosController {
 
     private HashMap<Integer, String> generarDiasDisponibles(int mes, int idHorario) {
         HashMap<Integer, String> diasHabiles = this.generarDiasHabiles(mes);
-        List<Integer> diasOcupados = serDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
+        /*List<Integer> diasOcupados = serDisponibilidad.diasSinDisponibilidadEnHorario(mes, idHorario);
 
         HashMap<Integer, String> diasHabilesCopy = (HashMap<Integer, String>) diasHabiles.clone();
         // Quitar los viernes si el horario es de 1PM
@@ -261,7 +259,7 @@ public class TurnosController {
 
         for (Integer dia : diasOcupados) {
             diasHabiles.remove(dia);
-        }
+        }*/
         return diasHabiles;
     }
 
@@ -305,7 +303,7 @@ public class TurnosController {
         return horSel;
     }
 
-    private List<Horario> getHorarios(int dia, int mes) {
+    /*private List<Horario> getHorarios(int dia, int mes) {
         List<Horario> horarios = serDisponibilidad.horariosDisponiblesDiaMes(dia, mes);
         return horarios;
     }
@@ -313,7 +311,7 @@ public class TurnosController {
     private List<Estacion> getEstaciones(int dia, int mes, int idHorario) {
         List<Estacion> estaciones = serDisponibilidad.estacionesDisponiblesDiaMesHorario(dia, mes, idHorario);
         return estaciones;
-    }
+    }*/
 
     private HashMap<Integer, HashMap<String, HashMap<Integer, Integer>>> informacionCalendar(int mesActual) {
         // Si el argumento es 0, entonces se toma el valor del mes como el mes actual
@@ -364,7 +362,7 @@ public class TurnosController {
 
                 // Se agrega la info del día con sus cupos disponibles
                 HashMap<Integer, Integer> mapaDia = new HashMap<>();
-                Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
+                /*Integer num_disponibles = serDisponibilidad.cuposDisponiblesEnDia(i, mesActual);
                 if (num_disponibles == null) {
                     if (valorDiaActual % 7 == 5)
                         num_disponibles = serCupo.cantidadCuposViernes();
@@ -372,7 +370,7 @@ public class TurnosController {
                         num_disponibles = totalCupos;
                 }
 
-                mapaDia.put(i, num_disponibles);
+                mapaDia.put(i, num_disponibles);*/
 
                 // asignar el mapa Día al día correspondiente de la semana
                 switch (valorDiaActual % 7) {
@@ -484,7 +482,7 @@ public class TurnosController {
             totalDispEstaciones.put((int) estacion.getId(), (HashMap<Integer, List<Integer>>) mapHorarios.clone());
         }
 
-        List<Disponibilidad> disponibilidades = serDisponibilidad.obtenerTodasPorDiaMes(dia, mes);
+        /*List<Disponibilidad> disponibilidades = serDisponibilidad.obtenerTodasPorDiaMes(dia, mes);
 
         if (disponibilidades == null || disponibilidades.size() == 0) {
             serDisponibilidad.actualizarCuposDia(dia, mes);
@@ -506,7 +504,7 @@ public class TurnosController {
 
             mapEstacion.put((int) disponibilidad.getCupo().getHorario().getId(), listaTurnos);
             totalDispEstaciones.put((int) disponibilidad.getCupo().getEstacion().getId(), mapEstacion);
-        }
+        }*/
 
         model.addAttribute("totalDispEstaciones", totalDispEstaciones);
         return model;
