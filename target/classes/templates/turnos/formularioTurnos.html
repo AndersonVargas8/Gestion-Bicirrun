@@ -3,14 +3,7 @@
     th:action="@{/turnos}">
     <!--Es necesario para poder pasar la validacion del Model-->
     <input class="form-control" hidden th:field="*{id}">
-    <div class="form-group" hidden>
-        <select th:field="*{estado}">
-            <option th:each="estado:${estadoTurnos.get(0)}"
-                th:value="${estado.id}" th:text="${estado.descripcion}">
-            </option>
-        </select>
-    </div>
-
+    
     <!--Estudiante-->
     <div class="form-group row">
         <label class="col-lg-3 col-lg form-label form-control-label"><b>Estudiante</b></label>
