@@ -356,7 +356,7 @@ public class TurnosController {
             infoCalendario.put(i, mapa);
         }
         int valorDiaActual = DayOfWeek.from(fechaActual).getValue();
-        Integer totalCupos = serCupo.cantidadCupos();
+       // Integer totalCupos = serCupo.cantidadCupos();
 
         for (int i = 1; i <= diasDelMes; i++) {
             if (valorDiaActual % 7 != 6 && valorDiaActual % 7 != 0) {// Si el día no es sábado ni domingo

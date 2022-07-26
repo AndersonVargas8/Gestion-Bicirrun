@@ -31,37 +31,37 @@ public class CupoService implements IServicioCupo{
         return repCupo.findByHorario(horario);
     }
 
-    @Override
+    /*@Override
     public Cupo buscarPorCupoGrupo(int cupoGrupoId) {
         Optional<Cupo> respuesta = repCupo.findByCupoGrupo(cupoGrupoId);
         if(respuesta.isPresent())
             return respuesta.get();
         
         return null;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public int buscarIdPorCupoGrupoHorario(int idHorario) {
         Optional<Integer> respuesta = repCupo.findIdByCupoGrupoHorario(idHorario);
         if(respuesta.isPresent())
             return respuesta.get();
         return -1;
-    }
+    }*/
 
     @Override
     public Cupo buscarPorId(int id) {
         return repCupo.findById(new Long(id));
     }
 
-    @Override
+    /*@Override
     public Integer cantidadCupos() {
         return repCupo.sumNumCupos();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public Integer cantidadCuposViernes() {
         return repCupo.sumNumCuposViernes();
-    }
+    }*/
 
     @Override
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario) {

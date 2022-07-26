@@ -95,7 +95,7 @@ thead,tbody{
 .tituloMes .banner-content{
     border-radius: 5px 5px 0 0;
     padding: 1%;
-    background-color:#6c757d;
+    background-color:#062863;
 }
 
 .tituloDias td{
@@ -106,7 +106,7 @@ thead,tbody{
 .tituloDias td div{
     display: grid;
     min-height: 2em;
-    background-color: #343a40;
+    background-color: #1c4c96;
     border-radius: 2px;
     align-items: center;
     font-weight: bold;
@@ -133,7 +133,7 @@ td .grid{
 }
 
 .diaDisponible{
-    background-color: #baf8ba;
+    background-color: gainsboro     ;
 }
 .diaDisponible:hover{
     filter: brightness(90%);
