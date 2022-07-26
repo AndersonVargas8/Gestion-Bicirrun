@@ -17,6 +17,7 @@ import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.model.TurnosProgramados;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.repository.TurnoRepository;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class TurnosController {
@@ -56,16 +58,21 @@ public class TurnosController {
     @Autowired
     TurnoService serTurno;
 
+    @Autowired
+    TurnoRepository repTurnos;
+
     private List<String> meses;
 
     @GetMapping("/turnos")
-    public String index(ModelMap model) {
-        model.addAttribute("infoCalendar", informacionCalendar(0));
+    @ResponseBody
+    public TurnosProgramados index(ModelMap model) {
+        /*model.addAttribute("infoCalendar", informacionCalendar(0));
         model.addAttribute("mesCalendar", getMesCalendar(0, 0));
         model = addAttributesTurnos(model);
 
-        model.addAttribute("dias", generarDiasHabiles(0));
-        return "turnos/turnos";
+        model.addAttribute("dias", generarDiasHabiles(0));*/
+        TurnosProgramados t = repTurnos.getTurnosProgramados(2022);
+        return t;
     }
 
     @PostMapping("/turnos")
