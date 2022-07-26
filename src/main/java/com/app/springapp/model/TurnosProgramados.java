@@ -150,11 +150,12 @@ public class TurnosProgramados implements Serializable {
     }
 
     private String validarNombreMes(String mes){
+        mes = mes.toLowerCase();
         if(!this.meses.containsKey(mes)){
             throw new IllegalArgumentException("El mes especificado no existe en el registro");
         }
 
-        return mes.toLowerCase();
+        return mes;
     }
     /** 
      * @param o

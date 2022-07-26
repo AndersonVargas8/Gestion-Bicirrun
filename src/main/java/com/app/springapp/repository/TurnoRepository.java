@@ -18,7 +18,7 @@ import com.app.springapp.model.TurnosProgramados;
 @Repository
 public interface TurnoRepository extends CrudRepository<Turno, Long>{
 
-    final String RUTA_ARCHIVOS = "../File/";
+    final String RUTA_ARCHIVOS = "files/";
     final String EXTENSION_ARCHIVOS = ".dat";
 
     public List<Turno> findByDiaAndMes(int dia, int mes);
@@ -26,7 +26,7 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
 
     public default TurnosProgramados getTurnosProgramados(int anio){
         String nombreArchivo = String.valueOf(anio).concat(EXTENSION_ARCHIVOS);
-        File archivo = new File(nombreArchivo);
+        File archivo = new File(RUTA_ARCHIVOS+nombreArchivo);
 
         //Si el archivo no existe se crea un nuevo objeto, se crea un nuevo archivo y se guarda el objeto en él
         if(!archivo.exists()){

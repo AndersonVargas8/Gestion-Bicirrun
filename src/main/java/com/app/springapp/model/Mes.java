@@ -1,5 +1,6 @@
 package com.app.springapp.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -7,7 +8,7 @@ import java.util.Objects;
  * Esta clase permite manejar la cantidad de turnos que hay en los diferentes
  * días de un mes específico.
  */
-public class Mes {
+public class Mes implements Serializable{
     /**
      * Nombre del mes
      */
@@ -207,7 +208,7 @@ public class Mes {
     public String toString() {
         return "{" +
             " nombre='" + getNombre() + "'" +
-            ", turnosDias='" + getTurnosDias() + "'" +
+            ", turnosDias='" + getTurnosDias().toString() + "'" +
             "}";
     }
 
