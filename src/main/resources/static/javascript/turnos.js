@@ -5,10 +5,26 @@ $("#selMesCalendar").datepicker({
     format: "MM yyyy",
     minViewMode: 'months',
     todayHighlight: true,
-    weekStart: 0,
+    weekStart: 0
 });
 
 $("#selMesCalendar").datepicker("setDate",new Date());
+
+//Activar selectores de mes
+document.getElementById("mesAtras").addEventListener("click",mesAtras);
+document.getElementById("mesAdelante").addEventListener("click",mesAdelante);
+
+//Cambiar el mes del calendario;
+$("#selMesCalendar").datepicker().on('changeDate', (e) => {
+    activarPlaceholders();
+    let date = e.date; //Fecha seleccionada en el datepicker
+    let mes = date.getMonth() + 1 //getMonth() retorna 0 para Enero, 1 para Febrero, ...
+    let anio = date.getFullYear();
+
+    let url = "/turnos/calendarioTurnos/"+mes+"/"+anio;
+
+    $("#tbody-calendar").load(url);
+});
 
 $("#inputDiaForm").datepicker({
     language: 'es',
@@ -37,15 +53,22 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
-for(let i = 0; i<25; i++){
+//Activar navbar
+document.querySelector("#item-turnos").classList.add('active');
 
-    document.getElementById("placeholders").innerHTML += "<div class='placeholder col bg-secondar' style='height: 130px; width:19.4%; margin:3px'></div>"
+
+//Colocar placeholders en el calendario
+function activarPlaceholders(){
+    document.querySelector("#tbody-calendar").innerHTML = " <tr><td colspan='5' class='p-0'><div class='placeholder-glow' id='placeholders'></div></td></tr>"
+    for(let i = 0; i<25; i++){
+        document.getElementById("placeholders").innerHTML += "<div class='placeholder col calendar-placeholder'></div>"
+    }
 }
-$(document).ready(function () {
 
-    setTimeout(() => {
-        document.getElementById("placeholders").innerHTML = "";
-    },2000)
+
+$(document).ready(function () {
+    
+
     $("#selMes").change(function () {
         document.getElementById("selDia").setAttribute("disabled","disabled");
         let mes = document.getElementById("selMes").value;
@@ -74,34 +97,27 @@ $(document).ready(function () {
         var url = "/actFormTurnosDiaMesHorario/" + dia + "/" + mes + "/" + idHorario;
         $("#carta").load(url);
     });
-
-    $("#selMesCalendar").change(function () {
-        let mes = document.getElementById("selMesCalendar").value;
-        var url = "/actCalendario/" + mes;
-        $("#divCalendario").load(url);
-    }); 
-
     
-    document.getElementById("mesAtras").addEventListener("click",mesAtras);
-    document.getElementById("mesAdelante").addEventListener("click",mesAdelante);
  
 
 
 });
 
 function mesAtras(){
-    
-    let mes = document.getElementById("selMesCalendar").value.split(" ");
-    let nuevoMes = cambiarMes(mes[0],mes[1],false)
-    $("#selMesCalendar").datepicker("setDate",new Date(nuevoMes));
-}
-function mesAdelante(){
-    let mes = document.getElementById("selMesCalendar").value.split(" ");
-    let nuevoMes = cambiarMes(mes[0], mes[1])
-    $("#selMesCalendar").datepicker("setDate",new Date(nuevoMes));
+    let nuevaFecha = cambiarMes(false)
+    $("#selMesCalendar").datepicker("setDate",new Date(nuevaFecha));
 }
 
-function cambiarMes(mes, anio, adelantar = true){
+function mesAdelante(){
+    let nuevaFecha = cambiarMes();
+    $("#selMesCalendar").datepicker("setDate",new Date(nuevaFecha));
+}
+
+function cambiarMes(adelantar = true){
+    let fecha = document.getElementById("selMesCalendar").value.split(" ");
+    let mes = fecha[0];
+    let anio = fecha[1];
+    
     meses = [
         "Enero",
         "Febrero",

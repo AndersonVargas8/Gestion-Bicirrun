@@ -23,18 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.app.springapp.dto.Calendario;
 import com.app.springapp.entity.Cupo;
-//import com.app.springapp.entity.Disponibilidad;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
-import com.app.springapp.model.TurnosCompletos;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
-import com.app.springapp.repository.TurnoRepository;
 import com.app.springapp.service.CupoService;
-//import com.app.springapp.service.DisponibilidadService;
 import com.app.springapp.service.EstacionService;
 import com.app.springapp.service.HorarioService;
 import com.app.springapp.service.TurnoService;
@@ -61,32 +56,27 @@ public class TurnosController {
     @Autowired
     TurnoService serTurno;
 
-    @Autowired
-    TurnoRepository repTurnos;
-
     private List<String> meses;
 
-    @GetMapping("/calendarioTurnos/{mes}/{anio}")
-    @ResponseBody
-    public Calendario calendarioTurnos(@PathVariable int mes, @PathVariable int anio){
-        Calendario calendario = serTurno.getCalendario(mes, anio);
+    @GetMapping
+    public String index(ModelMap model) {
+        model = addAttributesTurnos(model);
 
-        return calendario;
+        model.addAttribute("dias", generarDiasHabiles(0));
+        model.addAttribute("calendario",serTurno.getCalendario(LocalDate.now().getMonthValue(), LocalDate.now().getYear()));
+        return "turnos/turnos";
+    }
+
+    @GetMapping("/calendarioTurnos/{mes}/{anio}")
+    public String calendarioTurnos(@PathVariable int mes, @PathVariable int anio, ModelMap model){
+        model.addAttribute("calendario",serTurno.getCalendario(mes, anio));
+        return "turnos/calendario::contenido-calendar";
     }
 
     //************************************ */
     //********CONTROLADOR VIEJO*********** */
     //************************************ */
-    @GetMapping
-    public String index(ModelMap model) {
-        model.addAttribute("infoCalendar", informacionCalendar(0));
-        model.addAttribute("mesCalendar", getMesCalendar(0, 0));
-        model = addAttributesTurnos(model);
-
-        model.addAttribute("dias", generarDiasHabiles(0));
-        model.addAttribute("calendario",serTurno.getCalendario(7, 2022));
-        return "turnos/turnos";
-    }
+    
 
     @PostMapping("/turnos")
     public String crearTurno(@Valid @ModelAttribute("turno") Turno turno, BindingResult result, ModelMap model) {
@@ -220,7 +210,6 @@ public class TurnosController {
     }
 
     private ModelMap addAttributesTurnos(ModelMap model) {
-        model.addAttribute("listTab", "turnos");
         model.addAttribute("horarios", serHorario.obtenerTodos());
         model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("estudiantes", repEstudiante.findAll());

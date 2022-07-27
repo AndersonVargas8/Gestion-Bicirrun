@@ -14,8 +14,8 @@
                                     mes"></i>
                                 <input type="text" id="selMesCalendar"
                                     class="form-control
-                                    d-inline"
-                                    style="max-width: 20%;" readonly="readonly">
+                                    d-inline" readonly
+                                    style="max-width: 20%;" >
                                 <button class="btn-calendar"
                                     onclick="$('#selMesCalendar').datepicker('show')">
                                     <i class="fa-solid fa-calendar-minus"></i>
@@ -47,34 +47,29 @@
                 </td>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td colspan="5" class="p-0">
-                    <div class="placeholder-glow" id="placeholders">
-                    </div>
-
-                </td>
-            </tr>
-            <tr th:each="semana:${calendario.semanas}">
-                <td class="diaCalendar" th:each="dia:${semana.dias}">
-                    <div class="grid diaNoDisponible" th:if="${dia == null}"></div>
-                    <div class="grid diaDisponible" th:if="${dia != null}">
-                        <div class="numeroDia"><span th:text="${dia.numeroDia}">Día</span></div>
+        <tbody id="tbody-calendar">
+            <div th:fragment="contenido-calendar" id="contenido-calendar">
+                <tr th:each="semana:${calendario.semanas}">
+                    <td class="diaCalendar" th:each="dia:${semana.dias}">
+                        <div class="grid diaNoDisponible" th:if="${dia == null}"></div>
+                        <div class="grid diaDisponible" th:if="${dia != null}">
+                            <div class="numeroDia"><span th:text="${dia.numeroDia}">Día</span></div>
                         <div class="turnosProgramados">Turnos programados:</div>
                         <div class="barra" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            th:title="${dia.turnosProgramados + ' / ' + dia.cupos}">
-                            <div th:class="${'progress ' + dia.estado}">
-                                <div class="progress-label" th:style="${((dia.turnosProgramados * 100 / dia.cupos) >= 60) ? 'color:white;' : 'color:black'}" th:text="${dia.turnosProgramados + ' / ' + dia.cupos}">n/n</div>
-                                <div th:class="${'progress-bar
-                                    progress-bar-striped ' + dia.estado}"
-                                    role="progressbar"
+                        data-bs-placement="bottom"
+                        th:title="${dia.turnosProgramados + ' / ' + dia.cupos}">
+                        <div th:class="${'progress ' + dia.estado}">
+                            <div class="progress-label" th:style="${((dia.turnosProgramados * 100 / dia.cupos) >= 60) ? 'color:white;' : 'color:black'}" th:text="${dia.turnosProgramados + ' / ' + dia.cupos}">n/n</div>
+                            <div th:class="${'progress-bar
+                            progress-bar-striped ' + dia.estado}"
+                            role="progressbar"
                                     th:style="${'width:' + (dia.turnosProgramados * 100 / dia.cupos) + '%;'}" aria-valuemin="0" th:aria-valuemax="${dia.cupos}" ></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            </div>
         </tbody>
     </table>
 </div>

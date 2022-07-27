@@ -102,11 +102,11 @@ thead,tbody{
 .tituloDias td{
     padding: 1px !important;
     background-color: darkgray;
+    width: 20%;
 }
 
 .tituloDias td div{
     display: grid;
-    min-height: 2em;
     background-color: #1c4c96;
     border-radius: 2px;
     align-items: center;
@@ -122,7 +122,7 @@ tbody td{
 
 
 .diaCalendar{
-    padding: 1px !important;
+    padding: 1.5px !important;
     background-color: darkgray;
 }
 
@@ -259,5 +259,12 @@ td .grid{
 
 #selMesCalendar:focus + .btn-calendar, .btn-calendar:focus{
     background-color: rgb(194, 231, 253);
+}
+
+.calendar-placeholder{
+    height: 130px; 
+    width:19.4% !important; 
+    margin:0.3%; 
+    border-radius: 5px;
 }
 

@@ -35,9 +35,9 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
         String nombreArchivo = "TurnosProgramados" + String.valueOf(anio).concat(EXTENSION_ARCHIVOS);
         File archivo = new File(RUTA_ARCHIVOS+nombreArchivo);
 
-        //Si el archivo no existe se crea un nuevo objeto, se crea un nuevo archivo y se guarda el objeto en él
+        //Si el archivo no existe se crea un nuevo objeto y se retorna
         if(!archivo.exists()){
-            try {
+            /*try {
                 archivo.createNewFile();
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -49,11 +49,11 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
                 escritor = new ObjectOutputStream(new FileOutputStream(archivo));
             }catch(IOException e){
                 e.printStackTrace();
-            }
+            }*/
 
             TurnosProgramados turnosPro = new TurnosProgramados(anio);
 
-            try{
+            /*try{
                 escritor.writeObject(turnosPro);
             }catch(IOException e){
                 e.printStackTrace();
@@ -62,7 +62,7 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
                 escritor.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
             return turnosPro;
         }
 
@@ -111,9 +111,9 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
         String nombreArchivo = "TurnosCompletos" + String.valueOf(anio).concat(EXTENSION_ARCHIVOS);
         File archivo = new File(RUTA_ARCHIVOS + nombreArchivo);
 
-        //Si el archivo no existe se crea un nuevo objeto, se crea un nuevo archivo y se guarda el objeto en él
+        //Si el archivo no existe se crea un nuevo objeto y se retorna
         if(!archivo.exists()){
-            try {
+            /*try {
                 archivo.createNewFile();
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -125,11 +125,11 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
                 escritor = new ObjectOutputStream(new FileOutputStream(archivo));
             }catch(IOException e){
                 e.printStackTrace();
-            }
+            }*/
 
             TurnosCompletos turnosCom = new TurnosCompletos(anio);
 
-            try{
+            /*try{
                 escritor.writeObject(turnosCom);
             }catch(IOException e){
                 e.printStackTrace();
@@ -138,7 +138,7 @@ public interface TurnoRepository extends CrudRepository<Turno, Long>{
                 escritor.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
             return turnosCom;
         }
 
