@@ -20,7 +20,7 @@ public interface CupoRepository extends CrudRepository<Cupo,Integer>{
 
     public Cupo findById(Long id);
 
-    public Cupo findByHorario(Horario horario);
+    public List<Cupo> findByHorario(Horario horario);
 
    /*  public Optional<Cupo> findByCupoGrupo(int cupoGrupo);
 

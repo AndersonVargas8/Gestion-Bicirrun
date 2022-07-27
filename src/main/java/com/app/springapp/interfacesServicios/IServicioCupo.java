@@ -1,5 +1,6 @@
 package com.app.springapp.interfacesServicios;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.app.springapp.entity.Cupo;
@@ -10,11 +11,18 @@ public interface IServicioCupo {
     public List<Cupo> obtenerTodos();
     public List<Cupo> obtenerTodosViernes();
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario);
-    public Cupo buscarPorHorario(Horario horario);
+    public List<Cupo> buscarPorHorario(Horario horario);
+    public int cantidadCuposPorHorario(Horario horario);
     //public Cupo buscarPorCupoGrupo(int cupoGrupoId);
     //public int buscarIdPorCupoGrupoHorario(int idHorario);
     public Cupo buscarPorId(int id);
     //public Integer cantidadCupos();
     //public Integer cantidadCuposViernes();
     public List<Integer> idEstacionesPorHorario(int idHorario);
+
+    /**
+     * Retorna la cantidad de cupos que hay en cada día de la semana (Lunes a Viernes)
+     * @return HashMap - clave: nombre del Dia, valor: cantidad de cupos
+     */
+    public HashMap<String, Integer> cantidadCuposAlDia();
 }

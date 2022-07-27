@@ -83,7 +83,7 @@ public class TurnosProgramados implements Serializable {
     /**
      * Obtener un mes especifico, con los turnos programados en cada día.
      * @param mes Nombre del mes. No distingue mayúsculas de minúsculas.
-     * @return com.app.springapp.model.Mes
+     * @return Mes
      * @throws IllegalArgumentException El mes especificado no existe en el registro
      */
     public Mes getMes(String mes){

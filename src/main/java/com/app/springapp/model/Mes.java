@@ -58,7 +58,7 @@ public class Mes implements Serializable{
     }
 
     /**
-     * Suma un turno progrmado al día especificado.
+     * Suma un turno progrmado al día especificado. Si el día no existe, se agrega el día al registro
      * 
      * @param dia
      * @return El nuevo número de turnos programados en el día.
@@ -82,7 +82,7 @@ public class Mes implements Serializable{
      * 
      * @param dia
      * @param turnos
-     * @throws IllegalArgumentException El número de turnos es negativo.
+     * @throws IllegalArgumentException El número de turnos es negativo. Si el día no existe, se agrega el día al registro
      */
     public void establecerTurnosDia(int dia, int numeroTurnos) {
         if (numeroTurnos < 0) {

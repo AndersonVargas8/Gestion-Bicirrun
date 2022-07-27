@@ -12,12 +12,24 @@ import java.util.Locale;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.app.springapp.dto.Calendario;
 import com.app.springapp.entity.Cupo;
 //import com.app.springapp.entity.Disponibilidad;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
-import com.app.springapp.model.TurnosProgramados;
+import com.app.springapp.model.TurnosCompletos;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.repository.TurnoRepository;
@@ -27,17 +39,8 @@ import com.app.springapp.service.EstacionService;
 import com.app.springapp.service.HorarioService;
 import com.app.springapp.service.TurnoService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 @Controller
+@RequestMapping("/turnos")
 public class TurnosController {
     @Autowired
     HorarioService serHorario;
@@ -63,16 +66,26 @@ public class TurnosController {
 
     private List<String> meses;
 
-    @GetMapping("/turnos")
+    @GetMapping("/calendarioTurnos/{mes}/{anio}")
     @ResponseBody
-    public TurnosProgramados index(ModelMap model) {
-        /*model.addAttribute("infoCalendar", informacionCalendar(0));
+    public Calendario calendarioTurnos(@PathVariable int mes, @PathVariable int anio){
+        Calendario calendario = serTurno.getCalendario(mes, anio);
+
+        return calendario;
+    }
+
+    //************************************ */
+    //********CONTROLADOR VIEJO*********** */
+    //************************************ */
+    @GetMapping
+    public String index(ModelMap model) {
+        model.addAttribute("infoCalendar", informacionCalendar(0));
         model.addAttribute("mesCalendar", getMesCalendar(0, 0));
         model = addAttributesTurnos(model);
 
-        model.addAttribute("dias", generarDiasHabiles(0));*/
-        TurnosProgramados t = repTurnos.getTurnosProgramados(2022);
-        return t;
+        model.addAttribute("dias", generarDiasHabiles(0));
+        model.addAttribute("calendario",serTurno.getCalendario(7, 2022));
+        return "turnos/turnos";
     }
 
     @PostMapping("/turnos")

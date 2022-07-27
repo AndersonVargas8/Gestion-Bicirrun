@@ -11,7 +11,7 @@ function test(){
     let tituloNav = activeItemNewAnim.find('a');
 
     tituloNav.css({
-        color:"#017375"
+        color:"#0a7e85"
     })
     $(".hori-selector").css({
         "top":itemPosNewAnimTop.top + "px",

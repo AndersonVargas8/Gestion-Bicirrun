@@ -77,6 +77,7 @@ thead,tbody{
     font-size: 21px;
 }
 
+/*Nuevo*/
 .calendario{
     padding: 0.2%;
     background-color: darkgray;
@@ -133,8 +134,13 @@ td .grid{
 }
 
 .diaDisponible{
-    background-color: gainsboro     ;
+    background-color: gainsboro;
 }
+
+.diaNoDisponible{
+    background-color: lightgray;
+}
+
 .diaDisponible:hover{
     filter: brightness(90%);
     cursor: pointer;
@@ -147,6 +153,11 @@ td .grid{
     justify-items: center;
     align-items: end;
     padding: 0 20px;
+}
+
+.grid .numeroDia span{
+    border-radius: 100%;
+    width: 23%;
 }
 
 .grid .turnosProgramados{
@@ -163,9 +174,46 @@ td .grid{
     padding: 5px 15px 0px 15px;
 
 }
+.progress{
+    position: relative;
+    height: 60% !important;
+}
 
+.progress.disponible{
+    background-color: rgb(205, 255, 205) !important;
+}
+
+.progress.medio{
+    background-color: lightyellow;
+}
+
+.progress-label{
+    position: absolute; 
+    left: 42%; 
+    top:50%; 
+    height:100%; 
+    z-index: 2;
+    font-size:15px;
+}
 .progress-bar{
     font-weight: 500;
+    min-width: 2px;
+}
+
+.progress-bar.disponible{
+    background-color: #3f9b39;
+}
+
+.progress-bar.vencido{
+    background-color: gray;
+}
+
+.progress-bar.medio{
+    background-color: darkgoldenrod;
+}
+
+.progress-bar.completo{
+    background-color: darkred;
 }
 
 #selMesCalendar{

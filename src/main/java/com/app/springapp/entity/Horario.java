@@ -116,6 +116,16 @@ public class Horario {
         this.diasNoDisponibles = diasNoDisponibles;
     }
     
+    /**
+     * 
+     * @param dia
+     * @return True si el dia especificado no está disponible. False en otro caso.
+     */
+    public boolean diaNoDisponible(String dia){
+        dia = dia.toLowerCase();
+
+        return this.diasNoDisponibles.contains(dia);
+    }
     /** 
      * @param o
      * @return boolean

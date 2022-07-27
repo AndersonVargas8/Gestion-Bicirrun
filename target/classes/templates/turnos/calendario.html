@@ -49,89 +49,27 @@
         </thead>
         <tbody>
             <tr>
-                <td colspan="5" class="p-0" >
-                        <div class="placeholder-glow" id="placeholders">
-                        </div>
-                    
+                <td colspan="5" class="p-0">
+                    <div class="placeholder-glow" id="placeholders">
+                    </div>
+
                 </td>
             </tr>
-            <tr th:each="semana,itemStat:${infoCalendar}">
-                <td class="diaCalendar">
-                    <div class="grid diaDisponible">
-                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
+            <tr th:each="semana:${calendario.semanas}">
+                <td class="diaCalendar" th:each="dia:${semana.dias}">
+                    <div class="grid diaNoDisponible" th:if="${dia == null}"></div>
+                    <div class="grid diaDisponible" th:if="${dia != null}">
+                        <div class="numeroDia"><span th:text="${dia.numeroDia}">Día</span></div>
                         <div class="turnosProgramados">Turnos programados:</div>
                         <div class="barra" data-bs-toggle="tooltip"
                             data-bs-placement="bottom"
-                            title="n / n">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped  bg-success"
+                            th:title="${dia.turnosProgramados + ' / ' + dia.cupos}">
+                            <div th:class="${'progress ' + dia.estado}">
+                                <div class="progress-label" th:style="${((dia.turnosProgramados * 100 / dia.cupos) >= 60) ? 'color:white;' : 'color:black'}" th:text="${dia.turnosProgramados + ' / ' + dia.cupos}">n/n</div>
+                                <div th:class="${'progress-bar
+                                    progress-bar-striped ' + dia.estado}"
                                     role="progressbar"
-                                    style="width: 25%;" aria-valuenow="25"
-                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td class="diaCalendar">
-                    <div class="grid diaDisponible">
-                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                        <div class="turnosProgramados">Turnos programados:</div>
-                        <div class="barra" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            title="n / n">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped bg-success"
-                                    role="progressbar"
-                                    style="width: 19%;" aria-valuenow="25"
-                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td class="diaCalendar">
-                    <div class="grid diaDisponible">
-                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                        <div class="turnosProgramados">Turnos programados:</div>
-                        <div class="barra" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            title="n / n">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped bg-success"
-                                    role="progressbar"
-                                    style="width: 25%;" aria-valuenow="25"
-                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td class="diaCalendar">
-                    <div class="grid diaDisponible">
-                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                        <div class="turnosProgramados">Turnos programados:</div>
-                        <div class="barra" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            title="n / n">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped bg-success"
-                                    role="progressbar"
-                                    style="width: 25%;" aria-valuenow="25"
-                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td class="diaCalendar">
-                    <div class="grid diaDisponible">
-                        <div class="numeroDia" th:text="${itemStat.index}">Día</div>
-                        <div class="turnosProgramados">Turnos programados:</div>
-                        <div class="barra" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            title="n / n">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped bg-success"
-                                    role="progressbar"
-                                    style="width: 25%;" aria-valuenow="25"
-                                    aria-valuemin="0" aria-valuemax="100">n / n</div>
+                                    th:style="${'width:' + (dia.turnosProgramados * 100 / dia.cupos) + '%;'}" aria-valuemin="0" th:aria-valuemax="${dia.cupos}" ></div>
                             </div>
                         </div>
                     </div>
