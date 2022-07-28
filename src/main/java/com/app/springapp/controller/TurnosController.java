@@ -10,19 +10,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
@@ -73,55 +73,39 @@ public class TurnosController {
         return "turnos/calendario::contenido-calendar";
     }
 
+    
+    /**
+     * Se crea un nuevo turno con los parámetros especificados en el objeto turno.
+     * @param turno Debe contener:
+     * - fecha: String en formato "dd-mm-aaaa" (dd-mm-yyyy) ej: 31-12-1999
+     * - observaciones (No obligatorio): String
+     * - idEstacion: int
+     * - idEstado (No obligatorio): int
+     * - idEstudiante: int
+     * - idHorario: int
+     * @param model
+     * @return 
+     */
+    @PostMapping
+    public ResponseEntity crearTurno(@RequestBody TurnoDTO turnoDTO, ModelMap model) {
+        Turno turno = new Turno();
+        try{
+             turno = serTurno.guardarTurno(turnoDTO);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+        
+        return new ResponseEntity<Turno>(turno,HttpStatus.CREATED);
+    }
+
+
     //************************************ */
     //********CONTROLADOR VIEJO*********** */
     //************************************ */
     
 
-    @PostMapping("/turnos")
-    public String crearTurno(@Valid @ModelAttribute("turno") Turno turno, BindingResult result, ModelMap model) {
-
-        if (result.hasErrors()) {
-            model = addAttributesTurnos(model);
-
-            model.addAttribute("infoCalendar", informacionCalendar(0));
-            model.addAttribute("mesCalendar", getMesCalendar(0, 0));
-            model.addAttribute("dias", generarDiasHabiles(0));
-            model.addAttribute("nuevoTurno", new Turno());
-            return "turno";
-        } else {
-            try {
-                serTurno.guardarTurno(turno);
-                Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
-                /*if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
-                                             // tiene cupoGrupo)
-                    cupo = serCupo.buscarPorId(cupo.getCupoGrupo()); // asigna el cupoGrupo al cupo
-
-                Disponibilidad disponibilidad = serDisponibilidad.consultarDisponibilidadMesDia(turno.getMes(),
-                        turno.getDia(), cupo);
-
-                if (disponibilidad == null) {
-                    // Actualiza los registros de disponibilidad
-                    serDisponibilidad.actualizarCuposDia(turno.getDia(), turno.getMes());
-                    // Carga el registro de disponibilidad
-                    disponibilidad = serDisponibilidad.consultarDisponibilidadMesDia(turno.getMes(),
-                            turno.getDia(), cupo);
-                }
-
-                disponibilidad.setNum_disponibles(disponibilidad.getNum_disponibles() - 1);
-                serDisponibilidad.guardarDisponibilidad(disponibilidad);*/
-            } catch (Exception e) {
-                model.addAttribute("error", "Error: " + e.getMessage());
-            }
-        }
-
-        model.addAttribute("infoCalendar", informacionCalendar(turno.getMes()));
-        model.addAttribute("mesCalendar", getMesCalendar(0, turno.getMes()));
-        model = addAttributesTurnos(model);
-        model.addAttribute("dias", generarDiasHabiles(0));
-        return "redirect:/turnos";
-    }
-
+    
     @GetMapping("/eliminarTurno/{id}")
     public String eliminarTurno(@PathVariable int id, ModelMap model) {
         Turno turno = serTurno.obtenerPorId(id);

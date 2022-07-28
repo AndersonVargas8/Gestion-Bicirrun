@@ -12,8 +12,11 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * Esta clase permite manejar la persistencia de los turnos creados en la aplicación
+ */
 @Entity
-public class Turno implements Comparable{
+public class Turno implements Comparable<Turno>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -24,6 +27,9 @@ public class Turno implements Comparable{
 
     @Column
     private int mes;
+
+    @Column
+    private int anio;
 
     @Column
     private String observaciones;
@@ -43,11 +49,12 @@ public class Turno implements Comparable{
     public Turno() {
     }
 
-    public Turno(long id, int dia, int mes, String observaciones, EstadoTurno estado, Estacion estacion,
+    public Turno(long id, int dia, int mes, int anio, String observaciones, EstadoTurno estado, Estacion estacion,
             Estudiante estudiante, Horario horario) {
         this.id = id;
         this.dia = dia;
         this.mes = mes;
+        this.anio = anio;
         this.observaciones = observaciones;
         this.estado = estado;
         this.estacion = estacion;
@@ -77,6 +84,14 @@ public class Turno implements Comparable{
 
     public void setMes(int mes) {
         this.mes = mes;
+    }
+
+    public int getAnio() {
+        return this.anio;
+    }
+
+    public void setAnio(int anio) {
+        this.anio = anio;
     }
 
     public String getObservaciones() {
@@ -127,7 +142,7 @@ public class Turno implements Comparable{
             return false;
         }
         Turno turno = (Turno) o;
-        return id == turno.id && dia == turno.dia && mes == turno.mes
+        return id == turno.id && dia == turno.dia && mes == turno.mes && anio == turno.anio
                 && Objects.equals(observaciones, turno.observaciones) && Objects.equals(estado, turno.estado)
                 && Objects.equals(estacion, turno.estacion) && Objects.equals(estudiante, turno.estudiante)
                 && Objects.equals(horario, turno.horario);
@@ -144,6 +159,7 @@ public class Turno implements Comparable{
                 " id='" + getId() + "'" +
                 ", dia='" + getDia() + "'" +
                 ", mes='" + getMes() + "'" +
+                ", anio='" + getAnio() + "'" +
                 ", observaciones='" + getObservaciones() + "'" +
                 ", estado='" + getEstado() + "'" +
                 ", estacion='" + getEstacion() + "'" +
@@ -153,26 +169,31 @@ public class Turno implements Comparable{
     }
 
     @Override
-    public int compareTo(Object o) {
-        Turno turno = (Turno) o;
+    public int compareTo(Turno turno) {
+        if (turno.anio == this.anio) {
+            if (turno.mes == this.mes) {
+                if (turno.dia == this.dia) {
+                    if (this.horario.getId() > turno.horario.getId())
+                        return 1;
 
-        if(turno.getMes() == this.mes){
-            if(turno.dia == this.dia){
-                if(this.horario.getId() > turno.getHorario().getId())
+                    if (this.horario.getId() < turno.horario.getId())
+                        return -1;
+
+                    return 0;
+                }
+                if (this.dia > turno.dia)
                     return 1;
-                
-                if(this.horario.getId() < turno.getHorario().getId())
-                    return -1;
-                
-                return 0;
+
+                return -1;
             }
-            if(this.dia > turno.getDia())
+
+            if (this.mes > turno.mes)
                 return 1;
 
             return -1;
         }
 
-        if(this.mes > turno.getMes())
+        if(this.anio > turno.anio)
             return 1;
 
         return -1;

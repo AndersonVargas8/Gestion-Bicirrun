@@ -1,10 +1,7 @@
 package com.app.springapp.service;
 
-import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,12 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.springapp.dto.Calendario;
+import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Turno;
 import com.app.springapp.interfacesServicios.IServicioCupo;
+import com.app.springapp.interfacesServicios.IServicioEstacion;
+import com.app.springapp.interfacesServicios.IServicioEstudiante;
+import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.interfacesServicios.IServicioTurno;
 import com.app.springapp.model.Mes;
+import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.TurnoRepository;
+import com.app.springapp.util.Mapper;
 
 @Service
 public class TurnoService implements IServicioTurno{
@@ -28,6 +31,18 @@ public class TurnoService implements IServicioTurno{
     @Autowired
     IServicioCupo serCupo;
 
+    @Autowired
+    IServicioEstacion serEstacion;
+
+    @Autowired
+    IServicioEstudiante serEstudiante;
+
+    @Autowired
+    IServicioHorario serHorario;
+
+    @Autowired
+    EstadoTurnoRepository repEstadoTurno;
+    
     @Override
     public Turno obtenerPorId(long id){
         return repTurno.findById(id).get();
@@ -48,9 +63,10 @@ public class TurnoService implements IServicioTurno{
     }
 
     @Override
-    public int guardarTurno(Turno turno) {
-        repTurno.save(turno);
-        return 0;
+    public Turno guardarTurno(TurnoDTO turnoDTO) {
+        Turno turno = Mapper.mapTurno(turnoDTO, serEstacion, serEstudiante, serHorario, repEstadoTurno);
+        //validaciones
+        return repTurno.save(turno);
     }
 
     @Override
