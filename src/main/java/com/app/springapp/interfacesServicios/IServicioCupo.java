@@ -25,4 +25,19 @@ public interface IServicioCupo {
      * @return HashMap - clave: nombre del Dia, valor: cantidad de cupos
      */
     public HashMap<String, Integer> cantidadCuposAlDia();
+
+    /**
+     * @param dia
+     * @param mes
+     * @param anio
+     * @return Cantidad de cupos que tiene una fecha específica
+     */
+    public int cantidadCuposPorFecha(int dia, int mes, int anio);
+
+    /**
+     * Retorna la cantidad de cupos de un cupo teniendo en cuenta si depende de otro cupo.
+     * @param cupo
+     * @return Número de cupos del cupo.
+     */
+    public int obtenerNumeroCupos(Cupo cupo);
 }

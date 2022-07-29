@@ -196,7 +196,7 @@ public class Estudiante {
             return false;
         }
         Estudiante estudiante = (Estudiante) o;
-        return id == estudiante.id && Objects.equals(nombres, estudiante.nombres) && Objects.equals(apellidos, estudiante.apellidos) && Objects.equals(documento, estudiante.documento) && Objects.equals(carrera, estudiante.carrera);
+        return Objects.equals(documento, estudiante.documento);
     }
 
     

@@ -15,9 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -67,6 +70,13 @@ public class TurnosController {
         return "turnos/turnos";
     }
 
+    /**
+     * Se construye un calendario para la fecha dada con los turnos programados
+     * @param mes
+     * @param anio
+     * @param model
+     * @return Fragmento que contiene el calendario renderizado
+     */
     @GetMapping("/calendarioTurnos/{mes}/{anio}")
     public String calendarioTurnos(@PathVariable int mes, @PathVariable int anio, ModelMap model){
         model.addAttribute("calendario",serTurno.getCalendario(mes, anio));
@@ -87,40 +97,57 @@ public class TurnosController {
      * @return 
      */
     @PostMapping
-    public ResponseEntity crearTurno(@RequestBody TurnoDTO turnoDTO, ModelMap model) {
-        Turno turno = new Turno();
+    public ResponseEntity crearTurno(@RequestBody TurnoDTO turnoDTO) {
         try{
-             turno = serTurno.guardarTurno(turnoDTO);
+             turnoDTO = serTurno.guardarTurno(turnoDTO);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
         
-        return new ResponseEntity<Turno>(turno,HttpStatus.CREATED);
+        return new ResponseEntity<TurnoDTO>(turnoDTO,HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity eliminarTurno(@PathVariable int id){
+        try{
+            serTurno.eliminarTurno(id);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity editarTurno(@PathVariable int id, @RequestBody TurnoDTO turnoDTO){
+        try{
+            turnoDTO = serTurno.editarTurno(id, turnoDTO);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<TurnoDTO>(turnoDTO, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity parcharTurno(@PathVariable int id, @RequestBody TurnoDTO turnoDTO){
+        try{
+            turnoDTO = serTurno.parcharTurno(id, turnoDTO);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<TurnoDTO>(turnoDTO, HttpStatus.OK);
+    }
     //************************************ */
     //********CONTROLADOR VIEJO*********** */
     //************************************ */
     
 
-    
-    @GetMapping("/eliminarTurno/{id}")
-    public String eliminarTurno(@PathVariable int id, ModelMap model) {
-        Turno turno = serTurno.obtenerPorId(id);
-        serTurno.eliminarTurno(turno);
-        Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
-        /*if (cupo.getCupoGrupo() != 0)// Verifica si el Cupo comparte número de cupos con otro Cupo (si es 0, no
-                                     // tiene cupoGrupo)
-            cupo = serCupo.buscarPorId(cupo.getCupoGrupo()); // asigna el cupoGrupo al cupo
-
-        Disponibilidad disponibilidad = serDisponibilidad.consultarDisponibilidadMesDia(turno.getMes(),
-                turno.getDia(), cupo);
-        disponibilidad.setNum_disponibles(disponibilidad.getNum_disponibles() + 1);
-        serDisponibilidad.guardarDisponibilidad(disponibilidad);*/
-        return "redirect:/turnos";
-    }
 
     @GetMapping("/actFormTurnosMes/{mes}")
     public String actFormTurnosMes(ModelMap model, @PathVariable int mes) {

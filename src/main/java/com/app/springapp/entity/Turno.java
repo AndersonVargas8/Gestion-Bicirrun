@@ -1,5 +1,6 @@
 package com.app.springapp.entity;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -16,9 +17,9 @@ import org.hibernate.annotations.GenericGenerator;
  * Esta clase permite manejar la persistencia de los turnos creados en la aplicación
  */
 @Entity
-public class Turno implements Comparable<Turno>{
+public class Turno implements Comparable<Turno>, Cloneable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
@@ -170,33 +171,21 @@ public class Turno implements Comparable<Turno>{
 
     @Override
     public int compareTo(Turno turno) {
-        if (turno.anio == this.anio) {
-            if (turno.mes == this.mes) {
-                if (turno.dia == this.dia) {
-                    if (this.horario.getId() > turno.horario.getId())
-                        return 1;
+        LocalDate fechaThis = LocalDate.of(anio,mes,dia);
+        LocalDate fechaOtro = LocalDate.of(turno.anio, turno.mes, turno.dia);
 
-                    if (this.horario.getId() < turno.horario.getId())
-                        return -1;
+        return fechaThis.compareTo(fechaOtro);
+    }
 
-                    return 0;
-                }
-                if (this.dia > turno.dia)
-                    return 1;
-
-                return -1;
-            }
-
-            if (this.mes > turno.mes)
-                return 1;
-
-            return -1;
+    @Override
+    public Turno clone(){
+        try {
+            return (Turno)super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
 
-        if(this.anio > turno.anio)
-            return 1;
-
-        return -1;
+        return null;
     }
 
 }

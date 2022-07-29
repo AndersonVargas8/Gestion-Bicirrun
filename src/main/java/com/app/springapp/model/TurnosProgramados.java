@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class TurnosProgramados implements Serializable {
     private int anio;
-    private HashMap<String,Mes> meses;
+    private HashMap<Integer,Mes> meses;
     
     /**
      * Se inicializa con el año actual y un diccionario con la lista de meses
@@ -29,21 +29,21 @@ public class TurnosProgramados implements Serializable {
     private void inicializarMeses(){
         this.meses = new HashMap<>();
 
-        this.meses.put("enero", new Mes("enero"));
-        this.meses.put("febrero", new Mes("febrero"));
-        this.meses.put("marzo", new Mes("marzo"));
-        this.meses.put("abril", new Mes("abril"));
-        this.meses.put("mayo", new Mes("mayo"));
-        this.meses.put("junio", new Mes("junio"));
-        this.meses.put("julio", new Mes("julio"));
-        this.meses.put("agosto", new Mes("agosto"));
-        this.meses.put("septiembre", new Mes("septiembre"));
-        this.meses.put("octubre", new Mes("octubre"));
-        this.meses.put("noviembre", new Mes("noviembre"));
-        this.meses.put("diciembre", new Mes("diciembre"));
+        this.meses.put(1, new Mes("enero"));
+        this.meses.put(2, new Mes("febrero"));
+        this.meses.put(3, new Mes("marzo"));
+        this.meses.put(4, new Mes("abril"));
+        this.meses.put(5, new Mes("mayo"));
+        this.meses.put(6, new Mes("junio"));
+        this.meses.put(7, new Mes("julio"));
+        this.meses.put(8, new Mes("agosto"));
+        this.meses.put(9, new Mes("septiembre"));
+        this.meses.put(10, new Mes("octubre"));
+        this.meses.put(11, new Mes("noviembre"));
+        this.meses.put(12, new Mes("diciembre"));
     }
 
-    public TurnosProgramados(int anio, HashMap<String,Mes> meses) {
+    public TurnosProgramados(int anio, HashMap<Integer,Mes> meses) {
         this.anio = anio;
         this.meses = meses;
     }
@@ -68,7 +68,7 @@ public class TurnosProgramados implements Serializable {
     /** 
      * @return HashMap<String, Mes>
      */
-    public HashMap<String,Mes> getMeses() {
+    public HashMap<Integer,Mes> getMeses() {
         return this.meses;
     }
 
@@ -76,7 +76,7 @@ public class TurnosProgramados implements Serializable {
     /** 
      * @param meses
      */
-    public void setMeses(HashMap<String,Mes> meses) {
+    public void setMeses(HashMap<Integer,Mes> meses) {
         this.meses = meses;
     }
 
@@ -86,8 +86,8 @@ public class TurnosProgramados implements Serializable {
      * @return Mes
      * @throws IllegalArgumentException El mes especificado no existe en el registro
      */
-    public Mes getMes(String mes){
-        mes = validarNombreMes(mes);
+    public Mes getMes(int mes){
+        validarMes(mes);
         
         return this.meses.get(mes); 
     }
@@ -99,7 +99,8 @@ public class TurnosProgramados implements Serializable {
      * @return El nuevo número de turnos que contiene el día especificado
      * @throws IllegalArgumentException El mes especificado no existe en el registro
      */
-    public int agregarTurno(String mes, int dia){
+    public int agregarTurno(int mes, int dia){
+        validarMes(mes);
         Mes mesObjetivo = getMes(mes);
         return mesObjetivo.agregarTurno(dia);
     }
@@ -111,19 +112,21 @@ public class TurnosProgramados implements Serializable {
      * @param numeroTurnos
      * @throws IllegalArgumentException El mes especificado no existe en el registro
      */
-    public void establecerTurnosDia(String mes, int dia, int numeroTurnos){
+    public void establecerTurnosDia(int mes, int dia, int numeroTurnos){
+        validarMes(mes);
         Mes mesObjetivo = getMes(mes);
         mesObjetivo.establecerTurnosDia(dia, numeroTurnos);
     }
 
     /**
-     * Reduce en uno el número de turnos programados en un día y turno especificados.
+     * Reduce en uno el número de turnos programados en un día y mes especificados.
      * @param mes
      * @param dia
      * @return El nuevo número de turnos del día y mes especificados.
      * @throws IllegalArgumentException El mes especificado no existe en el registro
      */
-    public int eliminarTurno(String mes, int dia){
+    public int eliminarTurno(int mes, int dia){
+        validarMes(mes);
         Mes mesObjetivo = getMes(mes);
         return mesObjetivo.eliminarTurno(dia);
     }
@@ -133,7 +136,8 @@ public class TurnosProgramados implements Serializable {
      * @param mes
      * @return La suma total de turnos programados en el mes especificado.
      */
-    public int numeroTurnosMes(String mes){
+    public int numeroTurnosMes(int mes){
+        validarMes(mes);
         Mes mesObjetivo = getMes(mes);
         return mesObjetivo.numeroTurnos();
     }
@@ -144,18 +148,18 @@ public class TurnosProgramados implements Serializable {
      * @param dia
      * @return El número de turnos programados en el mes especificado.
      */
-    public int numeroTurnosDia(String mes, int dia){
+    public int numeroTurnosDia(int mes, int dia){
+        validarMes(mes);
         Mes mesObjetivo = getMes(mes);
         return mesObjetivo.numeroTurnosDia(dia);
     }
 
-    private String validarNombreMes(String mes){
-        mes = mes.toLowerCase();
+    private boolean validarMes(int mes){
         if(!this.meses.containsKey(mes)){
             throw new IllegalArgumentException("El mes especificado no existe en el registro");
         }
 
-        return mes;
+        return true;
     }
     /** 
      * @param o

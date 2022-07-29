@@ -9,8 +9,10 @@ import com.app.springapp.entity.Turno;
 public interface IServicioTurno {
     public List<Turno> obtenerTodos();
     public List<Turno> obtenerPorDiaMes(int dia, int mes);
-    public Turno guardarTurno(TurnoDTO turnoDTO);
     public List<Turno> obtenerPorEstudiante(Estudiante estudiante);
-    public void eliminarTurno(Turno turno);
     public Turno obtenerPorId(long id);
+    public TurnoDTO guardarTurno(TurnoDTO turnoDTO);
+    public void eliminarTurno(int idTurno);
+    public TurnoDTO editarTurno(int id, TurnoDTO turnoDTO);
+    public TurnoDTO parcharTurno(int id, TurnoDTO turnoDTO);
 }

@@ -20,7 +20,7 @@ public class Mapper {
      * @return Turno con los datos contenidos enel DTO.
      * @throws IllegalArgumentException si faltan datos o son inválidos.
      */
-    public static Turno mapTurno(TurnoDTO dto, IServicioEstacion serEstacion, IServicioEstudiante serEstudiante, IServicioHorario serHorario, EstadoTurnoRepository repEstadoTurno) {
+    public static Turno mapToTurno(TurnoDTO dto, IServicioEstacion serEstacion, IServicioEstudiante serEstudiante, IServicioHorario serHorario, EstadoTurnoRepository repEstadoTurno) {
         Turno turno = new Turno();
 
         if(!esFechaValida(dto.fecha)){
@@ -61,7 +61,24 @@ public class Mapper {
         return turno;
     }
 
-    private static boolean esFechaValida(String entrada){
+    public static TurnoDTO mapToTurnoDTO(Turno turno){
+        TurnoDTO turnoDTO = new TurnoDTO();
+        turnoDTO.fecha = String.valueOf(turno.getDia()) + "-" + String.valueOf(turno.getMes()) + "-" + String.valueOf(turno.getAnio());
+        turnoDTO.observaciones = turno.getObservaciones();
+        turnoDTO.estacion = turno.getEstacion().getNombre();
+        turnoDTO.estado = turno.getEstado().getDescripcion();
+        turnoDTO.estudiante = turno.getEstudiante().getNombres() + " " + turno.getEstudiante().getApellidos();
+
+        String nombre = turno.getEstudiante().getNombres().split(" ")[0];
+        String apellido = turno.getEstudiante().getApellidos().split(" ")[0];
+
+        turnoDTO.nombreCortoEstudiante = nombre + " " + apellido;
+        turnoDTO.horario = turno.getHorario().getDescripcion();
+
+        return turnoDTO;
+    }
+
+    public static boolean esFechaValida(String entrada){
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         try{
             format.parse(entrada);

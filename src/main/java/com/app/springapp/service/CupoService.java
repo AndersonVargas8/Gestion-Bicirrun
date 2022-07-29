@@ -1,8 +1,12 @@
 package com.app.springapp.service;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.app.springapp.dto.Calendario;
 import com.app.springapp.entity.Cupo;
@@ -11,9 +15,6 @@ import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioCupo;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.repository.CupoRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class CupoService implements IServicioCupo{
@@ -121,6 +122,25 @@ public class CupoService implements IServicioCupo{
         }
 
         return cupos;
+    }
+
+    @Override
+    public int cantidadCuposPorFecha(int dia, int mes, int anio){
+        LocalDate fecha = LocalDate.of(anio,mes,dia);
+
+        int valorDiaSemana = fecha.get(WeekFields.ISO.dayOfWeek());
+        String nombreDia = Calendario.convertirNumeroADia(valorDiaSemana);
+
+        return cantidadCuposAlDia().get(nombreDia);
+    }
+
+    @Override
+    public int obtenerNumeroCupos(Cupo cupo){
+        int numeroCupos = cupo.getNum_cupos();
+        if(!cupo.getCupos_independientes().isEmpty()){
+            numeroCupos = cupo.getCupos_independientes().get(0).getNum_cupos();
+        }
+        return numeroCupos;
     }
 
 }
