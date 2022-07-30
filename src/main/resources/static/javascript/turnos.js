@@ -1,3 +1,6 @@
+//Activar navbar
+document.querySelector("#item-turnos").classList.add("active");
+
 //Activar Datepickers
 $("#selMesCalendar").datepicker({
   language: "es",
@@ -10,23 +13,6 @@ $("#selMesCalendar").datepicker({
 
 $("#selMesCalendar").datepicker("setDate", new Date());
 
-//Activar selectores de mes
-document.getElementById("mesAtras").addEventListener("click", mesAtras);
-document.getElementById("mesAdelante").addEventListener("click", mesAdelante);
-
-//Cambiar el mes del calendario;
-$("#selMesCalendar")
-  .datepicker()
-  .on("changeDate", (e) => {
-    activarPlaceholders();
-    let date = e.date; //Fecha seleccionada en el datepicker
-    let mes = date.getMonth() + 1; //getMonth() retorna 0 para Enero, 1 para Febrero, ...
-    let anio = date.getFullYear();
-    let url = "/turnos/calendarioTurnos/" + mes + "/" + anio;
-
-    $("#tbody-calendar").load(url);
-  });
-
 $("#inputFechaForm").datepicker({
   language: "es",
   format: "dd MM yyyy",
@@ -38,26 +24,54 @@ $("#inputFechaForm").datepicker({
   orientation: "bottom",
 });
 
+//Activar selectores de mes
+document.getElementById("mesAtras").addEventListener("click", mesAtras);
+document.getElementById("mesAdelante").addEventListener("click", mesAdelante);
+
 //Activar Selectpickers
-try{
-let select_box_element = document.querySelector("#selectEstudianteForm");
+try {
+  let select_box_element = document.querySelector("#selectEstudianteForm");
 
-dselect(select_box_element, {
-  search: true,
-});
-}catch(error){}
-
+  dselect(select_box_element, {
+    search: true,
+  });
+} catch (error) {}
 
 //Activar tooltips
-var tooltipTriggerList = [].slice.call(
-  document.querySelectorAll('[data-bs-toggle="tooltip"]')
-);
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl);
-});
+function activarTooltips(calendar = false) {
+  if(calendar){
+    var tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltipCalendar"]')
+      );
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+  }else{
+    var tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+  }
+}
+activarTooltips();
+activarTooltips(true);
 
-//Activar navbar
-document.querySelector("#item-turnos").classList.add("active");
+//Cambiar el mes del calendario;
+$("#selMesCalendar")
+  .datepicker()
+  .on("changeDate", (e) => {
+    activarPlaceholders();
+    let date = e.date; //Fecha seleccionada en el datepicker
+    let mes = date.getMonth() + 1; //getMonth() retorna 0 para Enero, 1 para Febrero, ...
+    let anio = date.getFullYear();
+    let url = "/turnos/calendarioTurnos/" + mes + "/" + anio;
+
+    $("#tbody-calendar").load(url, () => {
+      activarTooltips(true);
+    });
+  });
 
 //Colocar placeholders en el calendario
 function activarPlaceholders() {
@@ -69,57 +83,70 @@ function activarPlaceholders() {
   }
 }
 
-document.querySelector("#selectEstudianteForm").addEventListener("change",() => {
-    let selectEstudianteButton = document.querySelector(".dselect-wrapper .form-select");
-    selectEstudianteButton.style.borderColor = '#ddd';
-})
+//Cambiar color del borde al seleccionar estudiante
+document
+  .querySelector("#selectEstudianteForm")
+  .addEventListener("change", () => {
+    let selectEstudianteButton = document.querySelector(
+      ".dselect-wrapper .form-select"
+    );
+    selectEstudianteButton.style.borderColor = "#ddd";
+  });
 
 //GUARDAR TURNO
 document.querySelector("#turnosForm").addEventListener("submit", (event) => {
-    
-    document.querySelector("#mensajeError").style.display = 'none';
-    /*Validar estudiante seleccionado*/
-    let selectEstudiante = document.querySelector("#selectEstudianteForm");
-    let selectEstudianteButton = document.querySelector(".dselect-wrapper .form-select");
-    if(selectEstudiante.value == ''){
-        selectEstudianteButton.style.borderColor = 'red';
+  document.querySelector("#mensajeError").style.display = "none";
+  /*Validar estudiante seleccionado*/
+  let selectEstudiante = document.querySelector("#selectEstudianteForm");
+  let selectEstudianteButton = document.querySelector(
+    ".dselect-wrapper .form-select"
+  );
+  if (selectEstudiante.value == "") {
+    selectEstudianteButton.style.borderColor = "#dc3545";
+    return;
+  } else {
+    selectEstudianteButton.style.borderColor = "#198754";
+  }
+
+  event.preventDefault();
+
+  //Construir el objeto
+  let date = $("#inputFechaForm").data("datepicker").getDate();
+  let form = document.forms["turnosForm"];
+  turno = {
+    idEstudiante: form["selectEstudianteForm"].value,
+    fecha:
+      date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear(),
+    idHorario: form["selectHorarioForm"].value,
+    idEstacion: form["selectEstacionForm"].value,
+    observaciones: form["inputObservacionesForm"].value,
+  };
+  activarSpinner(document.querySelector("#botonGuardar"));
+  let url = "/turnos";
+  $.ajax({
+    url: url,
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify(turno),
+    success: function () {
+      desactivarSpinner(document.querySelector("#botonGuardar"));
+      defaultSuccessNotify("Turno programado");
+      $("#modalFormTurnos").modal("hide");
+    },
+    error: function (jqXHR) {
+      if (jqXHR.status == 500) {
+        defaultErrorNotify();
         return;
-    }else{
-        selectEstudianteButton.style.borderColor = '#198754';
-    }
+      }
+      console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+      document.querySelector("#mensajeError").innerHTML = jqXHR.responseText;
+      document.querySelector("#mensajeError").style.display = "block";
+      desactivarSpinner(document.querySelector("#botonGuardar"));
+    },
+  });
+});
 
-    event.preventDefault();
-
-    //Construir el objeto
-    let date = $("#inputFechaForm").data("datepicker").getDate();
-    let form = document.forms['turnosForm'];
-    turno = {
-        idEstudiante: form["selectEstudianteForm"].value,
-        fecha: date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear(),
-        idHorario: form["selectHorarioForm"].value,
-        idEstacion: form["selectEstacionForm"].value,
-        observaciones: form["inputObservacionesForm"].value
-    }
-
-    console.log(turno);
-    let url="/turnos";
-    $.ajax({
-        url: url,
-        type: "POST",
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(turno),
-        success: function(){
-            alert("Guardado");
-        },
-        error: function(jqXHR){
-            console.log("error " + jqXHR.status + " " + jqXHR.responseText);
-            document.querySelector("#mensajeError").innerHTML = jqXHR.responseText;
-            document.querySelector("#mensajeError").style.display = 'block';
-        }
-    })
-
-})
 $(document).ready(function () {
   $("#selMes").change(function () {
     document.getElementById("selDia").setAttribute("disabled", "disabled");

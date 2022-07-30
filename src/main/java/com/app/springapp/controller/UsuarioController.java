@@ -37,7 +37,7 @@ public class UsuarioController {
     @GetMapping({ "/", "/login" })
     public String index() {
         if(serUsuario.hayUsuarioLogueado())
-            return "turnos/turnos"; 
+            return "redirect:/turnos"; 
         return "index";
     }
 
