@@ -15,7 +15,7 @@ body {
 }
  
 /*Estilos para los botones selectpicker*/
-.dropdown button {
+.selectpicker .dropdown button {
   background-color: white !important;
   color: black !important;
   border: 1px solid rgb(228, 226, 226) !important;
@@ -42,6 +42,7 @@ input.selectCalendar::placeholder{
 
 input.selectCalendar:read-only{
     background-color: white;
+    border-color: #ddd;
 }
 
 input.selectCalendar:read-only:focus{
@@ -50,18 +51,52 @@ input.selectCalendar:read-only:focus{
     box-shadow: none;
 }
 
+/*Estilos para el datepicker*/
+.datepicker td.day{
+    text-align: center;
+    width: 14.3% !important;
+    padding: 8px 11px;
+    font-size: 14px;
+}
+.datepicker td.month,th{
+    text-align: center;
+    padding: 8px 8px;
+    font-size: 14px;
+}
 
-/*Estilos para el botón que acompaña el imput datepicker (contiene el icono de calendario) IMPORTANTE: el botón debe tener la clase "btn-calendar"*/
-.btn-calendar-form:focus, input.selectCalendar:read-only:focus + .btn-calendar-form{
-    background-color: rgb(194, 231, 253);
+.datepicker td{
+    border-radius: 100% !important;
+}
+
+.datepicker td.active{
+    background-image: none !important;
+    background-color: rgb(78, 160, 236) !important;
+}
+
+.datepicker td.today{
+    background-image: none !important;
+}
+
+.datepicker span{
+    border-radius: 100% !important;
+    height: 44px !important;
+    line-height: 44px !important;
+}
+
+.datepicker span.active{
+    background-image: none !important;
+    background-color: rgb(78, 160, 236) !important;
+}
+
+
+/*Estilos para el botón que acompaña el input datepicker (contiene el icono de calendario) IMPORTANTE: el botón debe tener la clase "btn-calendar"*/
+.btn-calendar-form:focus, input.selectCalendar:focus + .btn-calendar-form{
+    background-color: rgb(194, 231, 253) !important;
 }
 
 .btn-calendar-form{
-    background-color: lightgrey;
-    border:none;
-    padding: 0 6px 0 5px;
-    border-radius: 0 4px 4px 0;
-
+    border-radius: 0 4px 4px 0 !important;
+    cursor:pointer;
 }
 
 
@@ -92,5 +127,15 @@ input.selectCalendar:read-only:focus{
 .modal-form-header .close{
     text-shadow: none;
     color:white
+}
+
+/*Estilos para dselect*/
+.dselect-wrapper .dropdown-menu{
+    padding-top: 0!important;
+    width: 100%;
+}
+
+select.form-select{
+    text-indent: 25px !important;
 }
 

@@ -268,3 +268,10 @@ td .grid{
     border-radius: 5px;
 }
 
+.form-select{
+    text-align: left !important;
+}
+
+#mensajeError{
+    display:none;
+}

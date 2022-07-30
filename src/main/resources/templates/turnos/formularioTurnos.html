@@ -1,21 +1,20 @@
-<form id="turnosForm" th:object="${nuevoTurno}" method="post" class="form col-lg"
-    role="form" autocomplete="off"
-    th:action="@{/turnos}">
-    <!--Es necesario para poder pasar la validacion del Model-->
-    <input class="form-control" hidden th:field="*{id}">
-    
+<form id="turnosForm" class="form col-lg needs-validation" role="form"
+    autocomplete="off" novalidate>
     <!--Estudiante-->
     <div class="form-group row">
         <label class="col-lg-3 col-lg form-label form-control-label"><b>Estudiante</b></label>
         <div class="col-lg-8">
-            <select th:field="*{estudiante}" class="w-100 selectpicker selEstudiante" required>
+            <select class="form-select" id="selectEstudianteForm" required>
+                <option value="" selected>Seleccione</option>
                 <option th:each="estudiante:${estudiantes}"
                     th:value="${estudiante.id}"
                     th:text="${estudiante.nombres} + ' ' +
                     ${estudiante.apellidos}"></option>
             </select>
+            <div class="invalid-feedback">
+                Por favor seleccione un estudiante.
+            </div>
         </div>
-
     </div>
 
     <div id="form-dinamico" th:fragment="inputs-dinamicos">
@@ -23,13 +22,19 @@
         <div class="form-group row">
             <label class="col-lg-3 col-form-label form-control-label"><b>Fecha</b></label>
             <div class="col-lg-8">
-                <div class="d-flex">
-                    <input type="text" id="inputDiaForm" class="form-control
-                        w-85 selectCalendar" readonly placeholder="Seleccione" required>
-                    <button type="button" class="btn-calendar-form"
-                        onclick="$('#inputDiaForm').datepicker('show')">
-                        <i class="fa-solid fa-calendar-day w-100"></i>
-                    </button>
+                <div class="input-group">
+                    <input type="text" id="inputFechaForm" class="form-select
+                        w-85 selectCalendar" placeholder="Seleccione"
+                        required>
+                    <span class="input-group-text btn-calendar-form"
+                        id="basic-addon1"
+                        onclick="$('#inputFechaForm').datepicker('show');
+                        document.querySelector('#inputFechaForm').focus()">
+                        <i class="fa-solid fa-calendar-day w-100"
+                            style="margin:0;"></i></span>
+                    <div class="invalid-feedback" id="feedbackFecha">
+                        Por favor seleccione una fecha.
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,13 +43,17 @@
         <div class="form-group row">
             <label class="col-lg-3 col-form-label form-control-label"><b>Horario</b></label>
             <div class="col-lg-8">
-                <select th:field="${nuevoTurno.horario}" id="selHorario"
-                    class="btn selectpicker w-100" title="Seleccione" required>
+                <select
+                    class="form-select" id="selectHorarioForm" required>
+                    <option value="" selected>Seleccione</option>
                     <option th:each="horario:${horarios}"
                         th:value="${horario.id}"
                         th:text="${horario.descripcion}">
                     </option>
                 </select>
+                <div class="invalid-feedback">
+                    Por favor seleccione un horario.
+                </div>
             </div>
         </div>
 
@@ -52,25 +61,32 @@
         <div class="form-group row">
             <label class="col-lg-3 col-form-label form-control-label"><b>Estación</b></label>
             <div class="col-lg-8">
-                <select th:field="${nuevoTurno.estacion}" id="selEstacion"
-                    class="btn selectpicker w-100" title="Seleccione" required>
+                <select
+                    class="form-select" id="selectEstacionForm" required>
+                    <option value="" selected>Seleccione</option>
                     <option th:each="estacion:${estaciones}"
                         th:value="${estacion.id}" th:text="${estacion.nombre}">
                     </option>
                 </select>
+                <div class="invalid-feedback">
+                    Por favor seleccione una estación.
+                </div>
             </div>
         </div>
+
     </div>
 
     <!--Observaciones-->
     <div class="form-group row pl--1">
         <label class="col-lg-3 col-form-label form-control-label"><b>Observaciones</b></label>
         <div class="col-lg-8">
-            <textarea th:field="*{observaciones}" placeholder="Observaciones"
-                class="form-control"></textarea>
+            <textarea placeholder="Observaciones"
+                class="form-control" id="inputObservacionesForm"></textarea>
         </div>
     </div>
-
+    <div class="alert alert-danger text-center" id="mensajeError">
+        Mensaje de error
+    </div>
     <div class="form-group row d-flex justify-content-center">
         <input type="submit" value="Guardar" class="btn w-50 guardar" />
     </div>

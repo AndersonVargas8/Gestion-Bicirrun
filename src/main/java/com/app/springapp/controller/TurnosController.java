@@ -96,7 +96,7 @@ public class TurnosController {
      * @param model
      * @return 
      */
-    @PostMapping
+    @PostMapping(consumes = "application/json")
     public ResponseEntity crearTurno(@RequestBody TurnoDTO turnoDTO) {
         try{
              turnoDTO = serTurno.guardarTurno(turnoDTO);
