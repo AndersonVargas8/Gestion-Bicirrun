@@ -70,7 +70,7 @@ public class Calendario {
     }
 
     public void agregarDiaSemana(int numSemana, int numeroDiaSemana, int numeroDia, int cupos, int turnosProgramados) {
-        if(semanas.isEmpty() || numeroDiaSemana == 1)
+        if (semanas.isEmpty() || numeroDiaSemana == 1)
             agregarSemana();
         Semana semana = this.semanas.get(numSemana);
         semana.agregarDia(numeroDiaSemana, numeroDia, cupos, turnosProgramados);
@@ -109,6 +109,31 @@ public class Calendario {
         }
 
         return nombre;
+    }
+
+    /**
+     * Convierte el nombre de un dia (por ejemplo 'lunes') al número correspondiente
+     * en la lista de dias.
+     * Lunes = 1
+     * Martes = 2
+     * Miercoles = 3
+     * Jueves = 4
+     * Viernes = 5
+     */
+    public static int convertirNombreDiaANumeroSemana(String nombreDia) {
+        nombreDia = nombreDia.toLowerCase();
+        if (nombreDia.equals("lunes"))
+            return 1;
+        if (nombreDia.equals("martes"))
+            return 2;
+        if (nombreDia.equals("miercoles") || nombreDia.equals("miércoles"))
+            return 3;
+        if (nombreDia.equals("jueves"))
+            return 4;
+        if (nombreDia.equals("viernes"))
+            return 5;
+
+        return -1;
     }
 
     public class Semana {
@@ -167,30 +192,6 @@ public class Calendario {
             this.dias.set(--numeroDiaSemana, new Dia(numeroDia, cupos, turnosProgramados));
         }
 
-        /**
-         * Convierte el nombre de un dia (por ejemplo 'lunes') al número correspondiente
-         * en la lista de dias.
-         * Lunes = 1
-         * Martes = 2
-         * Miercoles = 3
-         * Jueves = 4
-         * Viernes = 5
-         */
-        private int convertirNombreDiaANumeroSemana(String nombreDia) {
-            nombreDia = nombreDia.toLowerCase();
-            if (nombreDia.equals("lunes"))
-                return 1;
-            if (nombreDia.equals("martes"))
-                return 2;
-            if (nombreDia.equals("miercoles") || nombreDia.equals("miércoles"))
-                return 3;
-            if (nombreDia.equals("jueves"))
-                return 4;
-            if (nombreDia.equals("viernes"))
-                return 5;
-
-            return -1;
-        }
     }
 
     public class Dia {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.app.springapp.dto.Calendario;
@@ -21,6 +22,7 @@ public class CupoService implements IServicioCupo{
     @Autowired
     CupoRepository repCupo;
 
+    @Lazy
     @Autowired
     IServicioHorario serHorario;
 
@@ -40,48 +42,14 @@ public class CupoService implements IServicioCupo{
 
     @Override
     public int cantidadCuposPorHorario(Horario horario){
-        List<Cupo> cupos = buscarPorHorario(horario);
-
-        int suma = 0;
-
-        for(Cupo cupo: cupos){
-            suma += cupo.getNum_cupos();
-        }
-
-        return suma;
+        long numeroCupos = repCupo.sumCuposByHorario(horario);
+        return (int)numeroCupos;
     }
-
-    /*@Override
-    public Cupo buscarPorCupoGrupo(int cupoGrupoId) {
-        Optional<Cupo> respuesta = repCupo.findByCupoGrupo(cupoGrupoId);
-        if(respuesta.isPresent())
-            return respuesta.get();
-        
-        return null;
-    }*/
-
-    /*@Override
-    public int buscarIdPorCupoGrupoHorario(int idHorario) {
-        Optional<Integer> respuesta = repCupo.findIdByCupoGrupoHorario(idHorario);
-        if(respuesta.isPresent())
-            return respuesta.get();
-        return -1;
-    }*/
 
     @Override
     public Cupo buscarPorId(int id) {
         return repCupo.findById(new Long(id));
     }
-
-    /*@Override
-    public Integer cantidadCupos() {
-        return repCupo.sumNumCupos();
-    }*/
-
-    /*@Override
-    public Integer cantidadCuposViernes() {
-        return repCupo.sumNumCuposViernes();
-    }*/
 
     @Override
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario) {
@@ -137,8 +105,8 @@ public class CupoService implements IServicioCupo{
     @Override
     public int obtenerNumeroCupos(Cupo cupo){
         int numeroCupos = cupo.getNum_cupos();
-        if(!cupo.getCupos_independientes().isEmpty()){
-            numeroCupos = cupo.getCupos_independientes().get(0).getNum_cupos();
+        if(cupo.tieneCupoCompartido()){
+            numeroCupos += cupo.getCupoCompartido().getNum_cupos();
         }
         return numeroCupos;
     }

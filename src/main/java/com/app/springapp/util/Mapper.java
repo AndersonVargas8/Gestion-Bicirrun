@@ -3,8 +3,7 @@ package com.app.springapp.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.entity.Turno;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
@@ -18,13 +17,14 @@ public class Mapper {
      * Mapea un TurnoDTO a un Turno
      * @param dto
      * @return Turno con los datos contenidos enel DTO.
+     * @throws CustomeFieldValidationException
      * @throws IllegalArgumentException si faltan datos o son inválidos.
      */
-    public static Turno mapToTurno(TurnoDTO dto, IServicioEstacion serEstacion, IServicioEstudiante serEstudiante, IServicioHorario serHorario, EstadoTurnoRepository repEstadoTurno) {
+    public static Turno mapToTurno(TurnoDTO dto, IServicioEstacion serEstacion, IServicioEstudiante serEstudiante, IServicioHorario serHorario, EstadoTurnoRepository repEstadoTurno) throws CustomeFieldValidationException {
         Turno turno = new Turno();
 
         if(!esFechaValida(dto.fecha)){
-            throw new IllegalArgumentException("El formato de la fecha no es válido");
+            throw new CustomeFieldValidationException("El formato de la fecha no es válido");
         }else{
             String[] fecha = dto.fecha.split("-");
             turno.setDia(Integer.parseInt(fecha[0]));
@@ -32,30 +32,30 @@ public class Mapper {
             turno.setAnio(Integer.parseInt(fecha[2]));
         }
 
-        turno.setObservaciones((dto.observaciones == null) ? "" : dto.observaciones);
-
-        if(dto.idEstacion == 0){
-            throw new IllegalArgumentException("No se indicó el id de la estación");
-        }else{
-            turno.setEstacion(serEstacion.buscarPorId(dto.idEstacion));
-        }
-        
         if(dto.idEstado == 0){
             turno.setEstado(repEstadoTurno.findById(1L).get());
         }else{
             turno.setEstado(repEstadoTurno.findById(new Long(dto.idEstado)).get());
         }
-
+        
+        turno.setObservaciones((dto.observaciones == null) ? "" : dto.observaciones);
+        
         if(dto.idEstudiante == 0){
-            throw new IllegalArgumentException("No se indicó el id del estudiante");
+            throw new CustomeFieldValidationException("No se indicó el estudiante");
         }else{
             turno.setEstudiante(serEstudiante.buscarPorId(new Long(dto.idEstudiante)));
         }
 
         if(dto.idHorario == 0){
-            throw new IllegalArgumentException("No se indicó el id del horario");
+            throw new CustomeFieldValidationException("No se indicó el horario");
         }else{
             turno.setHorario(serHorario.buscarPorId(dto.idHorario));
+        }
+        
+        if(dto.idEstacion == 0){
+            throw new CustomeFieldValidationException("No se indicó la estación");
+        }else{
+            turno.setEstacion(serEstacion.buscarPorId(dto.idEstacion));
         }
 
         return turno;

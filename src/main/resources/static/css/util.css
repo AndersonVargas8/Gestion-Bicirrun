@@ -51,6 +51,9 @@ input.selectCalendar:read-only:focus{
     box-shadow: none;
 }
 
+.selectCalendar:disabled {
+    background-color: #e9ecef !important;
+}
 /*Estilos para el datepicker*/
 .datepicker td.day{
     text-align: center;
@@ -87,6 +90,7 @@ input.selectCalendar:read-only:focus{
     background-image: none !important;
     background-color: rgb(78, 160, 236) !important;
 }
+
 
 
 /*Estilos para el botón que acompaña el input datepicker (contiene el icono de calendario) IMPORTANTE: el botón debe tener la clase "btn-calendar"*/

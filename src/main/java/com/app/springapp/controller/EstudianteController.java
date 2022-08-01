@@ -1,13 +1,10 @@
 package com.app.springapp.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.validation.Valid;
 
-import com.app.springapp.entity.Estudiante;
-import com.app.springapp.repository.CarreraRepository;
-import com.app.springapp.service.EstudianteService;
-import com.app.springapp.service.TurnoService;
-
-import org.hibernate.type.LocalDateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
+import com.app.springapp.entity.Estudiante;
+import com.app.springapp.repository.CarreraRepository;
+import com.app.springapp.service.EstudianteService;
+import com.app.springapp.service.TurnoService;
 
 @Controller
 public class EstudianteController {

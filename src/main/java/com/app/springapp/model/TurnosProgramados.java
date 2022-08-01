@@ -82,7 +82,7 @@ public class TurnosProgramados implements Serializable {
 
     /**
      * Obtener un mes especifico, con los turnos programados en cada día.
-     * @param mes Nombre del mes. No distingue mayúsculas de minúsculas.
+     * @param mes valor del mes.
      * @return Mes
      * @throws IllegalArgumentException El mes especificado no existe en el registro
      */

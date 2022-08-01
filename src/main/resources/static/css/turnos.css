@@ -271,6 +271,9 @@ td .grid{
 .form-select{
     text-align: left !important;
 }
+input.form-select, button.form-select{
+    padding-left: 35px;
+}
 
 #mensajeError{
     display:none;

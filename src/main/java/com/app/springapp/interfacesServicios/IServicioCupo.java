@@ -13,11 +13,7 @@ public interface IServicioCupo {
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario);
     public List<Cupo> buscarPorHorario(Horario horario);
     public int cantidadCuposPorHorario(Horario horario);
-    //public Cupo buscarPorCupoGrupo(int cupoGrupoId);
-    //public int buscarIdPorCupoGrupoHorario(int idHorario);
     public Cupo buscarPorId(int id);
-    //public Integer cantidadCupos();
-    //public Integer cantidadCuposViernes();
     public List<Integer> idEstacionesPorHorario(int idHorario);
 
     /**
