@@ -40,6 +40,9 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
     public List<Turno> findByEstudiante(Estudiante estudiante);
 
+    public List<Turno> findByDiaAndMesAndAnioAndEstacion(int dia, int mes, int anio, Estacion estacion);
+    public List<Turno> findByDiaAndMesAndAnioAndEstacionAndHorario(int dia, int mes, int anio, Estacion estacion, Horario horario);
+
     public long countByDiaAndMesAndAnioAndEstacionAndHorario(int dia, int mes, int anio, Estacion estacion,
             Horario horario);
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.Calendario;
 import com.app.springapp.dto.TurnoDTO;
+import com.app.springapp.dto.TurnosEstaciones;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
@@ -19,6 +20,9 @@ public interface IServicioTurno {
     public List<Turno> obtenerPorEstudiante(Estudiante estudiante);
 
     public Turno obtenerPorId(long id);
+
+    public List<Turno> obtenerPorFechaYEstacion(LocalDate fecha, Estacion estacion);
+    public List<Turno> obtenerPorFechaYEstacionYHorario(LocalDate fecha, Estacion estacion, Horario horario);
 
     public TurnoDTO guardarTurno(TurnoDTO turnoDTO) throws CustomeFieldValidationException ;
 
@@ -48,4 +52,12 @@ public interface IServicioTurno {
     }
     public DiasDeshabilitados obtenerDiasDeshabilitados();
     public DiasDeshabilitados obtenerDiasDeshabilitados(int idHorario);
+
+    /**
+     * Se retornan todos los turnos programados en cada estación en la fecha indicada
+     * @param fecha
+     * @return objeto TurnosEstaciones que contiene una lista de estaciones, cada una con una lista de horarios
+     * y cada lista de horarios con la lista de turnos.
+     */
+    public TurnosEstaciones obtenerTurnosEstaciones(LocalDate fecha);
 }

@@ -1,5 +1,6 @@
 package com.app.springapp.interfacesServicios;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,6 +16,16 @@ public interface IServicioCupo {
     public int cantidadCuposPorHorario(Horario horario);
     public Cupo buscarPorId(int id);
     public List<Integer> idEstacionesPorHorario(int idHorario);
+
+    /**
+     * Retorna la cantidad de cupos en una fecha específica para una estación en un horario.
+     * Tiene en cuenta los cupos compartidos.
+     * @param fecha
+     * @param horario
+     * @param estacion
+     * @return
+     */
+    public int cantidadCupos(LocalDate fecha, Horario horario, Estacion estacion);
 
     /**
      * Retorna la cantidad de cupos que hay en cada día de la semana (Lunes a Viernes)

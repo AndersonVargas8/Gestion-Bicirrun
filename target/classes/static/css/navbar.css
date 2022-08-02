@@ -9,8 +9,18 @@ i {
   margin-right: 10px;
 }
 .navbar-logo {
-  padding: 15px;
-  color: #fff;
+  position:absolute;
+  top:0;
+  bottom:0;
+  background-color:var(--color-principal);
+  z-index:4;
+  padding: 5px 15px;
+  width: 10%;
+}
+
+.navbar-logo img{
+  width: 95%;
+  height: 95%;
 }
 .navbar-mainbg {
   background-color: var(--color-principal);

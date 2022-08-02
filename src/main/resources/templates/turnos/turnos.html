@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
         <title>Turnos</title>
 
         <link rel="icon" type="image/x-icon" href="/img/favicon.png"
@@ -29,20 +28,27 @@
         <!--NavBar-->
         <div th:include="navbar.html" th:remove="tag"></div>
 
-        <div class="container mt-4 p-4">
-            <!--Botón agregar turno-->
-            <button type="button" class="btn btn-outline-success mb-2 crear"
-                data-bs-toggle="modal" data-bs-target="#modalFormTurnos">
-                <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno
-            </button>
+        <div class="container mt-4">
+            <div class="d-flex justify-content-center">
+                <h2>Programación de turnos</h2>
+            </div>
+                <!--Botón agregar turno-->
+                <button type="button" class="btn btn-outline-success mb-2 crear"
+                    data-bs-toggle="modal" data-bs-target="#modalFormTurnos">
+                    <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo
+                    Turno
+                </button>
 
             <!--Formulario-->
-            <div class="modal fade" tabindex="-1" role="dialog" id="modalFormTurnos">
-                <div class="modal-dialog modal-lg d-flex justify-content-center" role="document">
+            <div class="modal fade" tabindex="-1" role="dialog"
+                id="modalFormTurnos">
+                <div class="modal-dialog modal-lg d-flex justify-content-center"
+                    role="document">
                     <div class="modal-content w-75">
                         <div class="modal-header modal-form-header">
                             <h5 class="modal-title">Programar nuevo turno</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close"
+                                data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -56,27 +62,31 @@
                 </div>
             </div>
             <div class="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Modal body text goes here.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save
+                                changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!--Calendario-->
             <div th:replace="turnos/calendario.html"></div>
 
             <!--Modal turnos en estaciones-->
-            <div class="modal fade" tabindex="-1" role="dialog" id="modalTurnosEstaciones">
+            <div class="modal fade" tabindex="-1" role="dialog"
+                id="modalTurnosEstaciones">
                 <div class="modal-dialog modal-xl d-flex justify-content-center"
                     role="document">
                     <div class="modal-content" style="max-width:100%">
@@ -108,7 +118,8 @@
         <div th:replace="includes.html::toastr"></div>
 
         <!--JAVASCRIPT-->
-        <script src="../../static/javascript/turnos.js" th:src="@{javascript/turnos.js}"></script>
+        <script src="../../static/javascript/turnos.js"
+            th:src="@{javascript/turnos.js}"></script>
 
     </body>
 </html>

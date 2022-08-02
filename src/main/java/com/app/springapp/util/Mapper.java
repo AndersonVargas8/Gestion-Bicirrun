@@ -78,6 +78,28 @@ public class Mapper {
         return turnoDTO;
     }
 
+    public static TurnoDTO mapToTurnoDTOFull(Turno turno){
+        TurnoDTO turnoDTO = new TurnoDTO();
+        turnoDTO.id = (int)turno.getId();
+        turnoDTO.fecha = String.valueOf(turno.getDia()) + "-" + String.valueOf(turno.getMes()) + "-" + String.valueOf(turno.getAnio());
+        turnoDTO.observaciones = turno.getObservaciones();
+        turnoDTO.idEstacion = (int)turno.getEstacion().getId();
+        turnoDTO.estacion = turno.getEstacion().getNombre();
+        turnoDTO.idEstado = (int)turno.getEstado().getId();
+        turnoDTO.estado = turno.getEstado().getDescripcion();
+        turnoDTO.idEstudiante = (int)turno.getEstudiante().getId();
+        turnoDTO.estudiante = turno.getEstudiante().getNombres() + " " + turno.getEstudiante().getApellidos();
+
+        String nombre = turno.getEstudiante().getNombres().split(" ")[0];
+        String apellido = turno.getEstudiante().getApellidos().split(" ")[0];
+
+        turnoDTO.nombreCortoEstudiante = nombre + " " + apellido;
+        turnoDTO.idHorario = (int)turno.getHorario().getId();
+        turnoDTO.horario = turno.getHorario().getDescripcion();
+
+        return turnoDTO;
+    }
+
     public static boolean esFechaValida(String entrada){
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         try{

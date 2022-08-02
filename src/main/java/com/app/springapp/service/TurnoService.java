@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.Calendario;
 import com.app.springapp.dto.TurnoDTO;
+import com.app.springapp.dto.TurnosEstaciones;
 import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
@@ -75,6 +76,20 @@ public class TurnoService implements IServicioTurno {
     }
 
     @Override
+    public List<Turno> obtenerPorFechaYEstacion(LocalDate fecha, Estacion estacion){
+        int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
+        List<Turno> turnos = repTurno.findByDiaAndMesAndAnioAndEstacion(dia, mes, anio, estacion);
+        return turnos;
+    }
+
+    @Override
+    public List<Turno> obtenerPorFechaYEstacionYHorario(LocalDate fecha, Estacion estacion, Horario horario){
+        int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
+        List<Turno> turnos = repTurno.findByDiaAndMesAndAnioAndEstacionAndHorario(dia, mes, anio, estacion,horario);
+        return turnos;
+    }
+
+    @Override
     public int sumaTurnosPorFechaYHorario(LocalDate fecha, Horario horario) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnioAndHorario(dia, mes, anio, horario);
@@ -112,6 +127,8 @@ public class TurnoService implements IServicioTurno {
         } catch (Exception e) {
             throw new IllegalArgumentException("El horario no está disponible para la estación proporcionada");
         }
+        if(cupo == null)
+            throw new IllegalArgumentException("El horario no está disponible para la estación proporcionada");
 
         long numeroTurnos = repTurno.countByDiaAndMesAndAnioAndEstacionAndHorario(turno.getDia(), turno.getMes(),
                 turno.getAnio(), turno.getEstacion(), horario);
@@ -125,6 +142,14 @@ public class TurnoService implements IServicioTurno {
         return numeroTurnos;
     }
 
+    /**
+     * Retorna la cantidad de turnos programados en la fecha, estación y
+     * horario proporcionados
+     * Tiene en cuenta si el cupo es compartido
+     * 
+     * @param turno
+     * @return Número de turnos programados
+     */
     public long cantidadTurnosProgramados(int dia, int mes, int anio, Estacion estacion, Horario horario) {
         Turno turno = new Turno();
         turno.setDia(dia);
@@ -489,6 +514,36 @@ public class TurnoService implements IServicioTurno {
         diasD.fechasDeshabilitadas = fechas;
 
         return diasD;
+    }
+
+    @Override
+    public TurnosEstaciones obtenerTurnosEstaciones(LocalDate fecha) {
+        int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
+        String fechaFormat = dia + "-" + mes + "-" + anio;
+        TurnosEstaciones turnosEstaciones = new TurnosEstaciones(fechaFormat);
+        List<Estacion> estaciones = serEstacion.obtenerTodas();
+        List<Horario> horarios = serHorario.obtenerTodos();
+        for(Estacion estacion: estaciones){
+            for(Horario horario: horarios){
+                List<Turno> turnos = obtenerPorFechaYEstacionYHorario(fecha, estacion, horario);
+                for(Turno turno: turnos){
+                    TurnoDTO turnoDTO = Mapper.mapToTurnoDTOFull(turno);
+                    turnosEstaciones.agregarTurno(turnoDTO);
+                }
+                int numTurnos = 0;
+                try{
+                    numTurnos = (int)cantidadTurnosProgramados(dia, mes, anio, estacion, horario);
+                }catch(IllegalArgumentException e){}
+
+                int numCupos = serCupo.cantidadCupos(fecha, horario, estacion);
+
+                if(numTurnos < numCupos){
+                    turnosEstaciones.agregarCuposDisponibles(estacion, horario, numCupos-numTurnos);
+                }
+            }
+        }
+
+        return turnosEstaciones;
     }
 
     

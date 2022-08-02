@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.TurnoDTO;
+import com.app.springapp.dto.TurnosEstaciones;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
@@ -208,6 +209,25 @@ public class TurnosController {
 
         List<Estacion> estaciones = serEstacion.obtenerDisponiblesPorFechaYHorario(fechaLista,horario);
         return estaciones;
+    }
+
+    @GetMapping("/dia/{fecha}")
+    @ResponseBody
+    public TurnosEstaciones getTurnosEstaciones(@PathVariable String fecha){
+        LocalDate fechaLista = null;
+        if(!Mapper.esFechaValida(fecha)){
+            throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
+        }else{
+            String[] fechaFormat = fecha.split("-");
+            int dia = Integer.parseInt(fechaFormat[0]);
+            int mes = Integer.parseInt(fechaFormat[1]);
+            int anio = Integer.parseInt(fechaFormat[2]);
+            fechaLista = LocalDate.of(anio,mes,dia);
+        }
+
+        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        return turnos;
+        
     }
  
 }

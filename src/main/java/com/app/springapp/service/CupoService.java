@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -53,7 +54,13 @@ public class CupoService implements IServicioCupo{
 
     @Override
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario) {
-        return repCupo.findByEstacionAndHorario(estacion, horario).get();
+        Cupo cupo = null;
+        try{
+            cupo = repCupo.findByEstacionAndHorario(estacion, horario).get();
+        }catch(NoSuchElementException e){
+            return null;
+        }
+        return cupo;
     }
 
     @Override
@@ -109,6 +116,22 @@ public class CupoService implements IServicioCupo{
             numeroCupos += cupo.getCupoCompartido().getNum_cupos();
         }
         return numeroCupos;
+    }
+
+    @Override
+    public int cantidadCupos(LocalDate fecha, Horario horario, Estacion estacion) {
+        int valorDiaSemana = fecha.get(WeekFields.ISO.dayOfWeek());
+        String nombreDia = Calendario.convertirNumeroADia(valorDiaSemana).toLowerCase();
+        if(horario.diaNoDisponible(nombreDia)){
+            return 0;
+        }
+        Cupo cupo = buscarPorEstacionYHorario(estacion, horario);
+        if(cupo ==  null){
+            return 0;
+        }
+        int numCupos = obtenerNumeroCupos(cupo);
+
+        return numCupos;
     }
 
 }

@@ -174,7 +174,18 @@ public class Turno implements Comparable<Turno>, Cloneable{
         LocalDate fechaThis = LocalDate.of(anio,mes,dia);
         LocalDate fechaOtro = LocalDate.of(turno.anio, turno.mes, turno.dia);
 
-        return fechaThis.compareTo(fechaOtro);
+        int compare = fechaThis.compareTo(fechaOtro);
+
+        if(compare == 0){
+            if(horario.getId() < turno.getHorario().getId()){
+                return -1;
+            }
+            if(horario.getId() > turno.getHorario().getId()){
+                return 1;
+            }
+        }
+
+        return compare;
     }
 
     @Override
