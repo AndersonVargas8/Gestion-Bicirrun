@@ -1,5 +1,5 @@
 function activarSpinner(element){
-    element.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin'></i>";
+    element.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin mr-0'></i>";
     element.disabled = true;
 }
 

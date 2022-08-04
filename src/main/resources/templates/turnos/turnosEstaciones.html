@@ -28,7 +28,7 @@
 
         <!--NavBar-->
         <div th:include="navbar.html" th:remove="tag"></div>
-
+        
         <div class="grid-layout">
             <div id="espacio-vacio"></div>
             <div id="cabecera">
@@ -43,7 +43,7 @@
             <div class="overflow-auto" id="contenido" th:fragment="contenido">
                 
 
-                <div class="accordion" id="accordionExample">
+                <div class="accordion" id="accordionEstaciones">
                     <div class="accordion-item" th:each="estacion,iStat: ${turnos.estaciones}">
                         <h2 class="accordion-header" th:id="${'heading'+estacion.id}">
                             <button th:class="${(iStat.count == 1) ? 'accordion-button' : 'accordion-button collapsed'}" type="button"
@@ -56,7 +56,7 @@
                         </h2>
                         <div th:id="${'collapse'+estacion.id}" th:class="${(iStat.count == 1) ? 'accordion-collapse collapse
                             show' : 'accordion-collapse collapse'}" aria-labelledby="${'heading'+estacion.id}"
-                            data-bs-parent="#accordionExample">
+                            data-bs-parent="#accordionEstaciones">
                             <div class="accordion-body p-2">
                                 <div class="header-estacion">
                                     <div>HORARIO</div>
@@ -72,12 +72,13 @@
                                             <div>
                                                 <div class="form-floating">
                                                     <textarea class="form-control"
-                                                    id="obs" th:value="${turno.observaciones}" th:text="${turno.observaciones}">Observaciones</textarea>
+                                                    id="obs" th:value="${turno.observaciones}" th:text="${turno.observaciones}" th:onchange="cambiarObservacion([[${turno.id}]],this)">Observaciones</textarea>
                                                     <label for="obs">Observaciones</label>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div th:class="${(turno.idEstado == 1) ? 'alert alert-info' : ((turno.idEstado == 2) ? 'alert alert-success' : 'alert alert-danger')}" th:text="${turno.estado}">Estado</div>
+                                                <div th:class="${(turno.idEstado == 3) ? 'alert alert-danger' : ((turno.idEstado == 2) ? 'alert alert-success' : 'alert alert-info')}" 
+                                                th:text="${turno.estado}" th:onclick="cambiarEstado([[${turno.id}]],[[${turno.idEstado}]])">Estado</div>
                                             </div>
                                             <div class="acciones">
                                                 <i class="fa-solid fa-trash"
@@ -96,6 +97,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!--MODAL ESTADOS-->
+        <div class="modal fade" id="seleccionarEstado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header modal-form-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Cambiar estado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="modalBodyEstados" class="modal-body d-block text-center">
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary border-0" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
+                <button type="button" class="btn guardar border-0" value="Guardar" id="guardar">Guardar</button>
+                </div>
+            </div>
             </div>
         </div>
 

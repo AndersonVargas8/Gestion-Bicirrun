@@ -95,3 +95,108 @@ function cambiarMes(adelantar = true) {
 
   return date;
 }
+
+function cambiarObservacion(id,textarea){
+  toastr.info("Actualizando turno");
+  let turno = {
+    observaciones: textarea.value
+  }
+
+  $.ajax({
+    url: "/turnos/"+id,
+    type: "PATCH",
+    dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify(turno),
+    success: function () {
+      defaultSuccessNotify("Turno actualizado");
+    },
+    error: function (jqXHR) {
+      defaultErrorNotify();
+      console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+    },
+  });
+}
+
+function cambiarEstado(id, idEstado){
+  $("#seleccionarEstado").modal('show');
+  let modalBody = document.querySelector("#seleccionarEstado #modalBodyEstados");
+  
+  let estados = [
+      {
+        id: 1,
+        descripcion: "Programado"
+      },
+      {
+        id: 2,
+        descripcion: "Cumplido"
+      },
+      {
+        id: 3,
+        descripcion: "Incumplido"
+      }
+    ]
+  
+  let contenido = "";
+  for(let estado of estados){
+    contenido += "<div class='form-check'>";
+
+    if(estado.id == idEstado){
+      contenido += "<input class='form-check-input' type='radio' name='inputEstado' id='flexRadioDefault"+estado.id+"' value='"+estado.id+"' checked>";
+    }else{
+      contenido += "<input class='form-check-input' type='radio' name='inputEstado' id='flexRadioDefault"+estado.id+"' value='"+estado.id+"'>";
+    }
+
+    contenido += "<label class='form-check-label col-lg-5' for='flexRadioDefault"+estado.id+"'>";
+
+    if(estado.id == 3){
+      contenido += "<div class='alert alert-danger pt-2 pb-2'>"+estado.descripcion+"</div>";
+    }else if(estado.id == 2){
+      contenido += "<div class='alert alert-success pt-2 pb-2'>"+estado.descripcion+"</div>";
+    }else{
+      contenido += "<div class='alert alert-info pt-2 pb-2'>"+estado.descripcion+"</div>";
+    }
+
+    contenido += "</label></div>"
+  }
+
+  modalBody.innerHTML = contenido;
+  let botonGuardar = document.querySelector("#seleccionarEstado #guardar");
+  botonGuardar.addEventListener('click',() => {
+    let valor = document.querySelector("[name = 'inputEstado']:checked").value;
+    if(valor != idEstado){
+      activarSpinner(botonGuardar);
+
+      let date = $("#calendario").data("datepicker").getDate();
+
+      let turno = {
+        idEstado : valor
+      };
+      
+      $.ajax({
+        url: "/turnos/"+id,
+        type: "PATCH",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify(turno),
+        success: function () {
+          botonGuardar.replaceWith(botonGuardar.cloneNode(true));
+          desactivarSpinner(document.querySelector("#seleccionarEstado #guardar"));
+          $("#seleccionarEstado").modal('hide');
+          defaultSuccessNotify("Turno actualizado");
+          $("#calendario").datepicker("setDate", date);
+        },
+        error: function (jqXHR) {
+          desactivarSpinner(botonGuardar);
+          defaultErrorNotify();
+          console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+        }
+      });
+    }else{
+      toastr.info("No hay cambios para guardar");
+      $("#seleccionarEstado").modal('hide');
+      valor = idEstado;
+      botonGuardar.replaceWith(botonGuardar.cloneNode(true));
+    }
+  })  
+}
