@@ -17,3 +17,15 @@ function defaultSuccessNotify(mensaje = "Correcto!!!"){
     toastr.options.positionClass = 'toast-top-right';
     toastr.success(mensaje);
 }
+
+function confirmarEliminación(mensaje = "", callback){
+    $("#confirmarEliminacion").modal('show');
+
+    document.querySelector("#confirmarEliminacion #modalBody").innerHTML = "<h5>"+mensaje+"</h5>";
+    
+    let boton = document.querySelector("#confirmarEliminacion #eliminar");
+    boton.addEventListener('click',() =>{
+        boton.replaceWith(boton.cloneNode(true));
+        callback(true);
+    });
+  }

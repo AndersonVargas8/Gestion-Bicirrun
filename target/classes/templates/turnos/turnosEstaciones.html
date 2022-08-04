@@ -82,7 +82,7 @@
                                             </div>
                                             <div class="acciones">
                                                 <i class="fa-solid fa-trash"
-                                                title="Eliminar turno"></i>
+                                                title="Eliminar turno" th:onclick="eliminarTurno([[${turno.id}]])"></i>
                                                 <i class="fa-solid fa-pen-to-square"
                                                 title="Editar turno"></i>
                                             </div>
@@ -118,6 +118,9 @@
             </div>
         </div>
 
+        <!--MODAL ELIMINACIÓN-->
+        <div th:replace="confirmarEliminacion.html"></div>
+        
         <!--DATEPICKER-->
         <div th:replace="includes.html::datepicker"></div>
 

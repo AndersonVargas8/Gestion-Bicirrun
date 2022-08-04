@@ -200,3 +200,31 @@ function cambiarEstado(id, idEstado){
     }
   })  
 }
+
+function eliminarTurno(id){
+  confirmarEliminación("Se eliminará el turno definitivamente",(confirm) => {
+    if(confirm){
+      let date = $("#calendario").data("datepicker").getDate();
+      let boton = document.querySelector("#confirmarEliminacion #eliminar")
+      activarSpinner(boton);
+      $.ajax({
+        url: "/turnos/"+id,
+        type: "DELETE",
+        success: function () {
+          desactivarSpinner(boton);
+          $("#confirmarEliminacion").modal('hide');
+          defaultSuccessNotify("Turno eliminado");
+          $("#calendario").datepicker("setDate", date);
+        },
+        error: function (jqXHR) {
+          desactivarSpinner(boton);
+          $("#confirmarEliminacion").modal('hide');
+          defaultErrorNotify();
+          console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+        }
+      });
+    }
+  })
+}
+
+
