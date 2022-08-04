@@ -204,6 +204,24 @@ public class TurnosController {
     }
 
     @GetMapping("/dia/{fecha}")
+    public String getDiaTurnosEstaciones(@PathVariable String fecha, ModelMap model){
+        LocalDate fechaLista = null;
+        if(!Mapper.esFechaValida(fecha)){
+            throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
+        }else{
+            String[] fechaFormat = fecha.split("-");
+            int dia = Integer.parseInt(fechaFormat[0]);
+            int mes = Integer.parseInt(fechaFormat[1]);
+            int anio = Integer.parseInt(fechaFormat[2]);
+            fechaLista = LocalDate.of(anio,mes,dia);
+        }
+
+        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        model.addAttribute("turnos",turnos);
+        return "turnos/turnosEstaciones";   
+    }
+
+    @GetMapping("/diaEstaciones/{fecha}")
     public String getTurnosEstaciones(@PathVariable String fecha, ModelMap model){
         LocalDate fechaLista = null;
         if(!Mapper.esFechaValida(fecha)){
@@ -218,8 +236,6 @@ public class TurnosController {
 
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
         model.addAttribute("turnos",turnos);
-        return "turnos/turnosEstaciones";
-        
+        return "turnos/turnosEstaciones::contenido";   
     }
- 
 }

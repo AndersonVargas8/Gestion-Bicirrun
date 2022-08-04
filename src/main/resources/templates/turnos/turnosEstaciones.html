@@ -40,17 +40,8 @@
                 <div class="calendario" id="calendario">
                 </div>
             </div>
-            <div class="overflow-auto" id="contenido">
-                <div class="card-text placeholder-glow p-4" id="placeholder"
-                    hidden>
-                    <span class="placeholder col-7 mb-3" style="height: 200px;"></span>
-                    <span class="placeholder col-4 mb-3" style="height: 200px;"></span>
-                    <span class="placeholder col-4 mb-2" style="height: 40px;"></span>
-                    <span class="placeholder col-5 mb-2" style="height: 40px;"></span>
-                    <span class="placeholder col-6"></span>
-                    <span class="placeholder col-8"></span>
-                    <span class="placeholder col-11"></span>
-                </div>
+            <div class="overflow-auto" id="contenido" th:fragment="contenido">
+                
 
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item" th:each="estacion,iStat: ${turnos.estaciones}">

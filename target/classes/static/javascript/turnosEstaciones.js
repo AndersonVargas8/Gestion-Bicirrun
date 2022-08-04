@@ -27,20 +27,48 @@ $("#calendario").datepicker({
   });
 
   //Cambiar header dia
-  $("#calendario")
-  .datepicker()
-  .on("changeDate", (e) => {
+  function cambiarHeader(date){
     let meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-    let date = e.date; //Fecha seleccionada en el datepicker
     let dia = date.getDate();
     let mes = meses[date.getMonth()];
     let anio = date.getFullYear();
     let texto = dia + " de " + mes + " del " + anio;
     document.querySelector("#header-dia").textContent = texto;
+
+  }
+
+  //Modificar la fecha seleccionada y el header al cargar la página
+  $("#calendario").datepicker("setDate",fecha);
+  cambiarHeader(fecha);
+
+  function activarPlaceholders(){
+    document.querySelector("#contenido").innerHTML = "<div class='card-text placeholder-glow p-4' id='placeholder'>"
+    +"<span class='placeholder col-7 mb-3 mr-2' style='height: 100px;'></span>"
+    +"<span class='placeholder col-4 mb-3' style='height: 100px;'></span>"
+    +"<span class='placeholder col-5 mb-3 mr-2' style='height: 100px;'></span>"
+    +"<span class='placeholder col-6 mb-3' style='height: 100px;'></span>"
+    +"<span class='placeholder col-4 mb-2 mr-2' style='height: 40px;'></span>"
+    +"<span class='placeholder col-5 mb-2' style='height: 40px;'></span>"
+    +"<span class='placeholder col-6'></span>"
+    +"<span class='placeholder col-8'></span>"
+    +"<span class='placeholder col-11'></span>"
+    +"</div>";
+  }
+  
+  $("#calendario")
+  .datepicker()
+  .on("changeDate", (e) => {
+    let date = e.date; //Fecha seleccionada en el datepicker
+    let dia = date.getDate();
+    let mes = date.getMonth() + 1;
+    let anio = date.getFullYear();
+    cambiarHeader(date);
+    activarPlaceholders(); 
+
+    let url = "/turnos/diaEstaciones/" + dia + "-" + mes + "-" + anio;
+    $("#contenido").load(url);
   })
 
-  
-$("#calendario").datepicker("setDate",fecha);
 
 //Activar selectores de mes
 document.getElementById("diaAtras").addEventListener("click", diaAtras);

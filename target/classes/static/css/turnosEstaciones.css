@@ -185,3 +185,7 @@
 .turnoDisponible i{
   color:#ccc;
 }
+
+.placeholder{
+  border-radius: 5px;
+}
