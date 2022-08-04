@@ -21,8 +21,8 @@
             crossorigin="anonymous"></script>
 
         <!--Archivos de utilidades-->
-        <link rel="stylesheet" type="text/css" th:href="@{css/util.css}" />
-        <script src="../../static/javascript/util.js" th:src="@{javascript/util.js}"></script>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}" />
+        <script src="../../static/javascript/util.js" th:src="@{/javascript/util.js}"></script>
     </div>
 
     <!--FONTAWESOME 6.1.1-->
@@ -68,11 +68,11 @@
 
     <!--DSELECT (SELECT WITH SEARCH)-->
     <div th:fragment="dselect" th:remove="tag">
-        <script src="../static/javascript/dselect.js" th:src="@{javascript/dselect.js}"></script>
+        <script src="../static/javascript/dselect.js" th:src="@{/javascript/dselect.js}"></script>
     </div>
 
     <!--TOASTR (NOTIFICACIONES DE ALERTA)-->
     <div th:fragment="toastr" th:remove="tag">
-        <link rel="stylesheet" type="text/css" href="../static/javascript/toastr/toastr.css" th:href="@{javascript/toastr/toastr.css}" />
-        <script src="../static/javascript/toastr/toastr.js" th:src="@{javascript/toastr/toastr.js}"></script>
+        <link rel="stylesheet" type="text/css" href="../static/javascript/toastr/toastr.css" th:href="@{/javascript/toastr/toastr.css}" />
+        <script src="../static/javascript/toastr/toastr.js" th:src="@{/javascript/toastr/toastr.js}"></script>
     </div>

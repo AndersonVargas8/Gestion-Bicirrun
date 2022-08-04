@@ -1,7 +1,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-mainbg">
     <div class="navbar-logo" >
-        <img th:src="@{img/logo.png}"></div>
+        <img th:src="@{/img/logo.png}"></div>
     </strong>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,7 +14,7 @@
                 <div class="right"></div>
             </div>
             <li class="nav-item" id="item-inicio">
-                <a class="nav-link" href="javascript:void(0);"><i class="fa fa-home"></i>Inicio</a>
+                <a class="nav-link" th:href="@{/inicio}"><i class="fa fa-home"></i>Inicio</a>
             </li>
             
             <li class="nav-item" id="item-estudiantes">
@@ -38,4 +38,4 @@
 
 <link href="../static/css/navbarcss" th:href="@{/css/navbar.css}" rel="stylesheet"/>
 
-<script src="javascript/nav.js"></script>
+<script src="javascript/nav.js" th:src="@{/javascript/nav.js}"></script>

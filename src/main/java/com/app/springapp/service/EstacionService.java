@@ -44,19 +44,18 @@ public class EstacionService implements IServicioEstacion {
         List<Estacion> listaEstaciones = obtenerTodas();
         List<Estacion> estacionesDisponibles = new ArrayList<>();
         for (Estacion estacion : listaEstaciones) {
-            try {
-                Cupo cupo = serCupo.buscarPorEstacionYHorario(estacion, horario);
-                int numCupos = serCupo.obtenerNumeroCupos(cupo);
-                int numTurnos = serTurno.sumaTurnosPorFechaYHorarioYEstacion(fecha, horario, estacion);
-
-                if(cupo.tieneCupoCompartido()){
-                    numTurnos += serTurno.sumaTurnosPorFechaYHorarioYEstacion(fecha, cupo.getCupoCompartido().getHorario(), estacion);
-                }
-                if (numTurnos < numCupos) {
-                    estacionesDisponibles.add(estacion);
-                }
-            }catch (NoSuchElementException e) {
+            Cupo cupo = serCupo.buscarPorEstacionYHorario(estacion, horario);
+            if(cupo == null){
                 continue;
+            }
+            int numCupos = serCupo.obtenerNumeroCupos(cupo);
+            int numTurnos = serTurno.sumaTurnosPorFechaYHorarioYEstacion(fecha, horario, estacion);
+
+            if(cupo.tieneCupoCompartido()){
+                numTurnos += serTurno.sumaTurnosPorFechaYHorarioYEstacion(fecha, cupo.getCupoCompartido().getHorario(), estacion);
+            }
+            if (numTurnos < numCupos) {
+                estacionesDisponibles.add(estacion);
             }
         }
         return estacionesDisponibles;

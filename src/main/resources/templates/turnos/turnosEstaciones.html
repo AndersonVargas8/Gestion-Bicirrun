@@ -1,407 +1,124 @@
-<div class="modal-body p-4  justify-content-center" th:if="${totalEstaciones != null}">
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Turnos programados</title>
 
-    <!-- <div th:each="turnos: ${totalDispEstaciones}">
-        <p th:text="${totalDispEstaciones}"></p>
-    </div> -->
-    <div class="d-flex justify-content-center" style="margin-top: -4%;">
-        <h4 th:text="${diaSelCal + ' - '}"></h4>&nbsp;
-        <h4 th:text="${mesSelCal == 1} ? 'Enero' :
-                    (${mesSelCal == 2} ? 'Febrero' :
-                    (${mesSelCal == 3} ? 'Marzo' :
-                    (${mesSelCal == 4} ? 'Abril' :
-                    (${mesSelCal == 5} ? 'Mayo' :
-                    (${mesSelCal == 6} ? 'Junio' :
-                    (${mesSelCal == 7} ? 'Julio' :
-                    (${mesSelCal == 8} ? 'Agosto' :
-                    (${mesSelCal == 9} ? 'Septiembre' :
-                    (${mesSelCal == 10} ? 'Octubre' :
-                    (${mesSelCal == 11} ? 'Noviembre' :
-                    (${mesSelCal == 12} ? 'Diciembre' :'a')))))))))))"></h4>
+        <link rel="icon" type="image/x-icon" href="/img/favicon.png"
+            th:href="@{/img/favicon.png}" />
 
-    </div>
-    <!-- CONFIRMAR ELIMINACION -->
-    <div th:include="turnos/confirmarEliminacion.html" th:remove="tag"></div>
-    <!--CyT-->
-    <table class="table border border-dark">
-        <thead class="theadCyT">
-            <tr>
-                <th colspan="5" class="bg bg-dark tableCyT border border-dark">
-                    <div class="text-center">
-                        <h4>CyT</h4>
+        <!--JQUERY-->
+        <div th:replace="includes.html::jquery"></div>
 
+        <!--BOOTSTRAP-->
+        <div th:replace="includes.html::bootstrap"></div>
+
+        <!--FONT AWESOME-->
+        <div th:replace="includes.html::fontawesome"></div>
+
+        <!--CSS-->
+        <link rel="stylesheet" href="../../static/css/turnos.css"
+            th:href="@{/css/turnos.css}" />
+        <link rel="stylesheet" href="../../static/css/turnosEstaciones.css"
+            th:href="@{/css/turnosEstaciones.css}" />
+    </head>
+    <body>
+
+        <!--NavBar-->
+        <div th:include="navbar.html" th:remove="tag"></div>
+
+        <div class="grid-layout">
+            <div id="espacio-vacio"></div>
+            <div id="cabecera">
+                <i class="fa-solid fa-angle-left flecha" id="diaAtras"></i>
+                <h5 class="header-dia" id="header-dia">dd de MMMM del aaaa</h5>
+                <i class="fa-solid fa-angle-right flecha" id="diaAdelante"></i>
+            </div>
+            <div id="barra">
+                <div class="calendario" id="calendario">
+                </div>
+            </div>
+            <div class="overflow-auto" id="contenido">
+                <div class="card-text placeholder-glow p-4" id="placeholder"
+                    hidden>
+                    <span class="placeholder col-7 mb-3" style="height: 200px;"></span>
+                    <span class="placeholder col-4 mb-3" style="height: 200px;"></span>
+                    <span class="placeholder col-4 mb-2" style="height: 40px;"></span>
+                    <span class="placeholder col-5 mb-2" style="height: 40px;"></span>
+                    <span class="placeholder col-6"></span>
+                    <span class="placeholder col-8"></span>
+                    <span class="placeholder col-11"></span>
+                </div>
+
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item" th:each="estacion,iStat: ${turnos.estaciones}">
+                        <h2 class="accordion-header" th:id="${'heading'+estacion.id}">
+                            <button th:class="${(iStat.count == 1) ? 'accordion-button' : 'accordion-button collapsed'}" type="button"
+                                data-bs-toggle="collapse"
+                                th:data-bs-target="${'#collapse'+estacion.id}"
+                                aria-expanded="true"
+                                th:aria-controls="${'collapse'+estacion.id}">
+                                <div class="d-block text-center w-100" th:text="${estacion.nombre}">Nombre estación</div>
+                            </button>
+                        </h2>
+                        <div th:id="${'collapse'+estacion.id}" th:class="${(iStat.count == 1) ? 'accordion-collapse collapse
+                            show' : 'accordion-collapse collapse'}" aria-labelledby="${'heading'+estacion.id}"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body p-2">
+                                <div class="header-estacion">
+                                    <div>HORARIO</div>
+                                    <div>ESTUDIANTE</div>
+                                    <div>OBSERVACIONES</div>
+                                    <div>ESTADO</div>
+                                </div>
+                                <div class="horario" th:each="horario: ${estacion.horarios}">
+                                    <div th:each="turno: ${horario.turnos}" th:remove="tag">
+                                        <div class="turno" th:if="${turno != null}">
+                                            <div th:text="${turno.horario}">--:-- - --:-- </div>
+                                            <div th:text="${turno.estudiante}">Estudiante</div>
+                                            <div>
+                                                <div class="form-floating">
+                                                    <textarea class="form-control"
+                                                    id="obs" th:value="${turno.observaciones}" th:text="${turno.observaciones}">Observaciones</textarea>
+                                                    <label for="obs">Observaciones</label>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div th:class="${(turno.idEstado == 1) ? 'alert alert-info' : ((turno.idEstado == 2) ? 'alert alert-success' : 'alert alert-danger')}" th:text="${turno.estado}">Estado</div>
+                                            </div>
+                                            <div class="acciones">
+                                                <i class="fa-solid fa-trash"
+                                                title="Eliminar turno"></i>
+                                                <i class="fa-solid fa-pen-to-square"
+                                                title="Editar turno"></i>
+                                            </div>
+                                        </div>
+                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}">
+                                            <div th:text="${horario.descripcion}">--:-- - --:-- </div>
+                                            <div><i>Disponible</i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </th>
-            </tr>
-            <tr class="border border-dark">
-                <th class="border-right">Horario</th>
-                <th class="border-right">Estudiante</th>
-                <th class="border-right" style="width:30%;">Observaciones</th>
-                <th class="border-right">Estado</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(1).get(1)}">
-                <td>6:30 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(2)}">
-                <td>6:30 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],1,1)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(1).get(2)}" class="border-top">
-                <td>7:00 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(2)}">
-                <td>7:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],2,1)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-             </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(1).get(3)}">
-                <td>10:00 AM - 1:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(3)}">
-                <td>10:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],3,1)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(1).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(1).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],4,1)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <!--Calle 45-->
-    <table class="table border border-dark">
-        <thead class="thead45">
-            <tr>
-                <th colspan="5" class="bg-secondary border border-dark table45">
-                    <div class="text-center">
-                        <h4>Calle 45</h4>
+                </div>
+            </div>
+        </div>
 
-                    </div>
-                </th>
-            </tr>
-            <tr class="border border-dark">
-                <th class="border-right">Horario</th>
-                <th class="border-right">Estudiante</th>
-                <th class="border-right" style="width:30%;">Observaciones</th>
-                <th class="border-right">Estado</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(2).get(1)}">
-                <td>6:30 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}" style="max-width: 35%;"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(2)}">
-                <td>6:30 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],1,2)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(2).get(2)}" class="border-top">
-                <td>7:00 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(2)}">
-                <td>7:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],2,2)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(2).get(3)}">
-                <td>10:00 AM - 1:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(3)}">
-                <td>10:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],3,2)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(2).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(2).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],4,2)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <!--Calle 26-->
-    <table class="table border border-dark">
-        <thead class="thead26">
-            <tr>
-                <th colspan="5" class="bg-secondary border border-dark table26">
-                    <div class="text-center">
-                        <h4>Calle 26</h4>
+        <!--DATEPICKER-->
+        <div th:replace="includes.html::datepicker"></div>
 
-                    </div>
-                </th>
-            </tr>
-            <tr class="border border-dark">
-                <th class="border-right">Horario</th>
-                <th class="border-right">Estudiante</th>
-                <th class="border-right" style="width:30%;">Observaciones</th>
-                <th class="border-right">Estado</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(3).get(2)}" class="border-top">
-                <td>7:00 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(2)}">
-                <td>7:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],2,3)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(3).get(3)}">
-                <td>10:00 AM - 1:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(3)}">
-                <td>10:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],3,3)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(3).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(3).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],4,3)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <!--Uriel-->
-    <table class="table border border-dark">
-        <thead class="theadUriel">
-            <tr>
-                <th colspan="5" class="bg-secondary border border-dark tableUriel">
-                    <div class="text-center">
-                        <h4>Uriel</h4>
+        <!--DSELECT-->
+        <div th:replace="includes.html::dselect"></div>
 
-                    </div>
-                </th>
-            </tr>
-            <tr class="border border-dark">
-                <th class="border-right">Horario</th>
-                <th class="border-right">Estudiante</th>
-                <th class="border-right" style="width:30%;">Observaciones</th>
-                <th class="border-right">Estado</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(4).get(2)}" class="border-top">
-                <td>7:00 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(2)}">
-                <td>7:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],2,4)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(4).get(3)}">
-                <td>10:00 AM - 1:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(3)}">
-                <td>10:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],3,4)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(4).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(4).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],4,4)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-        </tbody>
-    </table><br>
-    <!--Calle 53-->
-    <table class="table border border-dark">
-        <thead class="thead53">
-            <tr>
-                <th colspan="6" class="bg-secondary border border-dark table53">
-                    <div class="text-center">
-                        <h4>Calle 53</h4>
+        <!--TOASTR-->
+        <div th:replace="includes.html::toastr"></div>
 
-                    </div>
-                </th>
-            </tr>
-            <tr class="border border-dark">
-                <th class="border-right">Horario</th>
-                <th class="border-right">Estudiante</th>
-                <th class="border-right" style="width:30%;">Observaciones</th>
-                <th class="border-right">Estado</th>
-                <th class=""></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="turno: ${totalEstaciones.get(5).get(2)}" class="border-top">
-                <td>7:00 AM - 10:00 AM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(2)}">
-                <td>7:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],2,5)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(5).get(3)}">
-                <td>10:00 AM - 1:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg" ></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(3)}">
-                <td>10:00 AM - 10:00 AM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],3,5)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-            <tr class="bg bg-dark">
-                <td colspan="5" class="p-0 pt-1"></td>
-            </tr>
-            <tr th:each="turno: ${totalEstaciones.get(5).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td th:text="${turno.estudiante.nombres + ' ' +turno.estudiante.apellidos}"></td>
-                <td th:text="${turno.observaciones}"></td>
-                <td th:text="${turno.estado.descripcion}"></td>
-                <td><a class="btnEliminarTurno" title="Eliminar turno" th:onclick="abrirConfirm([[${turno.id}]])"><span class="fa fa-trash fa-lg"></span></a></td>
-            </tr>
-            <tr th:each="disponibilidad: ${totalDispEstaciones.get(5).get(4)}">
-                <td>1:00 PM - 4:00 PM</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a class="btnAgregarTurno" title="Agregar turno" th:onclick="abrirNuevoTurno([[${mesSelCal}]],[[${diaSelCal}]],4,5)"><span class="fa fa-calendar-plus-o" ></span></a></td>
-            </tr>
-        </tbody>
-    </table>
-
-</div>
-
+        <!--JAVASCRIPT-->
+        <script src="../../static/javascript/turnosEstaciones.js"
+            th:src="@{/javascript/turnosEstaciones.js}"></script>
+    </body>
+</html>

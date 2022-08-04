@@ -26,8 +26,6 @@ import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.interfacesServicios.IServicioTurno;
-import com.app.springapp.repository.EstadoTurnoRepository;
-import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.service.CupoService;
 import com.app.springapp.service.TurnoService;
 import com.app.springapp.util.Mapper;
@@ -42,25 +40,19 @@ public class TurnosController {
     IServicioEstacion serEstacion;
 
     @Autowired
-    EstudianteRepository repEstudiante;
-
-    @Autowired
-    EstadoTurnoRepository repEstadoTurno;
-
-    @Autowired
     CupoService serCupo;
 
 
     @Autowired
     IServicioTurno serTurno;
 
-
     @GetMapping
-    public String index(ModelMap model) {
-        model.addAttribute("horarios", serHorario.obtenerTodos());
-        model.addAttribute("estudiantes", repEstudiante.findAll());
-        model.addAttribute("calendario",serTurno.getCalendario(LocalDate.now().getMonthValue(), LocalDate.now().getYear()));
-        return "turnos/turnos";
+    public String getTurnosEstaciones(ModelMap model){
+        LocalDate fechaLista = LocalDate.now();
+  
+        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        model.addAttribute("turnos",turnos);
+        return "turnos/turnosEstaciones";   
     }
 
     /**
@@ -212,8 +204,7 @@ public class TurnosController {
     }
 
     @GetMapping("/dia/{fecha}")
-    @ResponseBody
-    public TurnosEstaciones getTurnosEstaciones(@PathVariable String fecha){
+    public String getTurnosEstaciones(@PathVariable String fecha, ModelMap model){
         LocalDate fechaLista = null;
         if(!Mapper.esFechaValida(fecha)){
             throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
@@ -226,7 +217,8 @@ public class TurnosController {
         }
 
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
-        return turnos;
+        model.addAttribute("turnos",turnos);
+        return "turnos/turnosEstaciones";
         
     }
  

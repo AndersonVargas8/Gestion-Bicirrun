@@ -1,0 +1,187 @@
+.grid-layout {
+  height: 100vh;
+  display: grid;
+  grid-template-areas:
+    "espacio-vacio cabecera"
+    "barra contenido";
+    grid-template-rows: 10% auto;
+    grid-template-columns: 20% auto;
+}
+
+#espacio-vacio{
+    grid-area: espacio-vacio;
+}
+#cabecera {
+  grid-area: cabecera;
+  padding: 5px;
+  box-shadow: 0 7px 7px -7px lightgray;
+  -webkit-box-shadow: 0 7px 7px -7px lightgray;
+  -moz-box-shadow: 0 7px 7px -7px lightgray;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+#cabecera .flecha{
+  color: #777;
+  margin: 5% !important;
+  padding: 5px 9px;
+  border-radius: 100%;
+  font-size: large;
+}
+
+#cabecera .flecha:hover{
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.header-dia{
+  margin: 0;
+}
+
+#barra {
+    grid-area: barra;
+    padding: 10px;
+    box-shadow: 5px 0 5px -5px lightgray;
+    -webkit-box-shadow: 5px 0 5px -5px lightgray;
+    -moz-box-shadow: 7px 0 7px -7px lightgray;
+    display:grid;
+    grid-template-columns: auto;
+}
+
+
+
+.calendario{
+  width: 100%;
+}
+
+/*estilos datepicker calendar*/
+
+.calendario .datepicker{
+  width: 100%;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.calendario table{
+  width: 100%;
+}
+
+.calendario .datepicker td.day{
+  width: 14.3% !important;
+  height: 5vh !important;
+  padding: 5px 6px;
+  font-size: medium;
+}
+
+.calendario .datepicker td span{
+  font-size: 17px;
+  margin: 5px !important;
+  width: 20% !important;
+  height: 7.5vh !important;
+  line-height: 7.5vh !important;
+}
+
+.calendario .datepicker span.active{
+  background-color: var(--color-principal) !important;
+}
+
+.calendario .datepicker td.active{
+  background-color: var(--color-principal) !important;
+}
+
+/*estilos para el contenido donde irá la información de las estaciones*/
+
+#contenido {
+  grid-area: contenido;
+  padding: 10px;
+}
+
+.horario{
+  border-bottom: 2px solid #555;
+  background-color: rgb(250, 250, 250);
+}
+
+.header-estacion{
+  display: grid;
+  grid-template-columns:20% 30% 30% 13% auto;
+  border-bottom: 1px solid gray;
+  background-color: steelblue;
+  border-radius: 5px 5px 0 0;
+  font-weight: bold;
+  color: white;
+}
+
+.header-estacion div, .turno div, .turnoDisponible div{
+  display: grid;
+  text-align: center;
+  padding: 10px 0;
+  align-items: center;
+}
+
+.turno div{
+  padding: 5px 5px;
+}
+
+.turno:hover .acciones{
+  visibility: visible;
+}
+
+.turno, .turnoDisponible{
+  border-bottom: 1px solid gray;
+  display: grid;
+  grid-template-columns:20% 30% 30% 13% auto;
+}
+
+.form-floating label{
+  padding: 0 5px;
+  margin: 0;
+  top:10px;
+  opacity: 1 !important;
+  color: #aaa;
+}
+
+.turno textarea{
+  border: 0 !important;
+  padding: 19px 5px !important;
+  background-color: rgb(250, 250, 250);
+}
+
+.turno .alert{
+  margin: 0 !important;
+}
+
+.turno .alert:hover{
+  filter: brightness(95%);
+  cursor: pointer;
+}
+
+.turno .acciones{
+  display:grid;
+  grid-template-columns: auto auto;
+  visibility: hidden;
+}
+
+.turno .acciones .fa-trash{
+  color: red;
+}
+.turno .acciones .fa-pen-to-square{
+  color: rgb(41, 74, 134);
+}
+
+.turno .acciones .fa-trash:hover, .turno .acciones .fa-pen-to-square:hover{
+  filter: brightness(180%);
+  cursor: pointer;
+  font-size: large;
+  transition-duration: .3s;
+}
+.turnoDisponible:hover{
+  cursor: pointer;
+  filter: brightness(90%) !important;
+  background-color: white !important;
+}
+
+.turnoDisponible i{
+  color:#ccc;
+}

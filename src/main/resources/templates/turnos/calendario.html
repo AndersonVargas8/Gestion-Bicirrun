@@ -1,4 +1,4 @@
-<div class="calendario">
+<div class="calendario-content">
     <table class="table table-borderless m-0">
         <thead>
             <tr class="tituloMes">
@@ -52,7 +52,7 @@
                 <tr th:each="semana:${calendario.semanas}">
                     <td class="diaCalendar" th:each="dia:${semana.dias}">
                         <div class="grid diaNoDisponible" th:if="${dia == null}"></div>
-                        <div class="grid diaDisponible" th:if="${dia != null}" th:value="${dia.numeroDia}">
+                        <div class="grid diaDisponible" th:if="${dia != null}" th:value="${dia.numeroDia}" onclick="verDia(this)">
                             <div class="numeroDia"><span th:text="${dia.numeroDia}">Día</span></div>
                         <div class="turnosProgramados">Turnos programados:</div>
                         <div class="barra" data-bs-toggle="tooltipCalendar"
