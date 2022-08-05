@@ -28,6 +28,8 @@ public interface IServicioTurno {
 
     public void eliminarTurno(int idTurno) throws CustomeFieldValidationException ;
 
+    public int sumaTurnosFecha(LocalDate fecha);
+
     public int sumaTurnosPorFechaYHorario(LocalDate fecha, Horario horario);
     
     public int sumaTurnosPorFechaYHorarioYEstacion(LocalDate fecha, Horario horario, Estacion estacion);
@@ -51,6 +53,7 @@ public interface IServicioTurno {
         public List<String> fechasDeshabilitadas;
     }
     public DiasDeshabilitados obtenerDiasDeshabilitados();
+    
     public DiasDeshabilitados obtenerDiasDeshabilitados(int idHorario);
 
     /**
