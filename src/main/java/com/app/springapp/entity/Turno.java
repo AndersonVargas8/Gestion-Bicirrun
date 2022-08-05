@@ -188,6 +188,14 @@ public class Turno implements Comparable<Turno>, Cloneable{
         return compare;
     }
 
+    public int compareTo(Turno turno,boolean soloFecha) {
+        LocalDate fechaThis = LocalDate.of(anio,mes,dia);
+        LocalDate fechaOtro = LocalDate.of(turno.anio, turno.mes, turno.dia);
+
+        int compare = fechaThis.compareTo(fechaOtro);
+        return compare;
+    }
+
     @Override
     public Turno clone(){
         try {
