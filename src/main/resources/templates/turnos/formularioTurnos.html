@@ -78,6 +78,10 @@
                         class="form-select" id="selectEstacionForm" required
                         disabled>
                         <option value="" hidden>Seleccione</option>
+                        <option th:each="estacion:${estaciones}"
+                            th:value="${estacion.id}"
+                            th:text="${estacion.nombre}">
+                        </option>
                     </select>
                     <span class="input-group-text"
                         id="loadingEstaciones" style="display: none;">

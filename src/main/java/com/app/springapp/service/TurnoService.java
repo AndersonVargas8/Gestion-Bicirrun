@@ -28,8 +28,6 @@ import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.interfacesServicios.IServicioTurno;
-import com.app.springapp.model.Mes;
-import com.app.springapp.model.TurnosCompletos;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.TurnoRepository;
 import com.app.springapp.util.Mapper;
@@ -90,6 +88,13 @@ public class TurnoService implements IServicioTurno {
     }
 
     @Override
+    public int sumaTurnosFecha(LocalDate fecha) {
+        int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
+        int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnio(dia, mes, anio);
+        return numeroTurnos;
+    }
+
+    @Override
     public int sumaTurnosPorFechaYHorario(LocalDate fecha, Horario horario) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnioAndHorario(dia, mes, anio, horario);
@@ -106,10 +111,33 @@ public class TurnoService implements IServicioTurno {
 
     @Override
     public boolean hayTurnosDisponibles(LocalDate fecha, Horario horario) {
-        int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
-        TurnosCompletos turnosCom = repTurno.getTurnosCompletos(anio);
+        int valorDiaActual = DayOfWeek.from(fecha).getValue();
+        String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
+        if (horario.diaNoDisponible(nombreDia)) {
+            return false;
+        }
+        int numeroCupos = serCupo.cantidadCuposPorHorario(horario);
+        int numeroTurnos = sumaTurnosPorFechaYHorario(fecha, horario);
 
-        return !turnosCom.estaCompletoHorario(mes, dia, (int) horario.getId());
+        List<Cupo> cupos = serCupo.buscarPorHorario(horario);
+        Set<Horario> horariosDependientes = new HashSet<>();
+        for (Cupo cupo : cupos) {
+            if (cupo.tieneCupoCompartido()) {
+                if(!cupo.getCupos_dependientes().isEmpty()){
+                    horariosDependientes.add(cupo.getCupoCompartido().getHorario());
+                }else{
+                    numeroTurnos += sumaTurnosPorFechaYHorarioYEstacion(fecha, cupo.getCupoCompartido().getHorario(), cupo.getEstacion());
+                }
+
+                numeroCupos += cupo.getCupoCompartido().getNum_cupos();
+            }
+        }
+
+        for (Horario horarioIt : horariosDependientes) {
+            numeroTurnos += sumaTurnosPorFechaYHorario(fecha, horarioIt);
+        }
+
+        return numeroTurnos < numeroCupos;
     }
 
     /**
@@ -242,74 +270,6 @@ public class TurnoService implements IServicioTurno {
         return (int) numeroTurnosProgramados;
     }
 
-    private void actualizarArchivosAgregarTurno(Turno turno) throws CustomeFieldValidationException {
-        int dia = turno.getDia(), mes = turno.getMes(), anio = turno.getAnio();
-        Horario horarioPrincipal = turno.getHorario();
-        // Día completo por horario
-        List<Cupo> cupos = serCupo.buscarPorHorario(turno.getHorario());
-        // Revisa si tiene un cupo independiente
-        for (Cupo cupo : cupos) {
-            if (!cupo.getCupos_independientes().isEmpty()) {
-                horarioPrincipal = cupo.getCupoCompartido().getHorario();
-                cupos = serCupo.buscarPorHorario(cupo.getCupoCompartido().getHorario());
-                break;
-            }
-        }
-        Set<Horario> horariosCupoCompartido = new HashSet<>();
-        int numeroCupos = cupos.size(), sumaCuposCompletos = 0;
-        int sumaCuposCompartidos = 0, sumaCuposCompartidosCompletos = 0;
-
-        for (Cupo cupo : cupos) {
-            long cantTurnosProg = cantidadTurnosProgramados(dia, mes, anio, cupo.getEstacion(), cupo.getHorario());
-            long cantCupos = cupo.getNum_cupos();
-            if (cupo.tieneCupoCompartido()) {
-                cantCupos += cupo.getCupoCompartido().getNum_cupos();
-                sumaCuposCompartidos++;
-                if (cantTurnosProg >= cantCupos) {
-                    sumaCuposCompartidosCompletos++;
-                    horariosCupoCompartido.add(cupo.getCupoCompartido().getHorario());
-                }
-            }
-            if (cantTurnosProg >= cantCupos) {
-                sumaCuposCompletos++;
-            }
-        }
-
-        if (numeroCupos == sumaCuposCompletos) {
-            repTurno.agregarDiaTurnosCompletosHorario(turno.getDia(), turno.getMes(), turno.getAnio(),
-                    (int) horarioPrincipal.getId());
-        }
-
-        if (sumaCuposCompartidos == sumaCuposCompartidosCompletos) {
-            for (Horario horario : horariosCupoCompartido) {
-                repTurno.agregarDiaTurnosCompletosHorario(turno.getDia(), turno.getMes(), turno.getAnio(),
-                        (int) horario.getId());
-            }
-        }
-
-        // Día completo totalmente
-        int turnosProgramados = repTurno.agregarTurnoProgramado(turno.getDia(), turno.getMes(), turno.getAnio());
-        int cantidadCupos = serCupo.cantidadCuposPorFecha(turno.getDia(), turno.getMes(), turno.getAnio());
-        if (turnosProgramados >= cantidadCupos) {
-            repTurno.agregarDiaTurnosCompletos(turno.getDia(), turno.getMes(), turno.getAnio());
-        }
-    }
-
-    private void actualizarArchivosEliminarTurno(Turno turno) {
-        int dia = turno.getDia(), mes = turno.getMes(), anio = turno.getAnio();
-        repTurno.eliminarTurnoProgramado(dia, mes, anio);
-
-        // Dia completo horario
-        repTurno.eliminarDiaTurnosCompletos(dia, mes, anio, (int) turno.getHorario().getId());
-
-        Cupo cupo = serCupo.buscarPorEstacionYHorario(turno.getEstacion(), turno.getHorario());
-
-        if (cupo.tieneCupoCompartido()) {
-            repTurno.eliminarDiaTurnosCompletos(dia, mes, anio, (int) cupo.getCupoCompartido().getHorario().getId());
-        }
-
-    }
-
     @Override
     public TurnoDTO guardarTurno(TurnoDTO turnoDTO) throws CustomeFieldValidationException {
         Turno turno = Mapper.mapToTurno(turnoDTO, serEstacion, serEstudiante, serHorario, repEstadoTurno);
@@ -327,8 +287,6 @@ public class TurnoService implements IServicioTurno {
 
         repTurno.save(turno);
 
-        actualizarArchivosAgregarTurno(turno);
-
         turnoDTO = Mapper.mapToTurnoDTO(turno);
         return turnoDTO;
     }
@@ -340,7 +298,6 @@ public class TurnoService implements IServicioTurno {
         }
         Turno turno = obtenerPorId(idTurno);
         repTurno.deleteById(new Long(idTurno));
-        actualizarArchivosEliminarTurno(turno);
     }
 
     @Override
@@ -397,12 +354,7 @@ public class TurnoService implements IServicioTurno {
 
         if (crearNuevo) {
             repTurno.updateId(turno.getId(), new Long(idTurno));
-            actualizarArchivosAgregarTurno(turno);
-        } else if (turnoActual.compareTo(turno) != 0) {
-            actualizarArchivosEliminarTurno(turnoActual);
-            actualizarArchivosAgregarTurno(turno);
         }
-
         return Mapper.mapToTurnoDTO(turno);
 
     }
@@ -464,10 +416,6 @@ public class TurnoService implements IServicioTurno {
 
         turno = repTurno.save(turno);
 
-        if (turnoActual.compareTo(turno) != 0) {
-            actualizarArchivosEliminarTurno(turnoActual);
-            actualizarArchivosAgregarTurno(turno);
-        }
         return Mapper.mapToTurnoDTO(turno);
     }
 
@@ -486,9 +434,6 @@ public class TurnoService implements IServicioTurno {
 
         Calendario calendario = new Calendario(mes, anio);
 
-        // Objeto Mes para buscar los turnos programados
-        Mes mesTurnosPro = repTurno.getMesTurnosProgramados(anio, calendario.mes);
-
         // HashMap con los cupos por día
         HashMap<String, Integer> cuposPorDia = serCupo.cantidadCuposAlDia();
 
@@ -501,7 +446,7 @@ public class TurnoService implements IServicioTurno {
 
             if (valorDiaActual <= 5) {// Si el día no es sábado ni domingo
                 int cuposDia = cuposPorDia.get(nombreDia);
-                int turnosProgramados = mesTurnosPro.numeroTurnosDia(diaMes);
+                int turnosProgramados = sumaTurnosFecha(dia);
                 calendario.agregarDiaSemana(numeroSemanasGuardadas, valorDiaActual, diaMes, cuposDia,
                         turnosProgramados);
 
@@ -518,8 +463,27 @@ public class TurnoService implements IServicioTurno {
     public DiasDeshabilitados obtenerDiasDeshabilitados() {
         DiasDeshabilitados diasD = new DiasDeshabilitados();
         diasD.diasDeshabilitados = new ArrayList<>();
+        LocalDate fecha = LocalDate.now();
 
-        List<String> fechas = repTurno.getFechasCompletas();
+        // Lista de días con algún cupo programado después de hoy(incluido)
+        List<Object[]> respuesta = repTurno.findDistinctPostFecha(fecha.getDayOfMonth(), fecha.getMonthValue(),
+                fecha.getYear());
+
+        // HashMap con los cupos por día
+        HashMap<String, Integer> cuposPorDia = serCupo.cantidadCuposAlDia();
+
+        List<String> fechas = new ArrayList<>();
+
+        for (Object[] obj : respuesta) {
+            fecha = LocalDate.of((int) obj[2], (int) obj[1], (int) obj[0]);
+            int valorDiaActual = DayOfWeek.from(fecha).getValue();
+            String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
+            int cuposDia = cuposPorDia.get(nombreDia);
+            int turnosProgramados = sumaTurnosFecha(fecha);
+
+            if (turnosProgramados >= cuposDia)
+                fechas.add(String.valueOf(obj[0]) + "-" + String.valueOf(obj[1]) + "-" + String.valueOf(obj[2]));
+        }
 
         diasD.fechasDeshabilitadas = fechas;
 
@@ -539,7 +503,40 @@ public class TurnoService implements IServicioTurno {
             diasD.diasDeshabilitados.add(Calendario.convertirNombreDiaANumeroSemana(dia));
         }
 
-        List<String> fechas = repTurno.getFechasCompletas(idHorario);
+        LocalDate fecha = LocalDate.now();
+        // Lista de días con algún cupo programado después de hoy(incluido)
+        List<Object[]> respuesta = repTurno.findDistinctByHorarioPostFecha(fecha.getDayOfMonth(), fecha.getMonthValue(),
+                fecha.getYear(), idHorario);
+
+        List<String> fechas = new ArrayList<>();
+
+        for (Object[] obj : respuesta) {
+            fecha = LocalDate.of((int) obj[2], (int) obj[1], (int) obj[0]);
+            int cuposDia = serCupo.cantidadCuposPorHorario(horario);
+
+            int turnosProgramados = sumaTurnosPorFechaYHorario(fecha, horario);
+
+            List<Cupo> cupos = serCupo.buscarPorHorario(horario);
+            Set<Horario> horariosDependientes = new HashSet<>();
+            for (Cupo cupo : cupos) {
+                if (cupo.tieneCupoCompartido()) {
+                    if(!cupo.getCupos_dependientes().isEmpty()){
+                        horariosDependientes.add(cupo.getCupoCompartido().getHorario());
+                    }else{
+                        turnosProgramados += sumaTurnosPorFechaYHorarioYEstacion(fecha, cupo.getCupoCompartido().getHorario(), cupo.getEstacion());
+                    }
+    
+                    cuposDia += cupo.getCupoCompartido().getNum_cupos();
+                }
+            }
+    
+            for (Horario horarioIt : horariosDependientes) {
+                turnosProgramados += sumaTurnosPorFechaYHorario(fecha, horarioIt);
+            }
+
+            if (turnosProgramados >= cuposDia)
+                fechas.add(String.valueOf(obj[0]) + "-" + String.valueOf(obj[1]) + "-" + String.valueOf(obj[2]));
+        }
 
         diasD.fechasDeshabilitadas = fechas;
 

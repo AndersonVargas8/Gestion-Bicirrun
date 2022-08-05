@@ -3,8 +3,10 @@ package com.app.springapp.service;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -132,6 +134,26 @@ public class CupoService implements IServicioCupo{
         int numCupos = obtenerNumeroCupos(cupo);
 
         return numCupos;
+    }
+    @Override
+    public int cantidadCuposAbsolutos(Horario horario) {
+        int numeroCupos = cantidadCuposPorHorario(horario);
+
+        if(numeroCupos == 0){
+            List<Cupo> cupos = buscarPorHorario(horario);
+            Set<Horario> horariosIndependientes = new HashSet<>();
+            for(Cupo cupo: cupos){
+                if(cupo.tieneCupoCompartido()){
+                    horariosIndependientes.add(cupo.getCupoCompartido().getHorario());
+                }
+            }
+
+            for(Horario horarioIt: horariosIndependientes){
+                numeroCupos += cantidadCuposPorHorario(horarioIt);
+            }
+        }
+
+        return numeroCupos;
     }
 
 }
