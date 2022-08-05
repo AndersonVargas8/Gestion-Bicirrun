@@ -1,16 +1,6 @@
 package com.app.springapp.repository;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,18 +13,10 @@ import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
-import com.app.springapp.model.Mes;
-import com.app.springapp.model.TurnosCompletos;
-import com.app.springapp.model.TurnosProgramados;
 
 @Transactional
 @Repository
 public interface TurnoRepository extends CrudRepository<Turno, Long> {
-
-    final String RUTA_ARCHIVOS = "files/";
-    final String CARPETA_PROGRAMADOS = "turnos_programados/";
-    final String CARPETA_COMPLETOS = "turnos_completos/";
-    final String EXTENSION_ARCHIVOS = ".dat";
 
     public List<Turno> findByDiaAndMes(int dia, int mes);
 
