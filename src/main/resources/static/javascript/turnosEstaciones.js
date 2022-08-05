@@ -263,6 +263,14 @@ function eliminarTurno(id) {
     }
   });
 }
+
+
+
+
+
+
+
+
 /******************************** */
 /************FORMULARIO************/
 /******************************** */
@@ -271,6 +279,9 @@ let FECHAS_INICIALES = {
   fechasDeshabilitadas: [],
 };
 let HORARIOS_INICIALES = null;
+
+let EDITANDO = false;
+let ID_EDITANDO = 0;
 
 function setDatepickerFechas(
   diasDeshabilitados = [],
@@ -367,6 +378,7 @@ try {
 })();
 
 function resetForm() {
+  EDITANDO = false;
   document.querySelector("#mensajeError").style.display = "none";
   let form = document.forms["turnosForm"];
   form.classList.remove("was-validated");
@@ -383,8 +395,8 @@ function resetForm() {
   sincronizarFechas();
   sincronizarHorarios();
   estaciones = document.querySelector("#selectEstacionForm")
-  for(let i = 0; i < estaciones.options.length; i++){
-    estaciones.remove(0);
+  for(let i = 0; i < estaciones.options.length-1; i++){
+    estaciones.remove(1);
   }
 
   //crear option con estación especificada
@@ -461,9 +473,9 @@ function sincronizarHorarios(fecha) {
   loading.style.display = "block";
 
   //Eliminar elementos actuales
-  let n = horarios.options.length ;
+  let n = horarios.options.length -1;
   for (let i = 0; i < n; i++) {
-    horarios.remove(0);
+    horarios.remove(1);
   }
 
   if (fecha == null) {
@@ -606,11 +618,16 @@ document.querySelector("#turnosForm").addEventListener("submit", (event) => {
   };
 
   activarSpinner(document.querySelector("#botonGuardar"));
-
+  
   let url = "/turnos";
+  let type = "POST";
+  if(EDITANDO){
+    url = "/turnos/"+ID_EDITANDO;
+    type = "PUT";
+  }
   $.ajax({
     url: url,
-    type: "POST",
+    type: type,
     dataType: "json",
     contentType: "application/json",
     data: JSON.stringify(turno),
@@ -635,7 +652,7 @@ document.querySelector("#turnosForm").addEventListener("submit", (event) => {
   });
 });
 
-function crearTurno(idEstacion, estacion, idHorario, horario) {
+function crearTurno(idEstacion, idHorario) {
   resetForm();
   //Estableer la fecha escogida
   let date = $("#calendario").data("datepicker").getDate();
@@ -643,36 +660,58 @@ function crearTurno(idEstacion, estacion, idHorario, horario) {
   let horarios = document.querySelector("#selectHorarioForm");
   let estaciones = document.querySelector("#selectEstacionForm");
   
-  //Eliminar elementos actuales de los horarios
+  //Establecer horario escogido
   setTimeout(()=>{
-
-    let n = horarios.options.length ;
-    for (let i = 0; i < n; i++) {
-      horarios.remove(0);
-    }
-
-    n = estaciones.options.length ;
-    for (let i = 0; i < n; i++) {
-      estaciones.remove(0);
-    }
+    document.querySelector("#selectHorarioForm option[value='"+idHorario+"']").selected = true;
+    sincronizarEstaciones(date.getDate() + "-" +date.getMonth() + "-" + date.getFullYear(),idHorario);
     
-    //crear option con horario especificado
-    let option = document.createElement("option");
-    option.value = idHorario;
-    option.text = horario;
-    
-    horarios.add(option);
-    horarios.disabled = true;
-    
-    //crear option con estación especificada
-    option = document.createElement("option");
-    option.value = idEstacion;
-    option.text = estacion;
-    
-    estaciones.add(option);
-    estaciones.disabled = true;
-    document.querySelector("#inputFechaForm").disabled = true;
   },300)
+  
+  //Establecer estacion escogida
+  setTimeout(() =>{
+    document.querySelector("#selectEstacionForm option[value='"+idEstacion+"']").selected = true;
+    document.querySelector("#inputFechaForm").disabled = true;
+    horarios.disabled = true;
+    estaciones.disabled = true;
+  },1000)
   document.querySelector("#botonLimpiar").style.display="none";
-    $("#modalFormTurnos").modal("show");
+  $("#modalFormTurnos").modal("show");
+}
+
+
+function editarTurno(turno){
+  let idHorario = turno.idHorario;
+  resetForm();
+  EDITANDO = true;
+  ID_EDITANDO = turno.id;
+  //Estableer la fecha escogida
+  let date = $("#calendario").data("datepicker").getDate();
+  $("#inputFechaForm").datepicker("setDate", date);
+  let horarios = document.querySelector("#selectHorarioForm");
+  let estaciones = document.querySelector("#selectEstacionForm");
+  
+  //Establecer horario escogido
+  setTimeout(()=>{
+    for(let i = 0; i < horarios.options.length -1; i++){
+      horarios.remove(1);
+    }
+    document.querySelector("#selectHorarioForm option[value='"+idHorario+"']").selected = true;
+    sincronizarEstaciones(date.getDate() + "-" +date.getMonth() + "-" + date.getFullYear(),idHorario);
+    
+  },300)
+  
+  //Establecer estacion escogida
+  setTimeout(() =>{
+    let idEstacion = turno.idEstacion;
+
+    document.querySelector("#selectEstacionForm option[value='"+idEstacion+"']").selected = true;
+    estaciones.disabled = false;
+  },1000)
+
+  //Establecer estudiante
+  let option = document.querySelector("#selectEstudianteForm option[value='"+turno.idEstudiante+"']");
+  option.selected = true;
+  document.querySelector(".dropdown.dselect-wrapper button").innerHTML=option.text;
+  
+  $("#modalFormTurnos").modal("show");
 }

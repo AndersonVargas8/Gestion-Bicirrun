@@ -91,10 +91,10 @@
                                                 <i class="fa-solid fa-trash"
                                                 title="Eliminar turno" th:onclick="eliminarTurno([[${turno.id}]])"></i>
                                                 <i class="fa-solid fa-pen-to-square"
-                                                title="Editar turno"></i>
+                                                title="Editar turno" th:onclick="editarTurno([[${turno}]])"></i>
                                             </div>
                                         </div>
-                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}" th:onclick="crearTurno([[${estacion.id}]],[[${estacion.nombre}]],[[${horario.id}]],[[${horario.descripcion}]])">
+                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}" th:onclick="crearTurno([[${estacion.id}]],[[${horario.id}]])">
                                             <div th:text="${horario.descripcion}">--:-- - --:-- </div>
                                             <div><i>Disponible</i></div>
                                         </div>
