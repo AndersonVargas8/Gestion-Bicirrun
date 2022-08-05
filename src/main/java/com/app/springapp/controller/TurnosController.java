@@ -57,6 +57,7 @@ public class TurnosController {
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
         model.addAttribute("horarios", serHorario.obtenerTodos());
         model.addAttribute("estudiantes", repEstudiante.findAll());
+        model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   
     }
@@ -226,6 +227,7 @@ public class TurnosController {
         
         model.addAttribute("horarios", serHorario.obtenerTodos());
         model.addAttribute("estudiantes", repEstudiante.findAll());
+        model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   
     }

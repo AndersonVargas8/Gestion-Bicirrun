@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Passgenerator",
+            "request": "launch",
+            "mainClass": "com.app.springapp.util.Passgenerator",
+            "projectName": "spring-app"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-SpringAppApplication<spring-app>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
