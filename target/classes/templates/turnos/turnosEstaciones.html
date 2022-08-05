@@ -30,13 +30,20 @@
         <div th:include="navbar.html" th:remove="tag"></div>
         
         <div class="grid-layout">
-            <div id="espacio-vacio"></div>
+            <div id="espacio-boton">
+                
+            </div>
             <div id="cabecera">
                 <i class="fa-solid fa-angle-left flecha" id="diaAtras"></i>
                 <h5 class="header-dia" id="header-dia">dd de MMMM del aaaa</h5>
                 <i class="fa-solid fa-angle-right flecha" id="diaAdelante"></i>
             </div>
             <div id="barra">
+                <!--Botón agregar turno-->
+            <button type="button" class="btn btn-outline-success mb-2 crear"
+            data-bs-toggle="modal" data-bs-target="#modalFormTurnos" onclick="resetForm()">
+            <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno
+        </button>
                 <div class="calendario" id="calendario">
                 </div>
             </div>
@@ -87,7 +94,7 @@
                                                 title="Editar turno"></i>
                                             </div>
                                         </div>
-                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}">
+                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}" th:onclick="crearTurno([[${estacion.id}]],[[${estacion.nombre}]],[[${horario.id}]],[[${horario.descripcion}]])">
                                             <div th:text="${horario.descripcion}">--:-- - --:-- </div>
                                             <div><i>Disponible</i></div>
                                         </div>
@@ -100,6 +107,25 @@
             </div>
         </div>
 
+        <!--Formulario-->
+        <div class="modal fade" tabindex="-1" role="dialog"
+        id="modalFormTurnos">
+        <div class="modal-dialog modal-lg d-flex justify-content-center"
+            role="document">
+            <div class="modal-content w-75">
+                <div class="modal-header modal-form-header">
+                    <h5 class="modal-title">Programar nuevo turno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!--Inputs-->
+                <div th:include="turnos/formularioTurnos.html"
+                    class="modal-body p-4 d-flex
+                    justify-content-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
         <!--MODAL ESTADOS-->
         <div class="modal fade" id="seleccionarEstado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -120,7 +146,7 @@
 
         <!--MODAL ELIMINACIÓN-->
         <div th:replace="confirmarEliminacion.html"></div>
-        
+
         <!--DATEPICKER-->
         <div th:replace="includes.html::datepicker"></div>
 

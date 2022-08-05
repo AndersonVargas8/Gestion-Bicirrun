@@ -19,11 +19,13 @@ function defaultSuccessNotify(mensaje = "Correcto!!!"){
 }
 
 function confirmarEliminación(mensaje = "", callback){
+    let boton = document.querySelector("#confirmarEliminacion #eliminar");
+    boton.replaceWith(boton.cloneNode(true));
     $("#confirmarEliminacion").modal('show');
 
     document.querySelector("#confirmarEliminacion #modalBody").innerHTML = "<h5>"+mensaje+"</h5>";
     
-    let boton = document.querySelector("#confirmarEliminacion #eliminar");
+    boton = document.querySelector("#confirmarEliminacion #eliminar");
     boton.addEventListener('click',() =>{
         boton.replaceWith(boton.cloneNode(true));
         callback(true);

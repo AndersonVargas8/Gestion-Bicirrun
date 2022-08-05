@@ -26,6 +26,7 @@ import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.interfacesServicios.IServicioTurno;
+import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.service.CupoService;
 import com.app.springapp.service.TurnoService;
 import com.app.springapp.util.Mapper;
@@ -45,12 +46,17 @@ public class TurnosController {
 
     @Autowired
     IServicioTurno serTurno;
+    
+    @Autowired
+    EstudianteRepository repEstudiante;
 
     @GetMapping
     public String getTurnosEstaciones(ModelMap model){
         LocalDate fechaLista = LocalDate.now();
   
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        model.addAttribute("horarios", serHorario.obtenerTodos());
+        model.addAttribute("estudiantes", repEstudiante.findAll());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   
     }
@@ -217,6 +223,9 @@ public class TurnosController {
         }
 
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        
+        model.addAttribute("horarios", serHorario.obtenerTodos());
+        model.addAttribute("estudiantes", repEstudiante.findAll());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   
     }
@@ -235,6 +244,7 @@ public class TurnosController {
         }
 
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones::contenido";   
     }
