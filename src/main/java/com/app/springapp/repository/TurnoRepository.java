@@ -32,8 +32,8 @@ import com.app.springapp.model.TurnosProgramados;
 public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
     final String RUTA_ARCHIVOS = "files/";
-    final String CARPETA_PROGRAMADOS ="turnos_programados/";
-    final String CARPETA_COMPLETOS ="turnos_completos/";
+    final String CARPETA_PROGRAMADOS = "turnos_programados/";
+    final String CARPETA_COMPLETOS = "turnos_completos/";
     final String EXTENSION_ARCHIVOS = ".dat";
 
     public List<Turno> findByDiaAndMes(int dia, int mes);
@@ -41,12 +41,15 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     public List<Turno> findByEstudiante(Estudiante estudiante);
 
     public List<Turno> findByDiaAndMesAndAnioAndEstacion(int dia, int mes, int anio, Estacion estacion);
-    public List<Turno> findByDiaAndMesAndAnioAndEstacionAndHorario(int dia, int mes, int anio, Estacion estacion, Horario horario);
+
+    public List<Turno> findByDiaAndMesAndAnioAndEstacionAndHorario(int dia, int mes, int anio, Estacion estacion,
+            Horario horario);
 
     public long countByDiaAndMesAndAnioAndEstacionAndHorario(int dia, int mes, int anio, Estacion estacion,
             Horario horario);
 
-    public long countByDiaAndMesAndAnioAndHorarioAndEstudiante(int dia, int mes, int anio, Horario horario, Estudiante estudiante);
+    public long countByDiaAndMesAndAnioAndHorarioAndEstudiante(int dia, int mes, int anio, Horario horario,
+            Estudiante estudiante);
 
     public long countByDiaAndMesAndAnioAndHorario(int dia, int mes, int anio, Horario horario);
 
@@ -54,10 +57,9 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     @Query("update Turno t set t.id = :nuevoId where t.id = :actualId")
     public void updateId(@Param("actualId") Long actualId, @Param("nuevoId") Long nuevoId);
 
-
     /****************************************
      * ********MÉTODOS PARA ARCHIVOS*********
-     ************************************* */
+     */
     public default Mes getMesTurnosProgramados(int anio, int mes) {
         TurnosProgramados turnosPro = getTurnosProgramados(anio);
         return turnosPro.getMes(mes);
@@ -100,8 +102,8 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
             ObjectOutputStream escritor = new ObjectOutputStream(new FileOutputStream(archivo));
             escritor.writeObject(turnosPro);
             escritor.close();
-            
-            System.out.println("\n\n\nTurnos programados:\n" +turnosPro.toString() + "\n\n");
+
+            System.out.println("\n\n\nTurnos programados:\n" + turnosPro.toString() + "\n\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,7 +111,9 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     }
 
     /**
-     * Actualiza el archivo .dat TurnosCompletos agregando un nuevo día a los días con turnos completos
+     * Actualiza el archivo .dat TurnosCompletos agregando un nuevo día a los días
+     * con turnos completos
+     * 
      * @param dia
      * @param mes
      * @param anio
@@ -132,24 +136,24 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
             turnosCom = getTurnosCompletos(anio);
         }
 
-        
-        try{
+        try {
             turnosCom.agregarDiaCompleto(mes, dia);
 
             ObjectOutputStream escritor = new ObjectOutputStream(new FileOutputStream(archivo));
             escritor.writeObject(turnosCom);
             escritor.close();
 
-            
-            System.out.println("\n\n\nTurnos completos:\n" +turnosCom.toString()+ "\n\n");
-        }catch(Exception e){
+            System.out.println("\n\n\nTurnos completos:\n" + turnosCom.toString() + "\n\n");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Actualiza el archivo .dat TurnosCompletos agregando un nuevo día a los días con turnos completos en el
+     * Actualiza el archivo .dat TurnosCompletos agregando un nuevo día a los días
+     * con turnos completos en el
      * horario especificado
+     * 
      * @param dia
      * @param mes
      * @param anio
@@ -173,17 +177,15 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
             turnosCom = getTurnosCompletos(anio);
         }
 
-        
-        try{
+        try {
             turnosCom.agregarDiaCompletoHorario(mes, dia, idHorario);
 
             ObjectOutputStream escritor = new ObjectOutputStream(new FileOutputStream(archivo));
             escritor.writeObject(turnosCom);
             escritor.close();
 
-            
-            System.out.println("\n\n\nTurnos completos:\n" +turnosCom.toString()+ "\n\n");
-        }catch(Exception e){
+            System.out.println("\n\n\nTurnos completos:\n" + turnosCom.toString() + "\n\n");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -201,7 +203,19 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
         // Si el archivo no existe se crea un nuevo objeto y se retorna
         if (!archivo.exists()) {
-            return new TurnosProgramados(anio);
+            try {
+                archivo.createNewFile();
+                TurnosProgramados turnosPro = new TurnosProgramados(anio);
+
+                ObjectOutputStream escritor = new ObjectOutputStream(new FileOutputStream(archivo));
+                escritor.writeObject(turnosPro);
+                escritor.close();
+
+                return turnosPro;
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
         }
 
         // Si el archivo sí existe
@@ -237,14 +251,26 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
         TurnosCompletos turnosCom = null;
         // Si el archivo no existe se crea un nuevo objeto y se retorna
         if (!archivo.exists()) {
-            return new TurnosCompletos(anio);
+            try {
+                archivo.createNewFile();
+                turnosCom = new TurnosCompletos(anio);
+
+                ObjectOutputStream escritor = new ObjectOutputStream(new FileOutputStream(archivo));
+                escritor.writeObject(turnosCom);
+                escritor.close();
+
+                return turnosCom;
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
         }
 
         // Si el archivo sí existe
-      
+
         try {
             ObjectInputStream lector = new ObjectInputStream(new FileInputStream(archivo));
-            Object obj  = lector.readObject();
+            Object obj = lector.readObject();
             lector.close();
 
             if (obj instanceof TurnosCompletos) {
@@ -272,9 +298,9 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     public default int eliminarTurnoProgramado(int dia, int mes, int anio) {
         String nombreArchivo = "TurnosProgramados" + String.valueOf(anio).concat(EXTENSION_ARCHIVOS);
         File archivo = new File(RUTA_ARCHIVOS + CARPETA_PROGRAMADOS + nombreArchivo);
-        
+
         TurnosProgramados turnosPro = getTurnosProgramados(anio);
-  
+
         int cantidadTurnos = turnosPro.eliminarTurno(mes, dia);
 
         /* Se guarda el objeto en el archivo */
@@ -283,8 +309,7 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
             escritor.writeObject(turnosPro);
             escritor.close();
 
-            
-            System.out.println("\n\n\nTurnos programados:\n" +turnosPro.toString()+ "\n\n");
+            System.out.println("\n\n\nTurnos programados:\n" + turnosPro.toString() + "\n\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -292,11 +317,13 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
         return cantidadTurnos;
     }
 
-     /**
-     * Actualiza el archivo .dat TurnosCompletos eliminando el día a los días con turnos completos.
+    /**
+     * Actualiza el archivo .dat TurnosCompletos eliminando el día a los días con
+     * turnos completos.
      * Se hace para turno completo en general y para turno completo por
      * horario
      * Si el día no está completo, no se hace nada.
+     * 
      * @param dia
      * @param mes
      * @param anio
@@ -315,59 +342,61 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
         boolean debeGuardar = false;
 
-        if(turnosCom.estaCompleto(mes, dia)){        
+        if (turnosCom.estaCompleto(mes, dia)) {
             turnosCom.eliminarDiaCompleto(mes, dia);
             debeGuardar = true;
         }
-        
-        if(turnosCom.estaCompletoHorario(mes, dia, idHorario)){
+
+        if (turnosCom.estaCompletoHorario(mes, dia, idHorario)) {
             turnosCom.eliminarDiaCompletoHorario(mes, dia, idHorario);
             debeGuardar = true;
         }
-        
-        if(!debeGuardar){
+
+        if (!debeGuardar) {
             return;
         }
 
-        try{
+        try {
             ObjectOutputStream escritor = new ObjectOutputStream(new FileOutputStream(archivo));
             escritor.writeObject(turnosCom);
             escritor.close();
 
-            System.out.println("\n\n\nTurnos completos:\n" +turnosCom.toString()+ "\n\n");
-        }catch(IOException e){
+            System.out.println("\n\n\nTurnos completos:\n" + turnosCom.toString() + "\n\n");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Retorna todas las fechas posteriores al día actual (incluido) con turnos completos registradas
+     * Retorna todas las fechas posteriores al día actual (incluido) con turnos
+     * completos registradas
+     * 
      * @return lista con las fechas en formato String: "dd-mm-aaa"
      */
-    public default List<String> getFechasCompletas(){
+    public default List<String> getFechasCompletas() {
         File carpeta = new File(RUTA_ARCHIVOS + CARPETA_COMPLETOS);
         LocalDate fechaActual = LocalDate.now();
         List<File> archivos = Arrays.asList(carpeta.listFiles());
 
         List<String> fechas = new ArrayList<>();
 
-        for(File archivo: archivos){
+        for (File archivo : archivos) {
             String nombre = archivo.getName();
             String nombre2 = nombre.split("TurnosCompletos")[1];
-            int anio= Integer.parseInt(nombre2.split(".dat")[0]);
-            if(anio < fechaActual.getYear()){
+            int anio = Integer.parseInt(nombre2.split(".dat")[0]);
+            if (anio < fechaActual.getYear()) {
                 continue;
             }
             TurnosCompletos turnosCom = getTurnosCompletos(anio);
             Set<Integer> meses = turnosCom.getMesesRegistrados();
 
-            for(Integer mes: meses){
-                if(mes < fechaActual.getMonth().getValue()){
+            for (Integer mes : meses) {
+                if (mes < fechaActual.getMonth().getValue()) {
                     continue;
                 }
                 Set<Integer> diasCompletos = turnosCom.diasCompletosMes(mes);
-                for(Integer dia: diasCompletos){
-                    if(dia < fechaActual.getDayOfMonth()){
+                for (Integer dia : diasCompletos) {
+                    if (dia < fechaActual.getDayOfMonth()) {
                         continue;
                     }
                     fechas.add(dia + "-" + mes + "-" + anio);
@@ -379,33 +408,36 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     }
 
     /**
-     * Retorna las fechas posteriores al día actual (incluido) con turnos completos dado un horario
+     * Retorna las fechas posteriores al día actual (incluido) con turnos completos
+     * dado un horario
+     * 
      * @return lista con las fechas en formato String: "dd-mm-aaa"
      */
-    public default List<String> getFechasCompletas(int idHorario){
+    public default List<String> getFechasCompletas(int idHorario) {
         File carpeta = new File(RUTA_ARCHIVOS + CARPETA_COMPLETOS);
         LocalDate fechaActual = LocalDate.now();
         List<File> archivos = Arrays.asList(carpeta.listFiles());
 
         List<String> fechas = new ArrayList<>();
 
-        for(File archivo: archivos){
+        for (File archivo : archivos) {
             String nombre = archivo.getName();
             String nombre2 = nombre.split("TurnosCompletos")[1];
-            int anio= Integer.parseInt(nombre2.split(".dat")[0]);
-            if(anio < fechaActual.getYear()){
+            int anio = Integer.parseInt(nombre2.split(".dat")[0]);
+            if (anio < fechaActual.getYear()) {
                 continue;
             }
             TurnosCompletos turnosCom = getTurnosCompletos(anio);
             Set<Integer> meses = turnosCom.getMesesRegistrados();
 
-            for(Integer mes: meses){
-                if(anio < fechaActual.getYear() && mes < fechaActual.getMonth().getValue()){
+            for (Integer mes : meses) {
+                if (anio < fechaActual.getYear() && mes < fechaActual.getMonth().getValue()) {
                     continue;
                 }
-                Set<Integer> diasCompletos = turnosCom.diasCompletosMesHorario(mes,idHorario);
-                for(Integer dia: diasCompletos){
-                    if(anio < fechaActual.getYear() && mes < fechaActual.getMonth().getValue() && dia < fechaActual.getDayOfMonth()){
+                Set<Integer> diasCompletos = turnosCom.diasCompletosMesHorario(mes, idHorario);
+                for (Integer dia : diasCompletos) {
+                    if (anio < fechaActual.getYear() && mes < fechaActual.getMonth().getValue()
+                            && dia < fechaActual.getDayOfMonth()) {
                         continue;
                     }
                     fechas.add(dia + "-" + mes + "-" + anio);
