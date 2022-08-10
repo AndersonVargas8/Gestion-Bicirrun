@@ -1,13 +1,17 @@
 package com.app.springapp.service;
 
 import java.util.List;
-
-import com.app.springapp.entity.Estudiante;
-import com.app.springapp.interfacesServicios.IServicioEstudiante;
-import com.app.springapp.repository.EstudianteRepository;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.app.springapp.Exception.CustomeFieldValidationException;
+import com.app.springapp.dto.EstudianteDTO;
+import com.app.springapp.entity.Estudiante;
+import com.app.springapp.interfacesServicios.IServicioEstudiante;
+import com.app.springapp.repository.EstudianteRepository;
+import com.app.springapp.util.Mapper;
 
 @Service
 public class EstudianteService implements IServicioEstudiante {
@@ -16,9 +20,22 @@ public class EstudianteService implements IServicioEstudiante {
     EstudianteRepository repEstudiante;
 
     @Override
-    public void guardarEstudiante(Estudiante estudiante) {
-        repEstudiante.save(estudiante);
+    public EstudianteDTO guardarEstudiante(Estudiante estudiante) throws CustomeFieldValidationException {
+        if(estudiante.getDocumento().equals(null)|| estudiante.getDocumento().isEmpty() ){
+            throw new CustomeFieldValidationException("Documento vacío");
+        }
+        if(buscarPorDocumento(estudiante.getDocumento())!=null){
+            throw new CustomeFieldValidationException("El estudiante ya existe");
+        }
+        if(estudiante.getApellidos()==null||estudiante.getApellidos().isEmpty()){
+            throw new CustomeFieldValidationException("Apellido vacío");
+        }
+        if(estudiante.getNombres()==null||estudiante.getNombres().isEmpty()){
+            throw new CustomeFieldValidationException("Nombre vacío");
+        }
+        return Mapper.mapToEstudianteDTO(repEstudiante.save(estudiante));
     }
+
 
     @Override
     public void eliminarEstudiante(int id) {
@@ -32,7 +49,24 @@ public class EstudianteService implements IServicioEstudiante {
 
     @Override
     public Estudiante buscarPorId(Long id) {
-        return repEstudiante.findById(new Long(id)).get();
+        Estudiante estudiante = null;
+        Optional<Estudiante> opEstudiante = repEstudiante.findById(new Long(id));
+
+        if(opEstudiante.isPresent()){
+            estudiante = opEstudiante.get();
+        }
+        return estudiante;
+    }
+
+    @Override
+    public Estudiante buscarPorDocumento(String documento) {
+        Estudiante estudiante = null;
+        Optional<Estudiante> opEstudiante = repEstudiante.findByDocumento(documento);
+
+        if(opEstudiante.isPresent()){
+            estudiante = opEstudiante.get();
+        }
+        return estudiante;
     }
     
 }

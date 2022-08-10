@@ -6,23 +6,33 @@
     <title>Estudiantes</title>
     <link rel="icon" type="image/x-icon" href="../img/bycicle.png">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.png}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Los iconos tipo Solid de Fontawesome-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+   <!--JQUERY-->
+   <div th:replace="includes.html::jquery"></div>
 
-    <!--JQUERY-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <!--BOOTSTRAP-->
+   <div th:replace="includes.html::bootstrap"></div>
 
+   <!--FONT AWESOME-->
+   <div th:replace="includes.html::fontawesome"></div>
 
     <!-- DATA TABLE -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!--DSELECT (SELECT WITH SEARCH)-->
+    <div th:fragment="dselect" th:remove="tag">
+        <script src="../static/javascript/dselect.js" th:src="@{/javascript/dselect.js}"></script>
+    </div>
 
+    <!--TOASTR (NOTIFICACIONES DE ALERTA)-->
+    <div th:fragment="toastr" th:remove="tag">
+        <link rel="stylesheet" type="text/css" href="../static/javascript/toastr/toastr.css" th:href="@{/javascript/toastr/toastr.css}" />
+        <script src="../static/javascript/toastr/toastr.js" th:src="@{/javascript/toastr/toastr.js}"></script>
+    </div>
 </head>
 
 <body>
@@ -32,80 +42,74 @@
         <div class="modal fade" tabindex="-1" role="dialog" id="modalRegistro">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header modal-form-header">
                         <h5 class="modal-title">Nuevo estudiante</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-3">
-                        <form th:object="${estudiante}" th:action="@{/estudiantes}" method="post">
+                        <form id="formularioRegistro" >
                             <div class="form-group">
                                 <label for="Nombre" class="font-weight-bold">Nombres</label>
-                                <input th:field="*{nombres}" type="text" class="form-control" id="Nombre"
+                                <input  type="text" class="form-control" id="Nombre"
                                     placeholder="Nombres del Estudiante" required>
                             </div>
                             <div class="form-group">
                                 <label for="Apellido" class="font-weight-bold">Apellidos</label>
-                                <input type="text" class="form-control" id="Apellido" th:field="*{apellidos}"
+                                <input type="text" class="form-control" id="Apellido" 
                                     placeholder="Apellidos del Estudiante" required>
                             </div>
                             <div class="form-group">
                                 <label for="Documento" class="font-weight-bold" required>Documento</label>
-                                <input type="number" class="form-control" id="Documento" th:field="*{documento}"
+                                <input type="number" class="form-control" id="Documento"
                                     placeholder="Número de Documento">
                             </div>
                             <div class="form-group">
                                 <label for="telefono" class="font-weight-bold">Teléfono</label>
-                                <input type="number" class="form-control" id="telefono" th:field="*{telefono}"
+                                <input type="number" class="form-control" id="telefono" 
                                     placeholder="Número de teléfono">
                             </div>
                             <div class="form-group">
                                 <label for="inputState" class="font-weight-bold">Carrera</label>
-                                <select id="inputState" class="form-control" th:field="*{carrera}">
-                                    <option th:each="carrera:${carreras}" th:value="${carrera.id}"
-                                        th:text="${carrera.descripcion}"></option>
+                                <select id="inputState" class="form-control" >
+                                    <option th:each="carrera:${carreras}" 
+                                        th:text="${carrera.descripcion}" ></option>
                                 </select>
                             </div>
                             <div class="mt-4 d-flex justify-content-center">
-                                <button type="submit" value="Registrar" class="btn btn-success">Registrar</button>
+                                <button type="button" value="Registrar" class="btn btn-success guardar" id="BtnGuardar" onclick="Guardar()">Registrar</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <button type="button" class="btn btn-success mb-2" data-toggle="modal"
-            data-target="#modalRegistro">
+        <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#modalRegistro">
             <span class="fa fa-user-plus"></span>&nbsp;Agregar estudiante
         </button>
         <br>
 
         <!-- Modal -->
         <div class=" modal fade" id="ModalEstudiante" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Turnos del estudiante</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div th:include="estudiantes/horarioEstudiante.html"
-                            class="modal-body p-4 d-flex justify-content-center" id="divHorarioEstudiante"></div>
-                        <div class="modal-footer">
-                            <button type="button" id="botonImprimir" class="btn btn-primary">
-                                <span class="fa fa-file-pdf"></span>&nbsp;Descargar</button>
-                        </div>
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Turnos del estudiante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div th:include="estudiantes/horarioEstudiante.html"
+                        class="modal-body p-4 d-flex justify-content-center" id="divHorarioEstudiante"></div>
+                    <div class="modal-footer">
+                        <button type="button" id="botonImprimir" class="btn btn-primary">
+                            <span class="fa fa-file-pdf"></span>&nbsp;Descargar</button>
                     </div>
                 </div>
-    </div>
-    <div th:include="./estudiantes/tablaEstudiantes.html" th:remove="tag"></div>
+            </div>
+        </div>
+        <div th:include="./estudiantes/tablaEstudiantes.html" th:remove="tag"></div>
 
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
     <script src="../static/javascript/estudiantes.js" th:src="@{javascript/estudiantes.js}"></script>
 </body>
 
