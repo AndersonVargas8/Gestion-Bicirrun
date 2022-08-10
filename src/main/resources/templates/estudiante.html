@@ -38,6 +38,9 @@
 <body>
     <div th:include="navbar.html" th:remove="tag"></div>
     <div class="container mt-4 p-4">
+        <div class="d-flex justify-content-center">
+            <h2>Lista de estudiantes</h2>
+        </div>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="modalRegistro">
             <div class="modal-dialog" role="document">
@@ -72,8 +75,11 @@
                                 <label for="inputState" class="font-weight-bold">Carrera</label>
                                 <select id="inputState" class="form-control" >
                                     <option th:each="carrera:${carreras}" 
-                                        th:text="${carrera.descripcion}" ></option>
+                                        th:text="${carrera.descripcion}" th:value="${carrera.id}"></option>
                                 </select>
+                            </div>
+                            <div class="alert alert-danger text-center"  id="mensajeError">
+                                Mensaje de error
                             </div>
                             <div class="mt-4 d-flex justify-content-center">
                                 <button type="button" value="Registrar" class="btn btn-success guardar" id="BtnGuardar" onclick="Guardar()">Registrar</button>
@@ -97,7 +103,7 @@
                         <h5 class="modal-title" id="exampleModalLabel">Turnos del estudiante</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div th:include="estudiantes/horarioEstudiante.html"
+                    <div
                         class="modal-body p-4 d-flex justify-content-center" id="divHorarioEstudiante"></div>
                     <div class="modal-footer">
                         <button type="button" id="botonImprimir" class="btn btn-primary">
@@ -106,7 +112,7 @@
                 </div>
             </div>
         </div>
-        <div th:include="./estudiantes/tablaEstudiantes.html" th:remove="tag"></div>
+        <div th:include="./estudiantes/tablaEstudiantes.html" id="TablaId" ></div>
 
 
     </div>

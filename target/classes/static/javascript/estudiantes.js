@@ -1,6 +1,7 @@
 //Activar navbar
 document.querySelector("#item-estudiantes").classList.add("active");
-
+document.querySelector("#mensajeError").style.display = "none";
+ crearTabla()
 //Activar Selectpickers
 try {
     let select_box_element = document.querySelector("#inputState");
@@ -19,9 +20,17 @@ try {
     });
   } catch (error) {} 
 
-function Guardar(estudiante){
-    url="/estudiantes"
+//data Table
+function crearTabla(){
+    let table = new DataTable('#userList', {
+        "order":[[1,"asc"]],
+        language: {
+            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+        }
+    });
+    return table
 }
+
 function eliminar(dato) {
     var url = "eliminarEstudiante";
     $.ajax({
@@ -48,22 +57,54 @@ function editarForm(estudiante) {
 }
 
 function Guardar(){
+    
     let form = document.forms["formularioRegistro"];
-    let nombre = form["Nombre"];
-    let apellido = form["Apellido"];
-    let documento = form["Documento"];
-    let telefono = form["telefono"];
-    let carrera = form[""];
+    let estudiante={
+        nombres:form["Nombre"].value,
+        apellidos:form["Apellido"].value,
+        documento:form["Documento"].value,
+        telefono:form["telefono"].value,
+        carrera:form["inputState"].value
+    }
+    activarSpinner(document.querySelector("#BtnGuardar"));
+
+    let url="/estudiantes";
+    let type="POST";
+    $.ajax({
+        url: url,
+        type: type,
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify(estudiante),
+        success: function () {
+          desactivarSpinner(document.querySelector("#BtnGuardar"));
+          defaultSuccessNotify("Estudiante guardado");
+          form.reset();
+          //resetForm();
+          $("#modalRegistro").modal("hide");
+          $("#TablaId").load("/estudiantes/TablaEstudiantes",{limit:25},function(){
+            crearTabla();
+        })
+        },
+        error: function (jqXHR) {
+          desactivarSpinner(document.querySelector("#BtnGuardar"));
+          if (jqXHR.status != 400) {
+            defaultErrorNotify();
+            return;
+          }
+          console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+          document.querySelector("#mensajeError").innerHTML = jqXHR.responseText;
+          document.querySelector("#mensajeError").style.display = "block";
+        },
+      });
+
+
 }
 
 function editarPressed(){
     
 }
-let table = new DataTable('#userList', {
-    language: {
-        "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-    }
-});
+
 
 
 function horario(estudiante) {

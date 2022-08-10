@@ -65,7 +65,7 @@ public class EstudianteController {
         return "/estudiantes";
     }
 
-    @GetMapping("/estudiantes/horarioEstudiante/{id}")
+    @GetMapping("/horarioEstudiante/{id}")
     public String horarioEstudiante(Model model,@PathVariable Long id){
         Estudiante estudiante = serEstudiante.buscarPorId(id);
         Date date = new Date(System.currentTimeMillis());
@@ -76,4 +76,11 @@ public class EstudianteController {
         model.addAttribute("listTab","estudiantes");
         return "estudiantes/horarioEstudiante";
     }
+
+    @PostMapping("/TablaEstudiantes")
+    public String tabla(Model model) {
+        model.addAttribute("estudiantes",serEstudiante.obtenerTodos());
+        return "estudiantes/tablaEstudiantes::TablaFragment";
+    }
+    
 }
