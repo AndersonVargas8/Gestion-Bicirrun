@@ -128,7 +128,7 @@ input.selectCalendar:read-only:focus{
 }
 
 /*Estilos para el botón de cerrar modal*/
-.modal-form-header .close{
+.modal-form-header .btn-close{
     text-shadow: none;
     color:white
 }

@@ -28,31 +28,29 @@
 
         <!--NavBar-->
         <div th:include="navbar.html" th:remove="tag"></div>
-
+        
         <div class="grid-layout">
-            <div id="espacio-vacio"></div>
+            <div id="espacio-boton">
+                
+            </div>
             <div id="cabecera">
                 <i class="fa-solid fa-angle-left flecha" id="diaAtras"></i>
                 <h5 class="header-dia" id="header-dia">dd de MMMM del aaaa</h5>
                 <i class="fa-solid fa-angle-right flecha" id="diaAdelante"></i>
             </div>
             <div id="barra">
+                <!--Botón agregar turno-->
+            <button type="button" class="btn btn-outline-success mb-2 crear"
+            data-bs-toggle="modal" data-bs-target="#modalFormTurnos" onclick="resetForm()">
+            <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno
+        </button>
                 <div class="calendario" id="calendario">
                 </div>
             </div>
-            <div class="overflow-auto" id="contenido">
-                <div class="card-text placeholder-glow p-4" id="placeholder"
-                    hidden>
-                    <span class="placeholder col-7 mb-3" style="height: 200px;"></span>
-                    <span class="placeholder col-4 mb-3" style="height: 200px;"></span>
-                    <span class="placeholder col-4 mb-2" style="height: 40px;"></span>
-                    <span class="placeholder col-5 mb-2" style="height: 40px;"></span>
-                    <span class="placeholder col-6"></span>
-                    <span class="placeholder col-8"></span>
-                    <span class="placeholder col-11"></span>
-                </div>
+            <div class="overflow-auto" id="contenido" th:fragment="contenido">
+                
 
-                <div class="accordion" id="accordionExample">
+                <div class="accordion" id="accordionEstaciones">
                     <div class="accordion-item" th:each="estacion,iStat: ${turnos.estaciones}">
                         <h2 class="accordion-header" th:id="${'heading'+estacion.id}">
                             <button th:class="${(iStat.count == 1) ? 'accordion-button' : 'accordion-button collapsed'}" type="button"
@@ -65,7 +63,7 @@
                         </h2>
                         <div th:id="${'collapse'+estacion.id}" th:class="${(iStat.count == 1) ? 'accordion-collapse collapse
                             show' : 'accordion-collapse collapse'}" aria-labelledby="${'heading'+estacion.id}"
-                            data-bs-parent="#accordionExample">
+                            data-bs-parent="#accordionEstaciones">
                             <div class="accordion-body p-2">
                                 <div class="header-estacion">
                                     <div>HORARIO</div>
@@ -81,21 +79,22 @@
                                             <div>
                                                 <div class="form-floating">
                                                     <textarea class="form-control"
-                                                    id="obs" th:value="${turno.observaciones}" th:text="${turno.observaciones}">Observaciones</textarea>
+                                                    id="obs" th:value="${turno.observaciones}" th:text="${turno.observaciones}" th:onchange="cambiarObservacion([[${turno.id}]],this)">Observaciones</textarea>
                                                     <label for="obs">Observaciones</label>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div th:class="${(turno.idEstado == 1) ? 'alert alert-info' : ((turno.idEstado == 2) ? 'alert alert-success' : 'alert alert-danger')}" th:text="${turno.estado}">Estado</div>
+                                                <div th:class="${(turno.idEstado == 3) ? 'alert alert-danger' : ((turno.idEstado == 2) ? 'alert alert-success' : 'alert alert-info')}" 
+                                                th:text="${turno.estado}" th:onclick="cambiarEstado([[${turno.id}]],[[${turno.idEstado}]])">Estado</div>
                                             </div>
                                             <div class="acciones">
                                                 <i class="fa-solid fa-trash"
-                                                title="Eliminar turno"></i>
+                                                title="Eliminar turno" th:onclick="eliminarTurno([[${turno.id}]])"></i>
                                                 <i class="fa-solid fa-pen-to-square"
-                                                title="Editar turno"></i>
+                                                title="Editar turno" th:onclick="editarTurno([[${turno}]])"></i>
                                             </div>
                                         </div>
-                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}">
+                                        <div class="turnoDisponible" title="Agregar turno" th:if="${turno == null}" th:onclick="crearTurno([[${estacion.id}]],[[${horario.id}]])">
                                             <div th:text="${horario.descripcion}">--:-- - --:-- </div>
                                             <div><i>Disponible</i></div>
                                         </div>
@@ -107,6 +106,46 @@
                 </div>
             </div>
         </div>
+
+        <!--Formulario-->
+        <div class="modal fade" tabindex="-1" role="dialog"
+        id="modalFormTurnos">
+        <div class="modal-dialog modal-lg d-flex justify-content-center"
+            role="document">
+            <div class="modal-content w-75">
+                <div class="modal-header modal-form-header">
+                    <h5 class="modal-title">Programar nuevo turno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!--Inputs-->
+                <div th:include="turnos/formularioTurnos.html"
+                    class="modal-body p-4 d-flex
+                    justify-content-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
+        <!--MODAL ESTADOS-->
+        <div class="modal fade" id="seleccionarEstado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header modal-form-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Cambiar estado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="modalBodyEstados" class="modal-body d-block text-center">
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary border-0" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
+                <button type="button" class="btn guardar border-0" value="Guardar" id="guardar">Guardar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!--MODAL ELIMINACIÓN-->
+        <div th:replace="confirmarEliminacion.html"></div>
 
         <!--DATEPICKER-->
         <div th:replace="includes.html::datepicker"></div>

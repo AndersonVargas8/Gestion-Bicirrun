@@ -1,5 +1,5 @@
 function activarSpinner(element){
-    element.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin'></i>";
+    element.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin mr-0'></i>";
     element.disabled = true;
 }
 
@@ -17,3 +17,17 @@ function defaultSuccessNotify(mensaje = "Correcto!!!"){
     toastr.options.positionClass = 'toast-top-right';
     toastr.success(mensaje);
 }
+
+function confirmarEliminación(mensaje = "", callback){
+    let boton = document.querySelector("#confirmarEliminacion #eliminar");
+    boton.replaceWith(boton.cloneNode(true));
+    $("#confirmarEliminacion").modal('show');
+
+    document.querySelector("#confirmarEliminacion #modalBody").innerHTML = "<h5>"+mensaje+"</h5>";
+    
+    boton = document.querySelector("#confirmarEliminacion #eliminar");
+    boton.addEventListener('click',() =>{
+        boton.replaceWith(boton.cloneNode(true));
+        callback(true);
+    });
+  }

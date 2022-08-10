@@ -32,12 +32,12 @@
             <div class="d-flex justify-content-center">
                 <h2>Programación de turnos</h2>
             </div>
-                <!--Botón agregar turno-->
-                <button type="button" class="btn btn-outline-success mb-2 crear"
-                    data-bs-toggle="modal" data-bs-target="#modalFormTurnos">
-                    <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo
-                    Turno
-                </button>
+            <!--Botón agregar turno-->
+            <button type="button" class="btn btn-outline-success mb-2 crear"
+                data-bs-toggle="modal" data-bs-target="#modalFormTurnos">
+                <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo
+                Turno
+            </button>
 
             <!--Formulario-->
             <div class="modal fade" tabindex="-1" role="dialog"
@@ -47,10 +47,7 @@
                     <div class="modal-content w-75">
                         <div class="modal-header modal-form-header">
                             <h5 class="modal-title">Programar nuevo turno</h5>
-                            <button type="button" class="close"
-                                data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <!--Inputs-->
                         <div th:include="turnos/formularioTurnos.html"
@@ -61,26 +58,8 @@
                     </div>
                 </div>
             </div>
-            <div class="modal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Modal title</h5>
-                            <button type="button" class="btn-close"
-                                data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Modal body text goes here.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save
-                                changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            
             <!--Calendario-->
             <div th:replace="turnos/calendario.html"></div>
         </div>

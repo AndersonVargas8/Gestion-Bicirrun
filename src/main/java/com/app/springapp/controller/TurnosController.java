@@ -26,6 +26,7 @@ import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.interfacesServicios.IServicioTurno;
+import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.service.CupoService;
 import com.app.springapp.service.TurnoService;
 import com.app.springapp.util.Mapper;
@@ -45,12 +46,18 @@ public class TurnosController {
 
     @Autowired
     IServicioTurno serTurno;
+    
+    @Autowired
+    EstudianteRepository repEstudiante;
 
     @GetMapping
     public String getTurnosEstaciones(ModelMap model){
         LocalDate fechaLista = LocalDate.now();
   
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        model.addAttribute("horarios", serHorario.obtenerTodos());
+        model.addAttribute("estudiantes", repEstudiante.findAll());
+        model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   
     }
@@ -204,6 +211,28 @@ public class TurnosController {
     }
 
     @GetMapping("/dia/{fecha}")
+    public String getDiaTurnosEstaciones(@PathVariable String fecha, ModelMap model){
+        LocalDate fechaLista = null;
+        if(!Mapper.esFechaValida(fecha)){
+            throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
+        }else{
+            String[] fechaFormat = fecha.split("-");
+            int dia = Integer.parseInt(fechaFormat[0]);
+            int mes = Integer.parseInt(fechaFormat[1]);
+            int anio = Integer.parseInt(fechaFormat[2]);
+            fechaLista = LocalDate.of(anio,mes,dia);
+        }
+
+        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
+        
+        model.addAttribute("horarios", serHorario.obtenerTodos());
+        model.addAttribute("estudiantes", repEstudiante.findAll());
+        model.addAttribute("estaciones", serEstacion.obtenerTodas());
+        model.addAttribute("turnos",turnos);
+        return "turnos/turnosEstaciones";   
+    }
+
+    @GetMapping("/diaEstaciones/{fecha}")
     public String getTurnosEstaciones(@PathVariable String fecha, ModelMap model){
         LocalDate fechaLista = null;
         if(!Mapper.esFechaValida(fecha)){
@@ -217,9 +246,8 @@ public class TurnosController {
         }
 
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
-        model.addAttribute("turnos",turnos);
-        return "turnos/turnosEstaciones";
         
+        model.addAttribute("turnos",turnos);
+        return "turnos/turnosEstaciones::contenido";   
     }
- 
 }

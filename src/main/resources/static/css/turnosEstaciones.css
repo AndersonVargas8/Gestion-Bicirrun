@@ -2,15 +2,21 @@
   height: 100vh;
   display: grid;
   grid-template-areas:
-    "espacio-vacio cabecera"
+    "espacio-boton cabecera"
     "barra contenido";
     grid-template-rows: 10% auto;
     grid-template-columns: 20% auto;
 }
 
-#espacio-vacio{
-    grid-area: espacio-vacio;
+#espacio-boton{
+    grid-area: espacio-boton;
+    display: grid;
+    justify-content: center;
+    align-items: center;
 }
+
+
+
 #cabecera {
   grid-area: cabecera;
   padding: 5px;
@@ -48,9 +54,15 @@
     -moz-box-shadow: 7px 0 7px -7px lightgray;
     display:grid;
     grid-template-columns: auto;
+    grid-template-rows: 10% auto;
+    justify-content: baseline;
 }
 
-
+#barra button{
+  height: 80% !important;
+  width: 75%;
+  margin-left: 12%;
+}
 
 .calendario{
   width: 100%;
@@ -184,4 +196,8 @@
 
 .turnoDisponible i{
   color:#ccc;
+}
+
+.placeholder{
+  border-radius: 5px;
 }

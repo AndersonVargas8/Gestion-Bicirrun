@@ -78,6 +78,10 @@
                         class="form-select" id="selectEstacionForm" required
                         disabled>
                         <option value="" hidden>Seleccione</option>
+                        <option th:each="estacion:${estaciones}"
+                            th:value="${estacion.id}"
+                            th:text="${estacion.nombre}">
+                        </option>
                     </select>
                     <span class="input-group-text"
                         id="loadingEstaciones" style="display: none;">
@@ -106,7 +110,7 @@
     </div>
     <div class="form-group row justify-content-center">
         <button type="button" class="btn btn-warning w-25 m-2"
-            onclick="resetForm()">Limpiar</button>
+            onclick="resetForm()" id="botonLimpiar">Limpiar</button>
         <button type="submit" value="Guardar" class="btn w-50 m-2 guardar"
             id="botonGuardar">Guardar</button>
     </div>

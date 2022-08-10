@@ -47,4 +47,11 @@ public interface IServicioCupo {
      * @return Número de cupos del cupo.
      */
     public int obtenerNumeroCupos(Cupo cupo);
+
+    /**
+     * Permite conocer la cantidad de cupos para un horario teniendo en cuenta si tiene cupos compartidos
+     * @param horario
+     * @return número de cupos del horario
+     */
+    public int cantidadCuposAbsolutos(Horario horario);
 }
