@@ -15,7 +15,7 @@ i {
   background-color:var(--color-principal);
   z-index:4;
   padding: 5px 15px;
-  width: 10%;
+  width: 150px;
 }
 
 .navbar-logo img{
