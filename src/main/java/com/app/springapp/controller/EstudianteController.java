@@ -3,25 +3,29 @@ package com.app.springapp.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.app.springapp.Exception.CustomeFieldValidationException;
+import com.app.springapp.dto.EstudianteDTO;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.repository.CarreraRepository;
 import com.app.springapp.service.EstudianteService;
 import com.app.springapp.service.TurnoService;
+import com.app.springapp.util.Mapper;
 
 @Controller
+@RequestMapping("/estudiantes")
 public class EstudianteController {
     @Autowired
     CarreraRepository repCarrera;
@@ -32,43 +36,36 @@ public class EstudianteController {
     @Autowired
     TurnoService serTurno;
 
-    @GetMapping("/estudiantes")
+    @GetMapping
     public String inicio(Model model) {
         model.addAttribute("carreras", repCarrera.findAll());
         model.addAttribute("estudiantes", serEstudiante.obtenerTodos());
-        model.addAttribute("estudiante",new Estudiante());
-        model.addAttribute("listTab","estudiantes");
         return "estudiante";
     }
 
-    @PostMapping("/estudiantes")
-    public String createUser(@Valid @ModelAttribute("estudiante") Estudiante estudiante, BindingResult result, ModelMap model) {
-        try {
-            serEstudiante.guardarEstudiante(estudiante);
-            System.out.println("Guardado");
+    @PostMapping
+    public ResponseEntity crearEstudiante(@RequestBody EstudianteDTO estudiante) {
+        try {            
+            estudiante = serEstudiante.guardarEstudiante(Mapper.mapToEstudiante(repCarrera, estudiante));           
+        }catch (CustomeFieldValidationException e){
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            System.out.println("ERROR AL GUARDAR");
+            e.printStackTrace();
+            return new ResponseEntity<String>("Error en el registro",HttpStatus.BAD_REQUEST);
         }
-        model.addAttribute("listTab","estudiantes");
-        model.addAttribute("estudiante",new Estudiante());
-        model.addAttribute("carreras", repCarrera.findAll());
-        model.addAttribute("estudiantes", serEstudiante.obtenerTodos());
-        return "redirect:/estudiantes";
+        return new ResponseEntity<EstudianteDTO>(estudiante,HttpStatus.CREATED);
     }
     @PostMapping( "/eliminarEstudiante")
     public void eliminarEstudiante(@RequestParam int id) {
         serEstudiante.eliminarEstudiante(id); 
     }
-    @GetMapping("/editarEstudiante/{id}")
-    public String editarEstudiante(Model model,@PathVariable Long id){
-        model.addAttribute("estudiante", serEstudiante.buscarPorId(id));
-        model.addAttribute("carreras", repCarrera.findAll());
-        model.addAttribute("estudiantes", serEstudiante.obtenerTodos());
-        model.addAttribute("listTab","estudiantes");
+    @PutMapping("/{id}")
+    public String editarEstudiante(@RequestBody EstudianteDTO estudiante){
+        
         return "/estudiantes";
     }
 
-    @GetMapping("/estudiantes/horarioEstudiante/{id}")
+    @GetMapping("/horarioEstudiante/{id}")
     public String horarioEstudiante(Model model,@PathVariable Long id){
         Estudiante estudiante = serEstudiante.buscarPorId(id);
         Date date = new Date(System.currentTimeMillis());
@@ -79,4 +76,11 @@ public class EstudianteController {
         model.addAttribute("listTab","estudiantes");
         return "estudiantes/horarioEstudiante";
     }
+
+    @PostMapping("/TablaEstudiantes")
+    public String tabla(Model model) {
+        model.addAttribute("estudiantes",serEstudiante.obtenerTodos());
+        return "estudiantes/tablaEstudiantes::TablaFragment";
+    }
+    
 }
