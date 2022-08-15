@@ -4,11 +4,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.app.springapp.Exception.CustomeFieldValidationException;
+import com.app.springapp.dto.EstudianteDTO;
 import com.app.springapp.dto.TurnoDTO;
+import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Turno;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
+import com.app.springapp.repository.CarreraRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
 
 public class Mapper {
@@ -108,5 +111,26 @@ public class Mapper {
         }catch(ParseException e){
             return false;
         }
+    }
+
+    public static EstudianteDTO mapToEstudianteDTO(Estudiante estudiante){
+        EstudianteDTO estudianteDTO = new EstudianteDTO();
+        estudianteDTO.id = (long)estudiante.getId();
+        estudianteDTO.nombres = estudiante.getNombres();
+        estudianteDTO.apellidos = estudiante.getApellidos();
+        estudianteDTO.documento = estudiante.getDocumento();
+        estudianteDTO.carrera = (int)estudiante.getCarrera().getId();
+        estudianteDTO.carreraNombre = estudiante.getCarrera().getDescripcion();
+        estudianteDTO.telefono = estudiante.getTelefono();
+        return estudianteDTO;
+    }
+    public static Estudiante mapToEstudiante(CarreraRepository repCarrera,EstudianteDTO estudiantedto){
+        Estudiante estudiante = new Estudiante();
+        estudiante.setNombres(estudiantedto.nombres);
+        estudiante.setApellidos(estudiantedto.apellidos);
+        estudiante.setDocumento(estudiantedto.documento);
+        estudiante.setTelefono(estudiantedto.telefono);
+        estudiante.setCarrera(repCarrera.findById(new Long(estudiantedto.carrera)).get());
+        return estudiante;
     }
 }

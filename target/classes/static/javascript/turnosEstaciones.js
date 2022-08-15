@@ -291,7 +291,6 @@ function setDatepickerFechas(
     language: "es",
     format: "dd MM yyyy",
     todayHighlight: true,
-    startDate: new Date(),
     autoclose: true,
     daysOfWeekDisabled: dias,
     weekStart: 0,

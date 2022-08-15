@@ -4,8 +4,8 @@
   grid-template-areas:
     "espacio-boton cabecera"
     "barra contenido";
-    grid-template-rows: 10% auto;
-    grid-template-columns: 20% auto;
+    grid-template-rows: 60px auto;
+    grid-template-columns: 270px auto;
 }
 
 #espacio-boton{
@@ -53,13 +53,12 @@
     -webkit-box-shadow: 5px 0 5px -5px lightgray;
     -moz-box-shadow: 7px 0 7px -7px lightgray;
     display:grid;
-    grid-template-columns: auto;
-    grid-template-rows: 10% auto;
+    grid-template-rows: 70px auto;
     justify-content: baseline;
 }
 
 #barra button{
-  height: 80% !important;
+  height: 50px !important;
   width: 75%;
   margin-left: 12%;
 }
@@ -82,7 +81,6 @@
 
 .calendario .datepicker td.day{
   width: 14.3% !important;
-  height: 5vh !important;
   padding: 5px 6px;
   font-size: medium;
 }
