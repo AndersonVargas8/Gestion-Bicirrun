@@ -13,7 +13,7 @@ services:
       - 8081:8080
     networks:
       - spring-boot-mysql-network
-    restart: alwaysy
+    restart: always
 
 volumes:
   mariadb:
