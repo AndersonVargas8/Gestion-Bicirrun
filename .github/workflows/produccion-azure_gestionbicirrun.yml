@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'gestionbicirrun'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EEF81AA1DF244D6887B31E55AE56CC10 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4CB537EBDE5C4AE79E890B6E3028DB58 }}
           package: '*.jar'
