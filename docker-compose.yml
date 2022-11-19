@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  app:
+    container_name: app
+    image: gestionbicirrun
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql-server-gestionbicirrun.mysql.database.azure.com:3306/bicirrun?useSSL=true
+    ports:
+      - 8081:8080
+    networks:
+      - spring-boot-mysql-network
+    restart: alwaysy
+
+volumes:
+  mariadb:
+
+networks:
+  spring-boot-mysql-network:
+    driver: bridge
