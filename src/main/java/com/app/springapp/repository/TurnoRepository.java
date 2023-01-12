@@ -1,6 +1,8 @@
 package com.app.springapp.repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,5 +49,18 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     @Modifying
     @Query("update Turno t set t.id = :nuevoId where t.id = :actualId")
     public void updateId(@Param("actualId") Long actualId, @Param("nuevoId") Long nuevoId);
+
+    public interface ICountTurnosMes{
+        long getDia();
+        long getCountTurnos();
+    }
+    @Query(value = "SELECT dia, count(id) AS countTurnos FROM turno WHERE mes = ?1 AND anio = ?2 GROUP BY dia", nativeQuery = true)
+    public List<ICountTurnosMes> countAllTurnosByMesAndAnio(int mes, int anio);
+
+    default Map<Integer, Integer> sumAllTurnosByMesAndAnio(int mes, int anio){
+        List<ICountTurnosMes> resultado = countAllTurnosByMesAndAnio(mes,  anio);
+        Map<Integer, Integer> map = resultado.stream().collect(Collectors.toMap(o -> (int)o.getDia(), o -> (int)o.getCountTurnos()));
+        return map;
+    }
 
 }

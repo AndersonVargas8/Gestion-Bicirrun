@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
+import com.app.springapp.entity.Horario.Dia;
 import com.app.springapp.entity.Turno;
-import com.app.springapp.interfacesServicios.IServicioCupo;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
@@ -38,7 +39,7 @@ public class TurnoService implements IServicioTurno {
     TurnoRepository repTurno;
 
     @Autowired
-    IServicioCupo serCupo;
+    CupoService serCupo;
 
     @Lazy
     @Autowired
@@ -435,18 +436,24 @@ public class TurnoService implements IServicioTurno {
         Calendario calendario = new Calendario(mes, anio);
 
         // HashMap con los cupos por día
-        HashMap<String, Integer> cuposPorDia = serCupo.cantidadCuposAlDia();
+        HashMap<Integer, Integer> cuposPorDia = serCupo.cantidadCuposAlDia();
 
+        // Map con los turnos programados en cada dia
+        Map<Integer,Integer> turnosPorDia = repTurno.sumAllTurnosByMesAndAnio(mes, anio);
         int numeroSemanasGuardadas = 0;
 
         for (int diaMes = 1; diaMes <= diasDelMes; diaMes++) {
             LocalDate dia = fecha.withDayOfMonth(diaMes);
             int valorDiaActual = DayOfWeek.from(dia).getValue();
-            String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
 
             if (valorDiaActual <= 5) {// Si el día no es sábado ni domingo
-                int cuposDia = cuposPorDia.get(nombreDia);
-                int turnosProgramados = sumaTurnosFecha(dia);
+                int cuposDia = cuposPorDia.get(valorDiaActual);
+                int turnosProgramados = 0;
+
+                if(turnosPorDia.containsKey(diaMes)){
+                    turnosProgramados = turnosPorDia.get(diaMes);
+                }
+
                 calendario.agregarDiaSemana(numeroSemanasGuardadas, valorDiaActual, diaMes, cuposDia,
                         turnosProgramados);
 
@@ -470,15 +477,14 @@ public class TurnoService implements IServicioTurno {
                 fecha.getYear());
 
         // HashMap con los cupos por día
-        HashMap<String, Integer> cuposPorDia = serCupo.cantidadCuposAlDia();
+        HashMap<Integer, Integer> cuposPorDia = serCupo.cantidadCuposAlDia();
 
         List<String> fechas = new ArrayList<>();
 
         for (Object[] obj : respuesta) {
             fecha = LocalDate.of((int) obj[2], (int) obj[1], (int) obj[0]);
             int valorDiaActual = DayOfWeek.from(fecha).getValue();
-            String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
-            int cuposDia = cuposPorDia.get(nombreDia);
+            int cuposDia = cuposPorDia.get(valorDiaActual);
             int turnosProgramados = sumaTurnosFecha(fecha);
 
             if (turnosProgramados >= cuposDia)
@@ -497,10 +503,10 @@ public class TurnoService implements IServicioTurno {
         diasD.diasDeshabilitados = new ArrayList<>();
 
         Horario horario = serHorario.buscarPorId(idHorario);
-        Set<String> diasNoDisp = horario.getDiasNoDisponibles();
+        Set<Dia> diasNoDisp = horario.getDiasNoDisponibles();
 
-        for (String dia : diasNoDisp) {
-            diasD.diasDeshabilitados.add(Calendario.convertirNombreDiaANumeroSemana(dia));
+        for (Dia dia : diasNoDisp) {
+            diasD.diasDeshabilitados.add(Calendario.convertirNombreDiaANumeroSemana(dia.name()));
         }
 
         LocalDate fecha = LocalDate.now();
