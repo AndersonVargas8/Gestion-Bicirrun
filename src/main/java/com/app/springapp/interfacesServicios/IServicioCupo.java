@@ -28,12 +28,6 @@ public interface IServicioCupo {
     public int cantidadCupos(LocalDate fecha, Horario horario, Estacion estacion);
 
     /**
-     * Retorna la cantidad de cupos que hay en cada día de la semana (Lunes a Viernes)
-     * @return HashMap - clave: nombre del Dia, valor: cantidad de cupos
-     */
-    public HashMap<String, Integer> cantidadCuposAlDia();
-
-    /**
      * @param dia
      * @param mes
      * @param anio

@@ -1,22 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Servicio suspendido</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gestión Bicirrun | Iniciar sesión</title>
+
+    <!--JQUERY-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- FRAMEWORK BOOTSTRAP para el estilo de la pagina-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Los iconos tipo Solid de Fontawesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
+    <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+
+    <!-- Nuestro css-->
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css" th:href="@{/css/index.css}">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.png}">
 </head>
-<style type="text/css">
-	body{
-		background-color: rgb(82,148,189);
-	}
-</style>
-<body>
 
-	<div style="text-align: center; font-family: Segoe UI;">
-		<h1 style="color:rgb(231,217,80)">Servicio suspendido</h1>
-		<h3>Nos trasladamos a <a href="https://gestionbicirrun.azurewebsites.net">https://gestionbicirrun.azurewebsites.net</h3>
-		<img src="../static/img/bike.gif" th:src="@{img/bike.gif}">
-	</div>
+<body>
+    <div class="modal-dialog text-center">
+        <div class="col-sm-9 main-section">
+            <div class="modal-content">
+                <div class="col-12 user-img">
+                    <img src="../static/img/avatar.png" th:src="@{img/avatar.png}"/>
+                    <br><br>
+                    <h2>Gestión Bicirrun</h2>
+                    <h3>Iniciar sesión</h3>
+                </div>
+                <form class="col-12" th:action="@{/login}" method="post">
+                    <div class="form-group" id="user-group">
+                        <input class="form-control" type="text" placeholder="Nombre de usuario" name="username"/>
+                    </div> 
+                    <div class="form-group" id="password-group">
+                        <input class="form-control" type="password" placeholder="Contraseña" name="password"/>
+                    </div>
+                    <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Ingresar</button>
+                </form>
+                <!--<div class="col-12 forgot-password"> 
+                    <a href="#" th:href="@{/signup}">Registrarse</a>   
+                </div>-->
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+		            Usuario o contraseña inválidos.
+		        </div>
+		        <div th:if="${param.logout}" class="alert alert-success" role="alert">
+		            Se ha cerrado la sesión.
+		        </div>  
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
