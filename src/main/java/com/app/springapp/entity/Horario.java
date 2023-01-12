@@ -135,6 +135,7 @@ public class Horario {
 
         return this.diasNoDisponibles.contains(Dia.valueOf(dia));
     }
+
     /** 
      * @param o
      * @return boolean

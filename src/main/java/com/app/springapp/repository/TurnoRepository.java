@@ -50,6 +50,7 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
     @Query("update Turno t set t.id = :nuevoId where t.id = :actualId")
     public void updateId(@Param("actualId") Long actualId, @Param("nuevoId") Long nuevoId);
 
+    //Cantidad de turnos en cada dia del mes dado
     public interface ICountTurnosMes{
         long getDia();
         long getCountTurnos();
@@ -62,5 +63,20 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
         Map<Integer, Integer> map = resultado.stream().collect(Collectors.toMap(o -> (int)o.getDia(), o -> (int)o.getCountTurnos()));
         return map;
     }
+    /////////////////////////////////////
 
+    //Cantidad de turnos en cada horario en la fecha dada
+    public interface ICountTurnosHorario{
+        long getIdHorario();
+        long getCountTurnos();
+    }
+    @Query(value = "SELECT horario_id AS idHorario, count(id) AS countTurnos FROM turno WHERE dia = ?1 AND mes = ?2 AND anio = ?3 GROUP BY horario_id", nativeQuery = true)
+    public List<ICountTurnosHorario> countAllTurnosByDiaAndMesAndAnio(int dia, int mes, int anio);
+
+    default Map<Long, Integer> sumAllTurnosByDiaAndMesAndAnio(int dia, int mes, int anio){
+        List<ICountTurnosHorario> resultado = countAllTurnosByDiaAndMesAndAnio(dia, mes,  anio);
+        Map<Long, Integer> map = resultado.stream().collect(Collectors.toMap(o -> o.getIdHorario(), o -> (int)o.getCountTurnos()));
+        return map;
+    }
+    ///////////////////////////
 }
