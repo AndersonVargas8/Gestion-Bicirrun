@@ -11,10 +11,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.app.springapp.dto.CuposYTurnosEstacionesHorario;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.repository.CupoRepository.ICountCuposEstacionAndHorario;
 
 @Transactional
 @Repository
@@ -79,4 +81,22 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
         return map;
     }
     ///////////////////////////
+
+    //Turnos por estacion y horario
+    public interface ICountTurnosEstacionAndHorario{
+        long getEstacionId();
+        long getHorarioId();
+        long getSumTurnos();
+    }
+    @Query(value = "SELECT estacion_id AS estacionId, horario_id AS horarioId, count(id) AS sumTurnos FROM turno WHERE dia = ?1 AND mes = ?2 AND anio = ?3 GROUP BY horario_id, estacion_id", nativeQuery = true) 
+    public List<ICountTurnosEstacionAndHorario> countTurnosGroupByEstacionHorarioFecha(int dia, int mes, int anio);
+    
+    default CuposYTurnosEstacionesHorario sumTurnosGroupByEstacionHorarioFecha(CuposYTurnosEstacionesHorario cuposTurnos, int dia, int mes, int anio){
+        List<ICountTurnosEstacionAndHorario> resultado = countTurnosGroupByEstacionHorarioFecha(dia, mes, anio);
+
+        for(ICountTurnosEstacionAndHorario entry: resultado)
+            cuposTurnos.putTurno(entry.getEstacionId(), entry.getHorarioId(), (int)entry.getSumTurnos());
+
+        return cuposTurnos;
+    };
 }
