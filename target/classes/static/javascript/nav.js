@@ -1,5 +1,7 @@
 // ---------Responsive-navbar-active-animation-----------
 function test(){
+    document.querySelector(".right").hidden=false;
+    document.querySelector(".left").hidden=false;
     var tabsNewAnim = $('#navbarSupportedContent');
     var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
     var activeItemNewAnim = tabsNewAnim.find('.active');
