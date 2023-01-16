@@ -57,7 +57,7 @@ public class HorarioService implements IServicioHorario{
         // Se obtienen los cupos en cada horario
         Map<Long, Integer> cuposHorarios = repCupo.sumCuposGroupByHorario();
         // Se obtiene los horarios dependientes
-        Map<Long, Long> horariosDependientes = repHorario.findTurnosDependientes();
+        Map<Long, Long> horariosDependientes = repHorario.findHorariosDependientes();
         // Se obtienen los turnos progaramados en cada horario dada la fecha
         Map<Long, Integer> turnosHorarios = repTurno.sumAllTurnosByDiaAndMesAndAnio(dia, mes, anio);
         // Se obtienen todos los horarios

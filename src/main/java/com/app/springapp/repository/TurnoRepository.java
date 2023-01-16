@@ -1,5 +1,6 @@
 package com.app.springapp.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,18 +13,19 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.springapp.dto.CuposYTurnosEstacionesHorario;
+import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
-import com.app.springapp.repository.CupoRepository.ICountCuposEstacionAndHorario;
+import com.app.springapp.util.Mapper;
 
 @Transactional
 @Repository
 public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
     public List<Turno> findByDiaAndMes(int dia, int mes);
-
+    
     public List<Turno> findByEstudiante(Estudiante estudiante);
 
     public List<Turno> findByDiaAndMesAndAnioAndEstacion(int dia, int mes, int anio, Estacion estacion);
@@ -99,4 +101,45 @@ public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
         return cuposTurnos;
     };
+    
+    public interface ITurnoDTO{
+        public long getId();
+        public long getDia();
+        public long getMes();
+        public long getAnio();
+        public String getObservaciones();
+        public long getEstacionId();
+        public String getEstacion();
+        public long getEstadoId();
+        public String getEstado();
+        public long getEstudianteId();
+        public String getEstudianteNombres();
+        public String getEstudianteApellidos();
+        public long getHorarioId();
+        public String getHorario();
+    }
+    @Query(value = "SELECT t.id, dia, mes, anio, observaciones,"
+    + " estacion_id AS estacionId, e.nombre AS estacion,"
+    + " estado_id AS estadoId, et.descripcion AS estado," 
+    + " estudiante_id AS estudianteId, es.nombres AS estudianteNombres, es.apellidos AS estudianteApellidos,"
+    + " horario_id AS horarioId, h.descripcion AS horario"
+    + " FROM turno t "
+    + " INNER JOIN estacion e ON t.estacion_id = e.id"
+    + " INNER JOIN estado_turno et ON t.estado_id = et.id"
+    + " INNER JOIN estudiante es ON t.estudiante_id = es.id"
+    + " INNER JOIN horario h ON t.horario_id = h.id"
+    + " WHERE dia = ?1 AND mes = ?2 AND anio = ?3",
+     nativeQuery = true)
+    public List<ITurnoDTO> findByDiaAndMesAndAnio(int dia, int mes, int anio);
+
+    default List<TurnoDTO> findByFecha(int dia, int mes, int anio){
+        List<ITurnoDTO> resultado = findByDiaAndMesAndAnio(dia, mes, anio);
+        List<TurnoDTO> turnos = new ArrayList<>();
+
+        for(ITurnoDTO turno : resultado){
+            turnos.add(Mapper.mapToTurnoDTOFull(turno));
+        }
+
+        return turnos;
+    }
 }

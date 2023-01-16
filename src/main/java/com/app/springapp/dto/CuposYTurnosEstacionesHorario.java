@@ -3,8 +3,8 @@ package com.app.springapp.dto;
 import java.util.HashMap;
 
 public class CuposYTurnosEstacionesHorario {
-    HashMap<Long, HashMap<Long, Integer>> cupos = new HashMap<>();
-    HashMap<Long, HashMap<Long, Integer>> turnos = new HashMap<>();
+    private HashMap<Long, HashMap<Long, Integer>> cupos = new HashMap<>();
+    private HashMap<Long, HashMap<Long, Integer>> turnos = new HashMap<>();
 
     public void putCupo(long estacionId, long horarioId, int sumCupos){
         if(!this.cupos.containsKey(estacionId))
@@ -18,6 +18,22 @@ public class CuposYTurnosEstacionesHorario {
             this.turnos.put(estacionId, new HashMap<Long, Integer>());
         
         this.turnos.get(estacionId).put(horarioId, sumTurnos);
+    }
+
+    public void substractCupo(long estacionId, long horarioId){
+        if(!this.cupos.containsKey(estacionId))
+            this.putCupo(estacionId, horarioId, 0);
+        
+        int numCupos = this.getCupos(estacionId, horarioId);
+        this.cupos.get(estacionId).put(horarioId, numCupos-1);
+    }
+
+    public void substractTurno(long estacionId, long horarioId){
+        if(!this.turnos.containsKey(estacionId))
+            this.putTurno(estacionId, horarioId, 0);
+        
+        int numTurnos = this.getTurnos(estacionId, horarioId);
+        this.turnos.get(estacionId).put(horarioId, numTurnos-1);
     }
 
     /**
@@ -49,4 +65,14 @@ public class CuposYTurnosEstacionesHorario {
 
        return turnos;
     }
+
+    public HashMap<Long, HashMap<Long, Integer>> getCupos() {
+        return cupos;
+    }
+
+    public HashMap<Long, HashMap<Long, Integer>> getTurnos() {
+        return turnos;
+    }
+
+    
 }

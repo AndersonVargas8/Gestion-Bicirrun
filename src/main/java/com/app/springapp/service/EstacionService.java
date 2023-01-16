@@ -62,7 +62,7 @@ public class EstacionService implements IServicioEstacion {
         // Se obtienen los turnos de las estaciones en cada horario
         cuposTurnos = repTurno.sumTurnosGroupByEstacionHorarioFecha(cuposTurnos, dia, mes, anio);
         // Se obtiene los horarios dependientes
-        Map<Long, Long> horariosDependientes = repHorario.findTurnosDependientes();
+        Map<Long, Long> horariosDependientes = repHorario.findHorariosDependientes();
         // Se obtienen todas las estaciones
         List<Estacion> listaEstaciones = obtenerTodas();
 

@@ -39,10 +39,10 @@ public interface HorarioRepository extends CrudRepository<Horario,Long>{
     +")tmp2 "
     +"ON tmp1.id = tmp2.Id"
         , nativeQuery = true)
-    public List<IHorariosDependientes> turnosDependientes();
+    public List<IHorariosDependientes> horariosDependientes();
     
-    default Map<Long, Long> findTurnosDependientes(){
-        List<IHorariosDependientes> resultado = turnosDependientes();
+    default Map<Long, Long> findHorariosDependientes(){
+        List<IHorariosDependientes> resultado = horariosDependientes();
         Map<Long, Long> map = resultado.stream().collect(Collectors.toMap(o -> o.getHorarioDependiente(), o -> o.getHorarioIndependiente()));
         return map;
     }
