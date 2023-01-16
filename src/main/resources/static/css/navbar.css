@@ -18,10 +18,7 @@ i {
   width: 150px;
 }
 
-.navbar-logo img{
-  width: 95%;
-  height: 95%;
-}
+
 .navbar-mainbg {
   background-color: var(--color-principal);
   padding: 0;
