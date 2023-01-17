@@ -1,0 +1,145 @@
+:root{
+    --color-principal:#1c6f7a;
+}
+
+@font-face {
+    font-family: "Ancizar Sans";
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fuentes/Ancizar Sans-Light.otf") format("opentype");
+  }
+
+body {    
+    font-family: "Ancizar Sans","Segoe UI";
+    font-size: 16px;
+}
+ 
+/*Estilos para los botones selectpicker*/
+.selectpicker .dropdown button {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid rgb(228, 226, 226) !important;
+}
+.dropdown {
+  padding: 0 !important;
+  border-radius: 5px;
+}
+
+select {
+  cursor: pointer;
+}
+
+/*Estilos para el input tipo texto que usa datepicker IMPORTANTE: el input debe tener la clase "selectCalendar"*/
+input.selectCalendar{
+    cursor:pointer;
+    border-radius: 4px 0 0 4px;
+    color:black;
+}
+
+input.selectCalendar::placeholder{
+    color:black;
+}
+
+input.selectCalendar:read-only{
+    background-color: white;
+    border-color: #ddd;
+}
+
+input.selectCalendar:read-only:focus{
+    outline: none;
+    border-color: lightgrey;
+    box-shadow: none;
+}
+
+.selectCalendar:disabled {
+    background-color: #e9ecef !important;
+}
+/*Estilos para el datepicker*/
+.datepicker td.day{
+    text-align: center;
+    width: 14.3% !important;
+    padding: 8px 11px;
+    font-size: 14px;
+}
+.datepicker td.month,th{
+    text-align: center;
+    padding: 8px 8px;
+    font-size: 14px;
+}
+
+.datepicker td{
+    border-radius: 100% !important;
+}
+
+.datepicker td.active{
+    background-image: none !important;
+    background-color: rgb(78, 160, 236) !important;
+}
+
+.datepicker td.today{
+    background-image: none !important;
+}
+
+.datepicker span{
+    border-radius: 100% !important;
+    height: 44px !important;
+    line-height: 44px !important;
+}
+
+.datepicker span.active{
+    background-image: none !important;
+    background-color: rgb(78, 160, 236) !important;
+}
+
+
+
+/*Estilos para el botón que acompaña el input datepicker (contiene el icono de calendario) IMPORTANTE: el botón debe tener la clase "btn-calendar"*/
+.btn-calendar-form:focus, input.selectCalendar:focus + .btn-calendar-form{
+    background-color: rgb(194, 231, 253) !important;
+}
+
+.btn-calendar-form{
+    border-radius: 0 4px 4px 0 !important;
+    cursor:pointer;
+}
+
+
+/*Estilos para el botón guardar de un formulario IMPORTANTE: el botón debe tener la clase "guardar"*/
+.guardar{
+    background-color: var(--color-principal);
+    color:white;
+}
+
+.guardar:hover{
+    filter: brightness(85%);
+    color: white;
+}
+
+/*Estilos para el header del modal form IMPORTANTE: el div debe tener la clase modal-form-header*/
+.modal-form-header{
+    background-color: var(--color-principal);
+    color:white
+}
+
+
+.modal-form-header .modal-title{ /* "modal title" es la clase que debe tener el h5, h4, p, etc que contenga el título del modal header*/
+    width: 100%;
+    text-align: center;
+}
+
+/*Estilos para el botón de cerrar modal*/
+.modal-form-header .btn-close{
+    text-shadow: none;
+    color:white
+}
+
+/*Estilos para dselect*/
+.dselect-wrapper .dropdown-menu{
+    padding-top: 0!important;
+    width: 100%;
+}
+
+select.form-select{
+    text-indent: 25px !important;
+}
+

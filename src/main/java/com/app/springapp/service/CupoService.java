@@ -5,9 +5,10 @@ import java.time.temporal.WeekFields;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
+ 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,11 @@ import com.app.springapp.dto.Calendario;
 import com.app.springapp.entity.Cupo;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
+import com.app.springapp.entity.Horario.Dia;
 import com.app.springapp.interfacesServicios.IServicioCupo;
 import com.app.springapp.interfacesServicios.IServicioHorario;
-import com.app.springapp.repository.CupoRepository;
-
+import com.app.springapp.repository.CupoRepository;import com.app.springapp.repository.HorarioRepository;
+import com.app.springapp.repository.HorarioRepository.IHorariosDiasNoDisponibles;
 @Service
 public class CupoService implements IServicioCupo{
     @Autowired
@@ -28,6 +30,9 @@ public class CupoService implements IServicioCupo{
     @Lazy
     @Autowired
     IServicioHorario serHorario;
+
+    @Autowired
+    HorarioRepository repHorario;
 
     @Override
     public List<Cupo> obtenerTodos() {  
@@ -73,29 +78,28 @@ public class CupoService implements IServicioCupo{
     /**************************** */
     /********NUEVO SERVICIO****** */
     /**************************** */
+    /**
+     * Retorna la cantidad de cupos que hay en cada día de la semana (Lunes a Viernes)
+     * @return HashMap - clave: nombre del Dia, valor: cantidad de cupos
+     */
+    public HashMap<Integer, Integer> cantidadCuposAlDia(){
+        int totalCupos = (int)repCupo.sumTotalCupos();
+        Map<Long, Integer> cuposHorarios = repCupo.sumCuposGroupByHorario();
+        
+        HashMap<Integer,Integer> cupos = new HashMap<>();
 
-    @Override
-    public HashMap<String, Integer> cantidadCuposAlDia(){
-        HashMap<String,Integer> cupos = new HashMap<>();
-
-        List<Horario> horarios = serHorario.obtenerTodos();
+        List<IHorariosDiasNoDisponibles> horariosDiasNoDisp = repHorario.findHorariosDiasNoDisponibles();
+        
         
         for(int i = 1; i <= 5; i++){
-            int sumaCupos = 0;
-
-            //Se obtiene el nombre del día: (1)Lunes, (2)Martes,...
-            String dia = Calendario.convertirNumeroADia(i);
-
-            //Por cada horario, se verifica que esté disponible para el día y se suma su cantidad de cupos total
-            for(Horario horario: horarios){
-                if(horario.diaNoDisponible(dia))
-                    continue;
-                
-                sumaCupos += cantidadCuposPorHorario(horario);
-            }
-
             //Se guarda la suma de cupos total de todos los horarios para el día correspondiente
-            cupos.put(dia, sumaCupos);
+            cupos.put(i, totalCupos);
+        }
+
+        for(IHorariosDiasNoDisponibles horarioNoDisp: horariosDiasNoDisp){
+            int dia = Dia.valueOf(horarioNoDisp.getDia()).getValue();
+            int numCupos = cuposHorarios.get(horarioNoDisp.getHorarioId());
+            cupos.put(dia, cupos.get(dia) - numCupos);
         }
 
         return cupos;
@@ -106,9 +110,8 @@ public class CupoService implements IServicioCupo{
         LocalDate fecha = LocalDate.of(anio,mes,dia);
 
         int valorDiaSemana = fecha.get(WeekFields.ISO.dayOfWeek());
-        String nombreDia = Calendario.convertirNumeroADia(valorDiaSemana);
 
-        return cantidadCuposAlDia().get(nombreDia);
+        return cantidadCuposAlDia().get(valorDiaSemana);
     }
 
     @Override

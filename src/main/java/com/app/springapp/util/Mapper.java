@@ -13,6 +13,7 @@ import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.repository.CarreraRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
+import com.app.springapp.repository.TurnoRepository.ITurnoDTO;
 
 public class Mapper {
 
@@ -99,6 +100,28 @@ public class Mapper {
         turnoDTO.nombreCortoEstudiante = nombre + " " + apellido;
         turnoDTO.idHorario = (int)turno.getHorario().getId();
         turnoDTO.horario = turno.getHorario().getDescripcion();
+
+        return turnoDTO;
+    }
+
+    public static TurnoDTO mapToTurnoDTOFull(ITurnoDTO turno){
+        TurnoDTO turnoDTO = new TurnoDTO();
+        turnoDTO.id = (int)turno.getId();
+        turnoDTO.fecha = String.valueOf(turno.getDia()) + "-" + String.valueOf(turno.getMes()) + "-" + String.valueOf(turno.getAnio());
+        turnoDTO.observaciones = turno.getObservaciones();
+        turnoDTO.idEstacion = (int)turno.getEstacionId();
+        turnoDTO.estacion = turno.getEstacion();
+        turnoDTO.idEstado = (int)turno.getEstadoId();
+        turnoDTO.estado = turno.getEstado();
+        turnoDTO.idEstudiante = (int)turno.getEstudianteId();
+        turnoDTO.estudiante = turno.getEstudianteNombres() + " " + turno.getEstudianteApellidos();
+
+        String nombre = turno.getEstudianteNombres().split(" ")[0];
+        String apellido = turno.getEstudianteApellidos().split(" ")[0];
+
+        turnoDTO.nombreCortoEstudiante = nombre + " " + apellido;
+        turnoDTO.idHorario = (int)turno.getHorarioId();
+        turnoDTO.horario = turno.getHorario();
 
         return turnoDTO;
     }

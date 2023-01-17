@@ -1,0 +1,117 @@
+<form id="turnosForm" class="form col-lg needs-validation" role="form"
+    autocomplete="off" novalidate>
+    <!--Estudiante-->
+    <div class="form-group row justify-content-center">
+        <label class="col-lg-3 col-lg form-label form-control-label"><b>Estudiante</b></label>
+        <div class="col-lg-8">
+            <select class="form-select" id="selectEstudianteForm" required>
+                <option value="" hidden>Seleccione</option>
+                <option th:each="estudiante:${estudiantes}"
+                    th:value="${estudiante.id}"
+                    th:text="${estudiante.nombres} + ' ' +
+                    ${estudiante.apellidos}"></option>
+            </select>
+            <div class="invalid-feedback">
+                Por favor seleccione un estudiante.
+            </div>
+        </div>
+    </div>
+
+    <div id="form-dinamico" th:fragment="inputs-dinamicos">
+        <!--Fecha-->
+        <div class="form-group row justify-content-center">
+            <label class="col-lg-3 col-form-label form-control-label"><b>Fecha</b></label>
+            <div class="col-lg-8">
+                <div class="input-group">
+                    <input type="text" id="inputFechaForm" class="form-select
+                        w-85 selectCalendar" placeholder="Seleccione"
+                        required>
+                    <span class="input-group-text btn-calendar-form"
+                        id="spanCalendar"
+                        onclick="$('#inputFechaForm').datepicker('show');
+                        document.querySelector('#inputFechaForm').focus()">
+                        <i class="fa-solid fa-calendar-day w-100"
+                            style="margin:0;"></i></span>
+                    <span class="input-group-text"
+                        id="loadingFechas" style="display: none;">
+                        <i class="fa-solid fa-sync fa-spin"
+                            style="margin:0;"></i>
+                    </span>
+                    <div class="invalid-feedback" id="feedbackFecha">
+                        Por favor seleccione una fecha.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Horario-->
+        <div class="form-group row justify-content-center">
+            <label class="col-lg-3 col-form-label form-control-label"><b>Horario</b></label>
+            <div class="col-lg-8">
+                <div class="input-group">
+                    <select
+                        class="form-select" id="selectHorarioForm" required>
+                        <option value="" hidden>Seleccione</option>
+                        <option th:each="horario:${horarios}"
+                            th:value="${horario.id}"
+                            th:text="${horario.descripcion}">
+                        </option>
+                    </select>
+                    <span class="input-group-text"
+                        id="loadingHorarios" style="display: none;">
+                        <i class="fa-solid fa-sync fa-spin"
+                            style="margin:0;"></i>
+                    </span>
+                    <div class="invalid-feedback">
+                        Por favor seleccione un horario.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Estación-->
+        <div class="form-group row justify-content-center">
+            <label class="col-lg-3 col-form-label form-control-label"><b>Estación</b></label>
+            <div class="col-lg-8">
+                <div class="input-group">
+                    <select
+                        class="form-select" id="selectEstacionForm" required
+                        disabled>
+                        <option value="" hidden>Seleccione</option>
+                        <option th:each="estacion:${estaciones}"
+                            th:value="${estacion.id}"
+                            th:text="${estacion.nombre}">
+                        </option>
+                    </select>
+                    <span class="input-group-text"
+                        id="loadingEstaciones" style="display: none;">
+                        <i class="fa-solid fa-sync fa-spin"
+                            style="margin:0;"></i>
+                    </span>
+                    <div class="invalid-feedback">
+                        Por favor seleccione una estación.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Observaciones-->
+    <div class="form-group row justify-content-center">
+        <label class="col-lg-3 col-form-label form-control-label"><b>Observaciones</b></label>
+        <div class="col-lg-8">
+            <textarea placeholder="Observaciones"
+                class="form-control" id="inputObservacionesForm"></textarea>
+        </div>
+    </div>
+    <div class="alert alert-danger text-center" id="mensajeError">
+        Mensaje de error
+    </div>
+    <div class="form-group row justify-content-center">
+        <button type="button" class="btn btn-warning w-25 m-2"
+            onclick="resetForm()" id="botonLimpiar">Limpiar</button>
+        <button type="submit" value="Guardar" class="btn w-50 m-2 guardar"
+            id="botonGuardar">Guardar</button>
+    </div>
+</form>
