@@ -12,4 +12,5 @@ public interface IServicioEstudiante {
     public List<Estudiante> obtenerTodos();
     public Estudiante buscarPorId(Long id);
     public Estudiante buscarPorDocumento(String documento);
+    public EstudianteDTO editarEstudiante(Long id,EstudianteDTO estudianteDTO) throws CustomeFieldValidationException ;
 }
