@@ -1,35 +1,29 @@
 package com.app.springapp.controller;
 
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
-import com.app.springapp.Exception.CustomeFieldValidationException;
-import com.app.springapp.Exception.UsernameOrIdNotFound;
-import com.app.springapp.dto.ChangePasswordForm;
-import com.app.springapp.entity.Usuario;
-import com.app.springapp.interfacesServicios.IUsuarioService;
-import com.app.springapp.repository.RolRepository;
+import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import com.app.springapp.Exception.CustomeFieldValidationException;
+import com.app.springapp.Exception.UsernameOrIdNotFound;
+import com.app.springapp.dto.UsuarioDTO;
+import com.app.springapp.repository.RolRepository;
+import com.app.springapp.service.UsuarioService;
 
 @Controller
 public class UsuarioController {
 
     @Autowired
-    IUsuarioService serUsuario;
+    UsuarioService serUsuario;
 
     @Autowired
     RolRepository repRole;
@@ -41,163 +35,51 @@ public class UsuarioController {
         return "index";
     }
 
-    /*@GetMapping("/signup")
-    public String signup(Model model) {
+    @PostMapping(value = "/user", consumes = "application/json")
+    public ResponseEntity createUser(@RequestBody UsuarioDTO user) {
+        try{
+           user =  serUsuario.crearUsuario(user);
+           return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch(CustomeFieldValidationException e){
+            HashMap<String, String> response = new HashMap<String, String>();
+            response.put("message", e.getMessage());
 
-        Role userRole = repRole.findByName("USUARIO");
-        List<Role> roles = Arrays.asList(userRole);
-        model.addAttribute("userForm", new User());
-        model.addAttribute("roles", roles);
-        model.addAttribute("signup",true);
-
-        return "user-form/user-signup";
-    }
-
-    @PostMapping("/signup")
-    public String postSignup(@Valid @ModelAttribute("userForm") User user, BindingResult result, ModelMap model) {
-        Role userRole = repRole.findByName("USUARIO");
-        List<Role> roles = Arrays.asList(userRole);
-        model.addAttribute("userForm", user);
-        model.addAttribute("roles", roles);
-        model.addAttribute("signup",true);
-
-        if (result.hasErrors()) {
-            return "user-form/user-signup";
-        } else {
-            try {
-                serUsuario.createUser(user);
-                
-            } catch (CustomeFieldValidationException e) {
-                result.rejectValue(e.getFieldName(), null, e.getMessage());
-                return "user-form/user-signup";
-            } catch (Exception e) {
-                model.addAttribute("formErrorMessage", e.getMessage());
-                return "user-form/user-signup";
-            }
+            return new ResponseEntity<HashMap<String,String>>(response ,HttpStatus.BAD_REQUEST);
         }
-        return "index";
-
-    }*/
-
-    @GetMapping("/userForm")
-    public String getUserForm(Model model) {
-        model.addAttribute("userForm", new Usuario());
-        model.addAttribute("userList", serUsuario.obtenerUsuarios());
-        model.addAttribute("role", repRole.findAll());
-        model.addAttribute("listTab", "active");
-        return "user-form/user-view";
     }
 
-    @PostMapping("/userForm")
-    public String createUser(@Valid @ModelAttribute("userForm") Usuario user, BindingResult result, ModelMap model) {
-        if (result.hasErrors()) {
-            model.addAttribute("userForm", user);
-            model.addAttribute("formTab", "active");
-        } else {
-            try {
-                serUsuario.crearUsuario(user);
-                model.addAttribute("userForm", new Usuario());
-                model.addAttribute("listTab", "active");
-            } catch (CustomeFieldValidationException e) {
-                result.rejectValue(e.getFieldName(), null, e.getMessage());
-                model.addAttribute("userForm", user);
-                model.addAttribute("formTab", "active");
-                model.addAttribute("userList", serUsuario.obtenerUsuarios());
-                model.addAttribute("role", repRole.findAll());
-            } catch (Exception e) {
-                model.addAttribute("formErrorMessage", e.getMessage());
-                model.addAttribute("userForm", user);
-                model.addAttribute("formTab", "active");
-                model.addAttribute("userList", serUsuario.obtenerUsuarios());
-                model.addAttribute("role", repRole.findAll());
-            }
+    @GetMapping(value = "/user")
+    public ResponseEntity listUsers() {
+        try{
+           List<UsuarioDTO> users =  serUsuario.obtenerUsuarios();
+           return new ResponseEntity<List<UsuarioDTO>>(users, HttpStatus.OK);
+        } catch(Exception e){
+            HashMap<String, String> response = new HashMap<String, String>();
+            response.put("message", e.getMessage());
+
+            return new ResponseEntity<HashMap<String,String>>(response ,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        model.addAttribute("userList", serUsuario.obtenerUsuarios());
-        model.addAttribute("role", repRole.findAll());
-        return "user-form/user-view";
     }
 
-    @GetMapping("/editUser/{id}")
-    public String getEditUserForm(Model model, @PathVariable(name = "id") Long id) throws Exception {
-        Usuario userToEdit = serUsuario.obtenerUsuarioPorId(id);
+    @GetMapping(value = "/user/{idUser}")
+    public ResponseEntity listUserById(@PathVariable long idUser){
+        try{
+            UsuarioDTO user = serUsuario.obtenerUsuarioPorId(idUser);
+            return new ResponseEntity<UsuarioDTO>(user, HttpStatus.OK);
+        } catch(UsernameOrIdNotFound e){
+            HashMap<String, String> response = new HashMap<String, String>();
+            response.put("message", e.getMessage());
+            return new ResponseEntity<HashMap<String,String>>(response ,HttpStatus.NOT_FOUND);
 
-        model.addAttribute("userForm", userToEdit);
-        model.addAttribute("userList", serUsuario.obtenerUsuarios());
-        model.addAttribute("role", repRole.findAll());
-        model.addAttribute("formTab", "active");
-        model.addAttribute("editMode", true);
-        model.addAttribute("passwordForm", new ChangePasswordForm(userToEdit.getId()));
-        return "user-form/user-view";
-    }
-
-    @PostMapping("/editUser")
-    public String postEditUserForm(@Valid @ModelAttribute("userForm") Usuario user, BindingResult result, ModelMap model) {
-        if (result.hasErrors()) {
-            model.addAttribute("userForm", user);
-            model.addAttribute("formTab", "active");
-            model.addAttribute("editMode", true);
-            model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
-        } else {
-            try {
-                serUsuario.actualizarUsuario(user);
-                model.addAttribute("userForm", new Usuario());
-                model.addAttribute("listTab", "active");
-            } catch (DataIntegrityViolationException e) {
-                model.addAttribute("formErrorMessage", "Nombre de usuario no disponible");
-                model.addAttribute("userForm", user);
-                model.addAttribute("formTab", "active");
-                model.addAttribute("userList", serUsuario.obtenerUsuarios());
-                model.addAttribute("role", repRole.findAll());
-                model.addAttribute("editMode", true);
-                model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
-            } catch (Exception e) {
-                model.addAttribute("formErrorMessage", e.getMessage());
-                model.addAttribute("userForm", user);
-                model.addAttribute("formTab", "active");
-                model.addAttribute("userList", serUsuario.obtenerUsuarios());
-                model.addAttribute("role", repRole.findAll());
-                model.addAttribute("editMode", true);
-                model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
-            }
+        } catch( Exception e){
+            HashMap<String, String> response = new HashMap<String, String>();
+            response.put("message", "Error al buscar usuario");
+            return new ResponseEntity<HashMap<String,String>>(response ,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        model.addAttribute("userList", serUsuario.obtenerUsuarios());
-        model.addAttribute("role", repRole.findAll());
-        return "user-form/user-view";
     }
 
-    @GetMapping("/userForm/cancel")
-    public String cancelEditUser(ModelMap model) {
-        return "redirect:/userForm";
-    }
+    
 
-    @GetMapping("/deleteUser/{id}")
-    public String deleteUser(Model model, @PathVariable(name = "id") Long id) {
-        try {
-            serUsuario.eliminarUsuario(id);
-        } catch (UsernameOrIdNotFound e) {
-            model.addAttribute("listErrorMessage", e.getMessage());
-        }
-        return getUserForm(model);
-    }
 
-    @PostMapping("/editUser/changePassword")
-    public ResponseEntity<String> postEditUseChangePassword(@Valid @RequestBody ChangePasswordForm form,
-            Errors errors) {
-        try {
-            // If error, just return a 400 bad request, along with the error message
-            if (errors.hasErrors()) {
-                String result = errors.getAllErrors()
-                        .stream().map(x -> x.getDefaultMessage())
-                        .collect(Collectors.joining(""));
-
-                throw new Exception(result);
-            }
-            serUsuario.changePassword(form);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.ok("success");
-    }
 }
+    

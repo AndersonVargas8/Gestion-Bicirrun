@@ -2,18 +2,24 @@ package com.app.springapp.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.EstudianteDTO;
 import com.app.springapp.dto.TurnoDTO;
+import com.app.springapp.dto.UsuarioDTO;
+import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.entity.Usuario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
 import com.app.springapp.repository.CarreraRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.TurnoRepository.ITurnoDTO;
+
+import antlr.collections.List;
 
 public class Mapper {
 
@@ -147,6 +153,7 @@ public class Mapper {
         estudianteDTO.telefono = estudiante.getTelefono();
         return estudianteDTO;
     }
+
     public static Estudiante mapToEstudiante(CarreraRepository repCarrera,EstudianteDTO estudiantedto){
         Estudiante estudiante = new Estudiante();
         estudiante.setNombres(estudiantedto.nombres);
@@ -156,4 +163,26 @@ public class Mapper {
         estudiante.setCarrera(repCarrera.findById(new Long(estudiantedto.carrera)).get());
         return estudiante;
     }
+
+    public static UsuarioDTO mapToUsuarioDto(Usuario user){
+        UsuarioDTO userDto = new UsuarioDTO(
+            (int)user.getId(),
+            user.getUsername(),
+            user.getPassword(),
+            null,
+            user.getRol().getNombre(),
+            new ArrayList<>()
+        );
+        
+        ArrayList<Long> estaciones = new ArrayList<>();
+        for(Estacion estacion: user.getEstaciones()){
+            estaciones.add(estacion.getId());
+        }
+
+        userDto.setEstaciones(estaciones);
+        
+        return userDto;
+    }
+
+ 
 }

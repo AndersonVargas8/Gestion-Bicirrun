@@ -32,7 +32,7 @@
         <!-- Sidebar-->
         <div class="border-end bg-white" id="sidebar-wrapper">
             <div class="list-group list-group-flush">
-                <div class="d-flex justify-content-center mb-4">
+                <div class="d-flex justify-content-center mb-4" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <button type="button" class="btn btn-outline-success mb-2 crear w-75" data-bs-toggle="modal"
                         data-bs-target="#modalFormTurnos" onclick="resetForm()">
                         <span class="fa-solid fa-calendar-plus"></span>&nbsp;Nuevo Turno

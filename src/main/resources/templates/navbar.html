@@ -14,11 +14,11 @@
                     <div class="left" hidden></div>
                     <div class="right" hidden></div>
                 </div>
-                <li class="nav-item" id="item-inicio">
+                <li class="nav-item" id="item-inicio" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <a class="nav-link" th:href="@{/inicio}"><i class="fa fa-home"></i>Inicio</a>
                 </li>
 
-                <li class="nav-item" id="item-estudiantes">
+                <li class="nav-item" id="item-estudiantes" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <a class="nav-link" th:href="@{/estudiantes}"><i class="fa fa-address-book"></i>Estudiantes</a>
                 </li>
 
