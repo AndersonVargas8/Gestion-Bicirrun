@@ -45,7 +45,7 @@ public class TurnosController {
 
 
     @Autowired
-    IServicioTurno serTurno;
+    TurnoService serTurno;
     
     @Autowired
     EstudianteRepository repEstudiante;
@@ -56,7 +56,7 @@ public class TurnosController {
   
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
         model.addAttribute("horarios", serHorario.obtenerTodos());
-        model.addAttribute("estudiantes", repEstudiante.findAll());
+        model.addAttribute("estudiantes", repEstudiante.findAllIdAndNombres());
         model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   
@@ -226,7 +226,7 @@ public class TurnosController {
         TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
         
         model.addAttribute("horarios", serHorario.obtenerTodos());
-        model.addAttribute("estudiantes", repEstudiante.findAll());
+        model.addAttribute("estudiantes", repEstudiante.findAllIdAndNombres());
         model.addAttribute("estaciones", serEstacion.obtenerTodas());
         model.addAttribute("turnos",turnos);
         return "turnos/turnosEstaciones";   

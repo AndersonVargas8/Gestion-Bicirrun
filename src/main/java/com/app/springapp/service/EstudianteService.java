@@ -1,7 +1,9 @@
 package com.app.springapp.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,16 +27,16 @@ public class EstudianteService implements IServicioEstudiante {
 
     @Override
     public EstudianteDTO guardarEstudiante(Estudiante estudiante) throws CustomeFieldValidationException {
-        if (estudiante.getDocumento().equals(null) || estudiante.getDocumento().isEmpty()) {
+        if(estudiante.getDocumento().equals(null)|| estudiante.getDocumento().isEmpty() ){
             throw new CustomeFieldValidationException("Documento vacío");
         }
-        if (buscarPorDocumento(estudiante.getDocumento()) != null) {
+        if(buscarPorDocumento(estudiante.getDocumento())!=null){
             throw new CustomeFieldValidationException("El estudiante ya existe");
         }
-        if (estudiante.getApellidos() == null || estudiante.getApellidos().isEmpty()) {
+        if(estudiante.getApellidos()==null||estudiante.getApellidos().isEmpty()){
             throw new CustomeFieldValidationException("Apellido vacío");
         }
-        if (estudiante.getNombres() == null || estudiante.getNombres().isEmpty()) {
+        if(estudiante.getNombres()==null||estudiante.getNombres().isEmpty()){
             throw new CustomeFieldValidationException("Nombre vacío");
         }
         return Mapper.mapToEstudianteDTO(repEstudiante.save(estudiante));
@@ -80,7 +82,7 @@ public class EstudianteService implements IServicioEstudiante {
         Estudiante estudiante = null;
         Optional<Estudiante> opEstudiante = repEstudiante.findById(new Long(id));
 
-        if (opEstudiante.isPresent()) {
+        if(opEstudiante.isPresent()){
             estudiante = opEstudiante.get();
         }
         return estudiante;
@@ -95,6 +97,11 @@ public class EstudianteService implements IServicioEstudiante {
             estudiante = opEstudiante.get();
         }
         return estudiante;
+    }
+
+    public List<EstudianteDTO> obtenerIdYNombre() {
+        List<EstudianteDTO> resultado = repEstudiante.findAllIdAndNombres();
+        return resultado;
     }
 
 }

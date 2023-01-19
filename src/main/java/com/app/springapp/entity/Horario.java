@@ -1,19 +1,19 @@
 package com.app.springapp.entity;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * Esta clase permite manejar la persistenia de los horarios para los turnos 
@@ -32,8 +32,17 @@ public class Horario {
     @NotBlank
     private int valor_horas;
 
+    public enum Dia{
+        lunes, martes, miércoles, jueves, viernes;
+
+        public int getValue(){
+            return ordinal() + 1;
+        }
+    }
+
+    @Enumerated(EnumType.STRING)
     @ElementCollection
-    private Set<String> diasNoDisponibles = new HashSet<>();
+    private Set<Dia> diasNoDisponibles = new HashSet<>();
 
     public Horario() {
     }
@@ -44,7 +53,7 @@ public class Horario {
         this.valor_horas = valor_horas;
     }
 
-    public Horario(long id, String descripcion, int valor_horas, Set<String> diasNoDisponibles) {
+    public Horario(long id, String descripcion, int valor_horas, Set<Dia> diasNoDisponibles) {
         this.id = id;
         this.descripcion = descripcion;
         this.valor_horas = valor_horas;
@@ -104,7 +113,7 @@ public class Horario {
     /** 
      * @return Set<String>
      */
-    public Set<String> getDiasNoDisponibles() {
+    public Set<Dia> getDiasNoDisponibles() {
         return this.diasNoDisponibles;
     }
 
@@ -112,7 +121,7 @@ public class Horario {
     /** 
      * @param diasNoDisponibles
      */
-    public void setDiasNoDisponibles(Set<String> diasNoDisponibles) {
+    public void setDiasNoDisponibles(Set<Dia> diasNoDisponibles) {
         this.diasNoDisponibles = diasNoDisponibles;
     }
     
@@ -124,8 +133,9 @@ public class Horario {
     public boolean diaNoDisponible(String dia){
         dia = dia.toLowerCase();
 
-        return this.diasNoDisponibles.contains(dia);
+        return this.diasNoDisponibles.contains(Dia.valueOf(dia));
     }
+
     /** 
      * @param o
      * @return boolean
@@ -162,5 +172,5 @@ public class Horario {
             ", valor_horas='" + getValor_horas() + "'" +
             "}";
     }
-  
+
 }

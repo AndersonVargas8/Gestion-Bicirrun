@@ -1,6 +1,25 @@
 //Activar navbar
 document.querySelector("#item-turnos").classList.add("active");
 
+//Sidebar
+window.addEventListener('DOMContentLoaded', event => {
+
+  // Toggle the side navigation
+  const sidebarToggle = document.body.querySelector('#sidebarToggle');
+  if (sidebarToggle) {
+      // Uncomment Below to persist sidebar toggle between refreshes
+      // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+      //     document.body.classList.toggle('sb-sidenav-toggled');
+      // }
+      sidebarToggle.addEventListener('click', event => {
+          event.preventDefault();
+          document.body.classList.toggle('sb-sidenav-toggled');
+          localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+      });
+  }
+
+});
+
 //Activar datepicker
 let fecha = window.location.pathname.split("/");
 fecha = fecha[fecha.length - 1];
@@ -98,7 +117,8 @@ function diaAdelante() {
 
 function cambiarMes(adelantar = true) {
   let date = $("#calendario").data("datepicker").getDate();
-
+  let hours = date.getHours();
+  date.setHours(hours -5);
   let aumento = date.getUTCDay() == 5 ? 3 : 1;
   let decremento = date.getUTCDay() == 1 ? 3 : 1;
   if (adelantar) date.setDate(date.getDate() + aumento);

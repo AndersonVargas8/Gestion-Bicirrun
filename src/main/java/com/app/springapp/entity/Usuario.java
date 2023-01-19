@@ -1,7 +1,9 @@
 package com.app.springapp.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
@@ -26,18 +30,11 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "usu_nombre")
-    @NotBlank
-    private String nombre;
-
-    @Column(name = "usu_apellido")
-    private String apellido;
-
-    @Column(name = "usu_username", unique = true)
+    @Column(unique = true)
     @NotBlank
     private String username;
 
-    @Column(name = "usu_password")
+    @Column
     @NotBlank
     private String password;
 
@@ -45,18 +42,30 @@ public class Usuario implements Serializable {
     @JoinColumn(name = "usu_rol")
     private Rol rol;
 
+    @ManyToMany
+    @JoinTable(name = "usuarios_estaciones",
+    joinColumns = @JoinColumn(name = "usuario_id"),
+    inverseJoinColumns = @JoinColumn(name = "estacion_id"))
+    private Set<Estacion> estaciones;
+
     public Usuario() {
     }
 
-    public Usuario(String nombre, String apellido, String username, String password) {
+    public Usuario(String username, String password) {
         super();
-        this.nombre = nombre;
-        this.apellido = apellido;
         this.username = username;
         this.password = password;
     }
 
     
+    
+    public Usuario(@NotBlank String username, @NotBlank String password, Rol rol, Set<Estacion> categorias) {
+        this.username = username;
+        this.password = password;
+        this.rol = rol;
+        this.estaciones = categorias;
+    }
+
     /** 
      * @return long
      */
@@ -64,39 +73,6 @@ public class Usuario implements Serializable {
         return this.id;
     }
 
-    
-    /** 
-     * @return String
-     */
-    public String getNombre() {
-        return this.nombre;
-    }
-
-    
-    /** 
-     * @param nombre
-     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    
-    /** 
-     * @return String
-     */
-    public String getApellido() {
-        return this.apellido;
-    }
-
-    
-    /** 
-     * @param apellido
-     */
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    
     /** 
      * @return String
      */
@@ -145,6 +121,27 @@ public class Usuario implements Serializable {
     }
 
     
+    
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Set<Estacion> getEstaciones() {
+        return estaciones;
+    }
+
+    public void setEstaciones(Set<Estacion> estaciones) {
+        this.estaciones = estaciones;
+    }
+
+    public void addEstacion(Estacion estacion){
+        if(this.estaciones == null){
+            this.estaciones = new HashSet<>();
+        }
+
+        this.estaciones.add(estacion);
+    }
+
     /** 
      * @return String
      */
@@ -152,8 +149,6 @@ public class Usuario implements Serializable {
     public String toString() {
         return "{" +
                 " id = '" + getId() + "'" +
-                ", nombre = '" + getNombre() + "'" +
-                ", apellido = '" + getApellido() + "'" +
                 ", username = '" + getUsername() + "'" +
                 ", password = '" + getPassword() + "'" +
                 ", roles  = '" + getRol() + "'" +
@@ -173,8 +168,7 @@ public class Usuario implements Serializable {
             return false;
         }
         Usuario usuario = (Usuario) o;
-        return id == usuario.id && Objects.equals(nombre, usuario.nombre) && Objects.equals(apellido, usuario.apellido)
-                && Objects.equals(username, usuario.username) && Objects.equals(rol, usuario.rol);
+        return id == usuario.id && Objects.equals(username, usuario.username) && Objects.equals(rol, usuario.rol);
     }
 
     
@@ -183,6 +177,6 @@ public class Usuario implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, nombre, apellido, username, rol);
+        return Objects.hash(id, username, rol);
     }
 }
