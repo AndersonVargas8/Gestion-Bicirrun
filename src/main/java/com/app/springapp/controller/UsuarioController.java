@@ -78,7 +78,26 @@ public class UsuarioController {
         }
     }
 
-    
+    @PatchMapping(value = "/user/{idUser}", consumes = "application/json")
+    public ResponseEntity patchUser(@PathVariable int idUser, @RequestBody UsuarioDTO user){
+        HashMap<String, String> response = new HashMap<String, String>();
+        try {
+            user.setId(idUser);
+            user = serUsuario.actualizarUsuario(user);
+            return new ResponseEntity<UsuarioDTO>(user, HttpStatus.CREATED);
+
+        } catch (UsernameOrIdNotFound e) {
+            response.put("message", e.getMessage());
+            return new ResponseEntity<HashMap<String,String>>(response, HttpStatus.NOT_FOUND);
+        } catch (CustomeFieldValidationException e) {
+            response.put("message", e.getMessage());
+            return new ResponseEntity<HashMap<String,String>>(response, HttpStatus.BAD_REQUEST);
+        }catch (Exception e) {
+            response.put("message", "Error al actualizar usuario");
+            return new ResponseEntity<HashMap<String,String>>(response ,HttpStatus.INTERNAL_SERVER_ERROR);
+        
+        }
+    }
 
 
 }

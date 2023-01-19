@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(resources).permitAll()
 
-                .antMatchers("/", "/login", "/turnos/horariosDisponibles/{fecha}", "/user/** ")
+                .antMatchers("/", "/login", "/turnos/horariosDisponibles/{fecha}", "/user/**")
  
 
                 .permitAll()
