@@ -45,42 +45,52 @@ public class EstudianteController {
 
     @PostMapping
     public ResponseEntity crearEstudiante(@RequestBody EstudianteDTO estudiante) {
-        try {            
-            estudiante = serEstudiante.guardarEstudiante(Mapper.mapToEstudiante(repCarrera, estudiante));           
-        }catch (CustomeFieldValidationException e){
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        try {
+            estudiante = serEstudiante.guardarEstudiante(Mapper.mapToEstudiante(repCarrera, estudiante));
+        } catch (CustomeFieldValidationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>("Error en el registro",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Error en el registro", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<EstudianteDTO>(estudiante,HttpStatus.CREATED);
+        return new ResponseEntity<EstudianteDTO>(estudiante, HttpStatus.CREATED);
     }
-    @PostMapping( "/eliminarEstudiante")
+
+    @PostMapping("/eliminarEstudiante")
     public void eliminarEstudiante(@RequestParam int id) {
-        serEstudiante.eliminarEstudiante(id); 
+        serEstudiante.eliminarEstudiante(id);
     }
-    @PutMapping("/{id}")
-    public String editarEstudiante(@RequestBody EstudianteDTO estudiante){
-        
-        return "/estudiantes";
+
+    @PostMapping("/{id}")
+    public ResponseEntity editarEstudiante(@PathVariable Long id,@RequestBody EstudianteDTO estudianteDto){
+        EstudianteDTO estudiante ;
+        try{
+             estudiante =  serEstudiante.editarEstudiante(id, estudianteDto);
+        }catch(CustomeFieldValidationException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return new ResponseEntity<String>("Error al editar", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<EstudianteDTO>(estudiante, HttpStatus.CREATED);
     }
 
     @GetMapping("/horarioEstudiante/{id}")
-    public String horarioEstudiante(Model model,@PathVariable Long id){
+    public String horarioEstudiante(Model model, @PathVariable Long id) {
         Estudiante estudiante = serEstudiante.buscarPorId(id);
         Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy");
-        model.addAttribute("turnos",serTurno.obtenerPorEstudiante(estudiante));
-        model.addAttribute("anio",formatter.format(date));
-        model.addAttribute("estudiante",estudiante);
-        model.addAttribute("listTab","estudiantes");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
+        model.addAttribute("turnos", serTurno.obtenerPorEstudiante(estudiante));
+        model.addAttribute("anio", formatter.format(date));
+        model.addAttribute("estudiante", estudiante);
+        model.addAttribute("listTab", "estudiantes");
         return "estudiantes/horarioEstudiante";
     }
 
     @PostMapping("/TablaEstudiantes")
     public String tabla(Model model) {
-        model.addAttribute("estudiantes",serEstudiante.obtenerTodos());
+        model.addAttribute("estudiantes", serEstudiante.obtenerTodos());
         return "estudiantes/tablaEstudiantes::TablaFragment";
     }
-    
+
 }
