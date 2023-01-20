@@ -63,7 +63,7 @@ public class EstudianteController {
         serEstudiante.eliminarEstudiante(id);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity editarEstudiante(@PathVariable Long id,@RequestBody EstudianteDTO estudianteDto){
         EstudianteDTO estudiante ;
         try{
