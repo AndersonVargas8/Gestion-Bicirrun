@@ -1,7 +1,9 @@
 package com.app.springapp.controller;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +25,13 @@ import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.dto.TurnosEstaciones;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
+import com.app.springapp.entity.Usuario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioHorario;
-import com.app.springapp.interfacesServicios.IServicioTurno;
 import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.service.CupoService;
 import com.app.springapp.service.TurnoService;
+import com.app.springapp.service.UsuarioService;
 import com.app.springapp.util.Mapper;
 
 @Controller
@@ -43,111 +46,120 @@ public class TurnosController {
     @Autowired
     CupoService serCupo;
 
-
     @Autowired
     TurnoService serTurno;
-    
+
+    @Autowired
+    UsuarioService serUsuario;
+
     @Autowired
     EstudianteRepository repEstudiante;
 
     @GetMapping
-    public String getTurnosEstaciones(ModelMap model){
-        LocalDate fechaLista = LocalDate.now();
-  
-        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
-        model.addAttribute("horarios", serHorario.obtenerTodos());
-        model.addAttribute("estudiantes", repEstudiante.findAllIdAndNombres());
-        model.addAttribute("estaciones", serEstacion.obtenerTodas());
-        model.addAttribute("turnos",turnos);
-        return "turnos/turnosEstaciones";   
+    public String getTurnosEstaciones(ModelMap model) {
+        LocalDate fecha = LocalDate.now();
+
+        try {
+            Usuario loggedUser = serUsuario.getLoggedUser();
+
+            TurnosEstaciones turnos = serTurno.obtenerTurnosEstaciones(loggedUser, fecha);
+            model.addAttribute("horarios", serHorario.obtenerTodos());
+            model.addAttribute("estudiantes", repEstudiante.findAllIdAndNombres());
+            model.addAttribute("estaciones", serEstacion.obtenerTodas());
+            model.addAttribute("turnos", turnos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "turnos/turnosEstaciones";
     }
 
     /**
      * Se construye un calendario para la fecha dada con los turnos programados
+     * 
      * @param mes
      * @param anio
      * @param model
      * @return Fragmento que contiene el calendario renderizado
      */
     @GetMapping("/calendarioTurnos/{mes}/{anio}")
-    public String calendarioTurnos(@PathVariable int mes, @PathVariable int anio, ModelMap model){
-        model.addAttribute("calendario",serTurno.getCalendario(mes, anio));
+    public String calendarioTurnos(@PathVariable int mes, @PathVariable int anio, ModelMap model) {
+        model.addAttribute("calendario", serTurno.getCalendario(mes, anio));
         return "turnos/calendario::contenido-calendar";
     }
 
-    
     /**
      * Se crea un nuevo turno con los parámetros especificados en el objeto turno.
+     * 
      * @param turno Debe contener:
-     * - fecha: String en formato "dd-mm-aaaa" (dd-mm-yyyy) ej: 31-12-1999
-     * - observaciones (No obligatorio): String
-     * - idEstacion: int
-     * - idEstado (No obligatorio): int
-     * - idEstudiante: int
-     * - idHorario: int
+     *              - fecha: String en formato "dd-mm-aaaa" (dd-mm-yyyy) ej:
+     *              31-12-1999
+     *              - observaciones (No obligatorio): String
+     *              - idEstacion: int
+     *              - idEstado (No obligatorio): int
+     *              - idEstudiante: int
+     *              - idHorario: int
      * @param model
-     * @return 
+     * @return
      */
     @PostMapping(consumes = "application/json")
     public ResponseEntity crearTurno(@RequestBody TurnoDTO turnoDTO) {
-        try{
-             turnoDTO = serTurno.guardarTurno(turnoDTO);
-        }catch(CustomeFieldValidationException e){
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
+        try {
+            turnoDTO = serTurno.guardarTurno(turnoDTO);
+        } catch (CustomeFieldValidationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        return new ResponseEntity<TurnoDTO>(turnoDTO,HttpStatus.CREATED);
+
+        return new ResponseEntity<TurnoDTO>(turnoDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity eliminarTurno(@PathVariable int id){
-        try{
+    public ResponseEntity eliminarTurno(@PathVariable int id) {
+        try {
             serTurno.eliminarTurno(id);
-        }catch(CustomeFieldValidationException e){
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
+        } catch (CustomeFieldValidationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity editarTurno(@PathVariable int id, @RequestBody TurnoDTO turnoDTO){
-        try{
+    public ResponseEntity editarTurno(@PathVariable int id, @RequestBody TurnoDTO turnoDTO) {
+        try {
             turnoDTO = serTurno.editarTurno(id, turnoDTO);
-        }catch(CustomeFieldValidationException e){
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
+        } catch (CustomeFieldValidationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<TurnoDTO>(turnoDTO, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity parcharTurno(@PathVariable int id, @RequestBody TurnoDTO turnoDTO){
-        try{
+    public ResponseEntity parcharTurno(@PathVariable int id, @RequestBody TurnoDTO turnoDTO) {
+        try {
             turnoDTO = serTurno.parcharTurno(id, turnoDTO);
-        }catch(CustomeFieldValidationException e){
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
+        } catch (CustomeFieldValidationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<TurnoDTO>(turnoDTO, HttpStatus.OK);
     }
 
-    
     @GetMapping("/diasDeshabilitados")
     @ResponseBody
-    public TurnoService.DiasDeshabilitados getDiasDeshabilitados(){
+    public TurnoService.DiasDeshabilitados getDiasDeshabilitados() {
         TurnoService.DiasDeshabilitados diasDeshabilitados = serTurno.obtenerDiasDeshabilitados();
 
         return diasDeshabilitados;
@@ -155,7 +167,7 @@ public class TurnosController {
 
     @GetMapping("/diasDeshabilitados/{idHorario}")
     @ResponseBody
-    public TurnoService.DiasDeshabilitados getDiasDeshabilitadosPorHorario(@PathVariable int idHorario){
+    public TurnoService.DiasDeshabilitados getDiasDeshabilitadosPorHorario(@PathVariable int idHorario) {
         TurnoService.DiasDeshabilitados diasDeshabilitados = serTurno.obtenerDiasDeshabilitados(idHorario);
 
         return diasDeshabilitados;
@@ -168,15 +180,15 @@ public class TurnosController {
      */
     @GetMapping("/horariosDisponibles/{fecha}")
     @ResponseBody
-    public List<Horario> getHorariosDisponibles(@PathVariable String fecha){
-        if(Mapper.esFechaValida(fecha)){
+    public List<Horario> getHorariosDisponibles(@PathVariable String fecha) {
+        if (Mapper.esFechaValida(fecha)) {
             String[] fechaFormat = fecha.split("-");
             int dia = Integer.parseInt(fechaFormat[0]);
             int mes = Integer.parseInt(fechaFormat[1]);
             int anio = Integer.parseInt(fechaFormat[2]);
-            List<Horario> horarios = serHorario.obtenerDisponiblesPorFecha(LocalDate.of(anio,mes,dia));
+            List<Horario> horarios = serHorario.obtenerDisponiblesPorFecha(LocalDate.of(anio, mes, dia));
             return horarios;
-        }else{
+        } else {
             throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
         }
     }
@@ -188,66 +200,66 @@ public class TurnosController {
      */
     @GetMapping("/estacionesDisponibles/{fecha}/{idHorario}")
     @ResponseBody
-    public List<Estacion> getEstacionesDisponibles(@PathVariable String fecha, @PathVariable int idHorario){
+    public List<Estacion> getEstacionesDisponibles(@PathVariable String fecha, @PathVariable int idHorario) {
         LocalDate fechaLista = null;
         Horario horario = null;
-        if(Mapper.esFechaValida(fecha)){
+        if (Mapper.esFechaValida(fecha)) {
             String[] fechaFormat = fecha.split("-");
             int dia = Integer.parseInt(fechaFormat[0]);
             int mes = Integer.parseInt(fechaFormat[1]);
             int anio = Integer.parseInt(fechaFormat[2]);
-            fechaLista = LocalDate.of(anio,mes,dia);
-        }else{
+            fechaLista = LocalDate.of(anio, mes, dia);
+        } else {
             throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
         }
-        try{
+        try {
             horario = serHorario.buscarPorId(idHorario);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("No se encontró el horario con el id proporcionado");
         }
 
-        List<Estacion> estaciones = serEstacion.obtenerDisponiblesPorFechaYHorario(fechaLista,horario);
+        List<Estacion> estaciones = serEstacion.obtenerDisponiblesPorFechaYHorario(fechaLista, horario);
         return estaciones;
     }
 
     @GetMapping("/dia/{fecha}")
-    public String getDiaTurnosEstaciones(@PathVariable String fecha, ModelMap model){
+    public String getDiaTurnosEstaciones(@PathVariable String fecha, ModelMap model) throws Exception {
         LocalDate fechaLista = null;
-        if(!Mapper.esFechaValida(fecha)){
+        if (!Mapper.esFechaValida(fecha)) {
             throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
-        }else{
+        } else {
             String[] fechaFormat = fecha.split("-");
             int dia = Integer.parseInt(fechaFormat[0]);
             int mes = Integer.parseInt(fechaFormat[1]);
             int anio = Integer.parseInt(fechaFormat[2]);
-            fechaLista = LocalDate.of(anio,mes,dia);
+            fechaLista = LocalDate.of(anio, mes, dia);
         }
 
-        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
-        
+        TurnosEstaciones turnos = serTurno.obtenerTurnosEstaciones(serUsuario.getLoggedUser(),fechaLista);
+
         model.addAttribute("horarios", serHorario.obtenerTodos());
         model.addAttribute("estudiantes", repEstudiante.findAllIdAndNombres());
         model.addAttribute("estaciones", serEstacion.obtenerTodas());
-        model.addAttribute("turnos",turnos);
-        return "turnos/turnosEstaciones";   
+        model.addAttribute("turnos", turnos);
+        return "turnos/turnosEstaciones";
     }
 
     @GetMapping("/diaEstaciones/{fecha}")
-    public String getTurnosEstaciones(@PathVariable String fecha, ModelMap model){
+    public String getTurnosEstaciones(@PathVariable String fecha, ModelMap model) throws Exception {
         LocalDate fechaLista = null;
-        if(!Mapper.esFechaValida(fecha)){
+        if (!Mapper.esFechaValida(fecha)) {
             throw new IllegalArgumentException("La fecha no está en el formato correcto. Debe ser 'dd-mm-aaaa'");
-        }else{
+        } else {
             String[] fechaFormat = fecha.split("-");
             int dia = Integer.parseInt(fechaFormat[0]);
             int mes = Integer.parseInt(fechaFormat[1]);
             int anio = Integer.parseInt(fechaFormat[2]);
-            fechaLista = LocalDate.of(anio,mes,dia);
+            fechaLista = LocalDate.of(anio, mes, dia);
         }
 
-        TurnosEstaciones turnos =  serTurno.obtenerTurnosEstaciones(fechaLista);
-        
-        model.addAttribute("turnos",turnos);
-        return "turnos/turnosEstaciones::contenido";   
+        TurnosEstaciones turnos = serTurno.obtenerTurnosEstaciones(serUsuario.getLoggedUser(), fechaLista);
+
+        model.addAttribute("turnos", turnos);
+        return "turnos/turnosEstaciones::contenido";
     }
 }
