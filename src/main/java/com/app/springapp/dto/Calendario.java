@@ -86,25 +86,25 @@ public class Calendario {
 
         switch (numeroDia) {
             case 1:
-                nombre = "Lunes";
+                nombre = "lunes";
                 break;
             case 2:
-                nombre = "Martes";
+                nombre = "martes";
                 break;
             case 3:
-                nombre = "Miércoles";
+                nombre = "miércoles";
                 break;
             case 4:
-                nombre = "Jueves";
+                nombre = "jueves";
                 break;
             case 5:
-                nombre = "Viernes";
+                nombre = "viernes";
                 break;
             case 6:
-                nombre = "Sábado";
+                nombre = "sábado";
                 break;
             case 7:
-                nombre = "Domingo";
+                nombre = "domingo";
                 break;
         }
 

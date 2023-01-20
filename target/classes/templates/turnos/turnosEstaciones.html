@@ -105,7 +105,7 @@
                                                             th:onclick="cambiarEstado([[${turno.id}]],[[${turno.idEstado}]])">
                                                             Estado</div>
                                                     </div>
-                                                    <div class="acciones">
+                                                    <div class="acciones" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                                                         <i class="fa-solid fa-trash" title="Eliminar turno"
                                                             th:onclick="eliminarTurno([[${turno.id}]])"></i>
                                                         <i class="fa-solid fa-pen-to-square" title="Editar turno"
@@ -129,7 +129,7 @@
             </div>
 
             <!--Formulario-->
-            <div class="modal fade" tabindex="-1" role="dialog" id="modalFormTurnos">
+            <div class="modal fade" tabindex="-1" role="dialog" id="modalFormTurnos" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                 <div class="modal-dialog modal-lg d-flex justify-content-center" role="document">
                     <div class="modal-content w-75">
                         <div class="modal-header modal-form-header">
@@ -169,7 +169,7 @@
             <div th:replace="confirmarEliminacion.html"></div>
 
             <!--DATEPICKER-->
-            <div th:replace="includes.html::datepicker"></div>
+            <div th:replace="includes.html::datepicker" ></div>
 
             <!--DSELECT-->
             <div th:replace="includes.html::dselect"></div>

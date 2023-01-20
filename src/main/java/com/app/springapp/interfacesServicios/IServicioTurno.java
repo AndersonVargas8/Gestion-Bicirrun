@@ -11,6 +11,7 @@ import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.entity.Usuario;
 
 public interface IServicioTurno {
     public List<Turno> obtenerTodos();
@@ -62,5 +63,5 @@ public interface IServicioTurno {
      * @return objeto TurnosEstaciones que contiene una lista de estaciones, cada una con una lista de horarios
      * y cada lista de horarios con la lista de turnos.
      */
-    public TurnosEstaciones obtenerTurnosEstaciones(LocalDate fecha);
+    public TurnosEstaciones obtenerTurnosEstaciones(Usuario loggedUser, LocalDate fecha);
 }

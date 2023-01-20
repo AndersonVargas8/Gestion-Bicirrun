@@ -26,6 +26,7 @@ import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Horario.Dia;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.entity.Usuario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
@@ -562,7 +563,14 @@ public class TurnoService implements IServicioTurno {
     }
 
     @Override
-    public TurnosEstaciones obtenerTurnosEstaciones(LocalDate fecha) {
+    public TurnosEstaciones obtenerTurnosEstaciones(Usuario loggedUser, LocalDate fecha) {
+        boolean isAdmin = loggedUser.getRol().getNombre().equals("ADMIN");
+        // Se obtiene las estaciones permitidas
+        Set<Long> idEstaciones = new HashSet<>();
+        for(Estacion estacion : loggedUser.getEstaciones()){
+            idEstaciones.add(estacion.getId());
+        }
+
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         String fechaFormat = dia + "-" + mes + "-" + anio;
         TurnosEstaciones turnosEstaciones = new TurnosEstaciones(fechaFormat);
@@ -592,6 +600,8 @@ public class TurnoService implements IServicioTurno {
         }
 
         for (TurnoDTO turno : turnos) {
+            if(!isAdmin && !idEstaciones.contains(new Long(turno.idEstacion)))
+                continue;
             turnosEstaciones.agregarTurno(turno);
             long idHorario = turno.idHorario;
 
@@ -602,6 +612,8 @@ public class TurnoService implements IServicioTurno {
         }
         
         for(Estacion estacion: estaciones){
+            if(!isAdmin && !idEstaciones.contains(estacion.getId()))
+                continue;
             for(Horario horario: horarios){
                 long idHorario = horario.getId();
                 if(horariosNoDisponibles.contains(idHorario))
