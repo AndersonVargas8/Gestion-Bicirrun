@@ -143,14 +143,14 @@ public class UsuarioService {
         return Mapper.mapToUsuarioDto(user);
     }
 
-    /*
-     * @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-     * public void eliminarUsuario(Long id) throws UsernameOrIdNotFound {
-     * Usuario user = obtenerUsuarioPorId(id);
-     * 
-     * repUser.delete(user);
-     * }
-     */
+    
+     //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+     public void eliminarUsuario(Long id) throws UsernameOrIdNotFound {
+        Usuario user = repUser.findById(id)
+        .orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe"));;
+        repUser.delete(user);
+     }
+     
 
     public boolean isLoggedUserADMIN() {
         return loggedUserHasRole("ROLE_ADMIN");
