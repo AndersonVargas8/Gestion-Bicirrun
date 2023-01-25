@@ -1,0 +1,84 @@
+.card.table-card {
+    background-color: #eeeeee;
+    padding: 10px;
+}
+
+.card.table-card input,
+select {
+    background-color: white !important;
+}
+
+.dataTable {
+    border: 2px solid gray !important;
+    background-color: gray;
+    border-collapse: collapse;
+    border-radius: 7px;
+}
+
+.dataTable .odd {
+    background-color: #f7f6f6df !important;
+}
+
+.dataTable thead {
+    background-color: steelblue;
+    color: white;
+}
+
+.dataTable thead th:first-child {
+    border-radius: 7px 0 0 0;
+}
+
+.dataTable thead th:last-child {
+    border-radius: 0 7px 0 0;
+}
+
+.dataTable th,
+td {
+    vertical-align: middle !important;
+    text-align: center;
+}
+
+.dataTable th {
+    border: 1px solid white !important;
+}
+
+.dataTable td {
+    border: 1px solid #e9e8e8 !important;
+    border-bottom: 1px solid gray !important;
+}
+
+.dataTable tr td:first-child {
+    border-left: none !important;
+}
+
+.dataTable tr:last-child td {
+    border-bottom: none !important;
+}
+
+.dataTable tr:last-child td:first-child {
+    border-radius: 0 0 0 7px;
+}
+
+.dataTable tr:last-child td:last-child {
+    border-radius: 0 0 7px 0;
+}
+
+.paginate_button.current {
+    background: none !important;
+    background-color: steelblue !important;
+    color: white !important;
+}
+
+.paginate_button.current:hover {
+    filter: brightness(90%) !important;
+}
+
+.paginate_button:hover:not(.paginate_button.disabled) {
+    background: none !important;
+    background-color: rgb(37, 81, 117) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: white !important;
+}

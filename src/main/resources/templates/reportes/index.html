@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Gestión Bicirrun</title>
+
+    <link rel="icon" type="image/x-icon" href="/img/favicon.png" th:href="@{img/favicon.png}" />
+
+    <!--JQUERY-->
+    <div th:replace="includes.html::jquery"></div>
+
+    <!--BOOTSTRAP-->
+    <div th:replace="includes.html::bootstrap"></div>
+
+    <!--FONT AWESOME-->
+    <div th:replace="includes.html::fontawesome"></div>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="../../static/css/reportes.css" th:href="@{/css/reportes.css}" />
+
+</head>
+
+
+<body>
+    <!--Navbar-->
+    <div th:include="navbar.html" th:remove="tag"></div>
+
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="list-group list-group-flush">
+                <div class="justify-content-center mb-4">
+                    <!--Fecha inicial-->
+                    <div class="form-group justify-content-center">
+                        <label class="col-form-label form-control-label"><b>Fecha inicial</b></label>
+                        <div class="">
+                            <div class="input-group">
+                                <input type="text" id="selInitDate" class="form-select
+                                    w-85 selectCalendar" placeholder="Seleccione"
+                                    required autocomplete="off">
+                                <span class="input-group-text btn-calendar-form"
+                                    id="spanCalendar"
+                                    onclick="$('#selInitDate').datepicker('show');
+                                    document.querySelector('#selInitDate').focus()">
+                                    <i class="fa-solid fa-calendar-day w-100"
+                                        style="margin:0;"></i></span>
+                                <span class="input-group-text"
+                                    id="loadingFechas" style="display: none;">
+                                    <i class="fa-solid fa-sync fa-spin"
+                                        style="margin:0;"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Fecha final-->
+                    <div class="form-group justify-content-center mb-4">
+                        <label class="col-form-label form-control-label"><b>Fecha final</b></label>
+                        <div class="">
+                            <div class="input-group">
+                                <input type="text" id="selFinalDate" class="form-select
+                                    w-85 selectCalendar" placeholder="Seleccione"
+                                    required autocomplete="off">
+                                <span class="input-group-text btn-calendar-form"
+                                    id="spanCalendar"
+                                    onclick="$('#selFinalDate').datepicker('show');
+                                    document.querySelector('#selFinalDate').focus()">
+                                    <i class="fa-solid fa-calendar-day w-100"
+                                        style="margin:0;"></i></span>
+                                <span class="input-group-text"
+                                    id="loadingFechas" style="display: none;">
+                                    <i class="fa-solid fa-sync fa-spin"
+                                        style="margin:0;"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Datos a mostrar-->                  
+                    <hr>
+                    <label><b>Datos a mostrar</b></label>
+                    <div class="form-group ml-4">
+                        <input class="check-datos form-check-input" type="checkbox" id="turnosCumplidos" checked> 
+                        <label class="form-check-label ml-1" for="turnosCumplidos">Turnos cumplidos</label>
+                    </div>
+                    <div class="form-group ml-4">
+                        <input class="check-datos form-check-input" type="checkbox" id="turnosIncumplidos" checked> 
+                        <label class="form-check-label ml-1" for="turnosIncumplidos">Turnos Incumplidos</label>
+                    </div>
+
+                    <!--Aplicar filtro-->
+                    <hr>
+                    <div id="errorMessage">
+                    </div>
+                    <div class="form-group d-flex justify-content-center">
+                        <button id="aplicar-filtros" class="btn btn-filter" type="button">
+                            <i class="fa fa-sync"></i>Aplicar filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper">
+            <!-- Top navigation-->
+            <div class="navbar navbar-expand-lg navbar-light" id="cabecera">
+                <div class="container-fluid">
+                    <button id="sidebarToggle" class="navbar-toggler p-2" type="button">
+                        <i class="fa fa-filter"></i>Filtrar
+                    </button>
+                </div>
+            </div>
+            <!-- Page content-->
+            <div class="container-fluid mb-2 mt-2">
+                <div class="d-flex justify-content-center mb-4">
+                    <h4  id="report-title">Reporte de todo el tiempo</h4>
+                </div>
+
+                <div class="card table-card table-responsive" hidden id="reports-table-card">
+                    <div th:fragment="contenido" id="contenido">
+                        <table class="table table-striped" id="reports-table">
+                            <thead>
+                                <th>Documento</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Turnos programados</th>
+                                <th>Horas programadas</th>
+                                <th>Turnos cumplidos</th>
+                                <th>Horas cumplidas</th>
+                                <th>Turnos incumplidos</th>
+                                <th>Horas incumplidas</th>
+                            </thead>
+                            <tbody>
+                                <div th:each="reporte: ${reportes}" th:remove="tag">
+                                    <tr>
+                                        <td th:text="${reporte.documento}"></td>
+                                        <td th:text="${reporte.nombres}"></td>
+                                        <td th:text="${reporte.apellidos}"></td>
+                                        <td th:text="${reporte.turnosProgramados}"></td>
+                                        <td th:text="${reporte.horasProgramadas}"></td>
+                                        <td th:text="${reporte.turnosCumplidos}"></td>
+                                        <td th:text="${reporte.horasCumplidas}"></td>
+                                        <td th:text="${reporte.turnosIncumplidos}"></td>
+                                        <td th:text="${reporte.horasIncumplidas}"></td>
+                                    </tr>
+                                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--DATEPICKER-->
+    <div th:replace="includes.html::datepicker"></div>
+
+    <!--TOASTR-->
+    <div th:replace="includes.html::toastr"></div>
+
+    <!--DATATABLE-->
+    <div th:replace="includes.html::datatable"></div>
+
+    <!--JAVASCRIPT-->
+    <script src="../../static/javascript/reportes.js" th:src="@{/javascript/reportes.js}"></script>
+</body>
+
+</html>

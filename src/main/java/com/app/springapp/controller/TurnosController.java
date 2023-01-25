@@ -1,9 +1,9 @@
 package com.app.springapp.controller;
 
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.springapp.Exception.CustomeFieldValidationException;
+import com.app.springapp.dto.ReporteTurnosEstudiante;
 import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.dto.TurnosEstaciones;
 import com.app.springapp.entity.Estacion;
@@ -261,5 +262,26 @@ public class TurnosController {
 
         model.addAttribute("turnos", turnos);
         return "turnos/turnosEstaciones::contenido";
+    }
+
+    /**
+     * @param initDateStr String in the format "yyyy-mm-dd" such as "2007-12-30"
+     * @param finalDateStr String in the format "yyyy-mm-dd" such as "2007-12-30"
+     */
+    @GetMapping("/reporte/programados/{initDateStr}/{finalDateStr}")
+    public ResponseEntity reporteProgramados(@PathVariable String initDateStr, @PathVariable String finalDateStr){
+        HashMap<String, String> response = new HashMap<>();
+        try{
+            LocalDate initDate = LocalDate.parse(initDateStr);
+            LocalDate finalDate = LocalDate.parse(finalDateStr);
+
+            return new ResponseEntity<List<ReporteTurnosEstudiante>>(
+                serTurno.getReporteProgramados(initDate, finalDate),
+                HttpStatus.OK
+            );
+        } catch(DateTimeParseException e){
+            response.put("message", "El formato de las fechas no es adecuado");
+            return new ResponseEntity<HashMap<String, String>>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 }

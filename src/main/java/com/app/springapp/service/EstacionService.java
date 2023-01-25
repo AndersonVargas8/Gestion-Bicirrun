@@ -15,7 +15,6 @@ import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioCupo;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
-import com.app.springapp.interfacesServicios.IServicioTurno;
 import com.app.springapp.repository.CupoRepository;
 import com.app.springapp.repository.EstacionRepository;
 import com.app.springapp.repository.HorarioRepository;
@@ -31,7 +30,7 @@ public class EstacionService implements IServicioEstacion {
     IServicioCupo serCupo;
 
     @Autowired
-    IServicioTurno serTurno;
+    TurnoService serTurno;
 
     @Autowired
     CupoRepository repCupo;

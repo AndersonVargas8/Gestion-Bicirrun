@@ -26,6 +26,10 @@
                     <a class="nav-link" th:href="@{/turnos}"><i class="fa-regular fa-calendar-days"></i>Turnos</a>
                 </li>
 
+                <li class="nav-item" id="item-reportes" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a class="nav-link" th:href="@{/reportes}"><i class="fa fa-file-invoice"></i>Reportes</a>
+                </li>
+
                 <!--<li class="nav-item" id="item-acerca-de">
                     <a class="nav-link" href="javascript:void(0);"><i class="fa fa-info"></i>Acerca de</a>
                 </li>-->

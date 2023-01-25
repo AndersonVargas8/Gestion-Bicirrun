@@ -620,6 +620,7 @@ document.querySelector("#selectHorarioForm").addEventListener("change", () => {
     sincronizarEstaciones(fechaFormat, horario);
   }
 });
+
 //GUARDAR TURNO
 document.querySelector("#turnosForm").addEventListener("submit", (event) => {
   document.querySelector("#mensajeError").style.display = "none";

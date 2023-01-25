@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.app.springapp.dto.Calendario;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioHorario;
-import com.app.springapp.interfacesServicios.IServicioTurno;
 import com.app.springapp.repository.CupoRepository;
 import com.app.springapp.repository.HorarioRepository;
 import com.app.springapp.repository.TurnoRepository;
@@ -26,7 +25,7 @@ public class HorarioService implements IServicioHorario{
     HorarioRepository repHorario;
 
     @Autowired
-    IServicioTurno serTurno;
+    TurnoService serTurno;
 
     @Autowired
     CupoRepository repCupo;
