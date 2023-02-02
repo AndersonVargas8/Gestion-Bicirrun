@@ -16,9 +16,9 @@
                 <td th:text="${estudiante.carrera.descripcion}"></td>
                 <td th:text="${estudiante.telefono}"></td>
                 <td >
-                    <button  type="button" class="btn btn-secondary m-1 text-white fa fa-calendar-check" th:onclick="horario([[${estudiante}]])"></button>
-                    <button  type="button" class="btn btn-info m-1 text-white fa fa-pencil " th:onclick="editarForm([[${estudiante}]])"></button>  
-                    <button  type="button" class="btn btn-danger m-1 text-white fa fa-trash" ></button>
+                    <button title="Ver horarios programados" type="button" class="btn btn-secondary m-1 text-white fa fa-calendar-check" th:onclick="horario([[${estudiante}]])"></button>
+                    <button title="Editar estudiante"  type="button" class="btn btn-info m-1 text-white fa fa-pencil " th:onclick="editarForm([[${estudiante}]])"></button>  
+                    <button title="Eliminar estudiante" type="button" class="btn btn-danger m-1 text-white fa fa-trash" ></button>
                 </td>
                 
             </tr>

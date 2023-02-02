@@ -117,10 +117,8 @@ function diaAdelante() {
 
 function cambiarMes(adelantar = true) {
   let date = $("#calendario").data("datepicker").getDate();
-  let hours = date.getHours();
-  date.setHours(hours -5);
-  let aumento = date.getUTCDay() == 5 ? 3 : 1;
-  let decremento = date.getUTCDay() == 1 ? 3 : 1;
+  let aumento = date.getDay() == 5 ? 3 : 1;
+  let decremento = date.getDay() == 1 ? 3 : 1;
   if (adelantar) date.setDate(date.getDate() + aumento);
   else date.setDate(date.getDate() - decremento);
 
@@ -620,7 +618,6 @@ document.querySelector("#selectHorarioForm").addEventListener("change", () => {
     sincronizarEstaciones(fechaFormat, horario);
   }
 });
-
 //GUARDAR TURNO
 document.querySelector("#turnosForm").addEventListener("submit", (event) => {
   document.querySelector("#mensajeError").style.display = "none";

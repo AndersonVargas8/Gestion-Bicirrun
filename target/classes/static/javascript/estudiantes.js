@@ -133,9 +133,19 @@ function editarPressed() {
 
 function horario(estudiante) {
     var url = "/estudiantes/horarioEstudiante/" + estudiante.id;
-    $("#divHorarioEstudiante").load(url);
+    $("#divHorarioEstudiante").load(url, () => {
+        const horas = document.querySelectorAll('.valor-horas');
+        let sumHoras = 0;
+        for(let hora of horas){
+            sumHoras += Number(hora.innerHTML);
+        }
 
-    $("#ModalEstudiante").modal('show');
+        document.querySelector("#totalHoras").innerHTML = sumHoras;
+        $("#ModalEstudiante").modal('show');
+    });
+
+
+
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -144,15 +154,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const $elementoParaConvertir = document.getElementById("tablaHorario");
         html2pdf()
             .set({
-                margin: 1,
-                filename: document.getElementById("nombrePDF").value + "-horario.pdf",
+                margin: 0.5,
+                filename: document.getElementById("nombrePDF").value + " - Horario.pdf",
                 image: {
                     type: 'jpeg',
                     quality: 0.98
                 },
                 html2canvas: {
-                    scale: 3,
+                    scale: 2,
                     letterRendering: true,
+                    scrollY: 0
                 },
                 jsPDF: {
                     unit: "in",
