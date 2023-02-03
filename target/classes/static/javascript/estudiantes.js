@@ -34,18 +34,31 @@ function crearTabla() {
     return table
 }
 
-function eliminar(dato) {
-    var url = "eliminarEstudiante";
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: "id=" + dato,
-        success: function (data, textStatus, jqXHR) {
-        }
-    })
-    //url="/eliminarEstudiante/"+dato;
-    //$("html").load(url);
-    location.href = "/estudiantes";
+function eliminaRegistro(estudiante) {
+    confirmarEliminación("se eliminará a "+estudiante.nombres+" definitivamente", (confirm) => {
+    if (confirm) {
+        let boton = document.querySelector("#confirmarEliminacion #eliminar");
+        activarSpinner(boton);
+        $.ajax({
+          url: "/estudiantes/" + estudiante.id,
+          type: "DELETE",
+          success: function () {
+            $("#TablaId").load("/estudiantes/TablaEstudiantes", { limit: 25 }, function () {
+                crearTabla();
+            });
+            desactivarSpinner(boton);
+            $("#confirmarEliminacion").modal("hide");
+            defaultSuccessNotify("Estudiante eliminado");
+          },
+          error: function (jqXHR) {
+            desactivarSpinner(boton);
+            $("#confirmarEliminacion").modal("hide");
+            defaultErrorNotify();
+            console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+          },
+        });
+      }
+  });
 }
 function editarForm(estudiante) {
     $("#modalRegistro .modal-title").text("Modificar información")
@@ -58,7 +71,6 @@ function editarForm(estudiante) {
     document.querySelector(".dselect-wrapper button").innerHTML = carrera.text;
     edicion=true;
     id_edicion=estudiante.id
-    console.log("el id a editar: "+id_edicion)
     $("#modalRegistro").modal('show');
 }
 function crearNuevo() {
@@ -92,7 +104,6 @@ function Guardar() {
     if (edicion) {
         url = "/estudiantes/" + id_edicion;
         type = "PUT";
-        console.log("Editando.. id:"+id_edicion+" "+estudiante)
       }
     $.ajax({
         url: url,

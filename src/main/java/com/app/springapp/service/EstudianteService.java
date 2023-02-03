@@ -68,7 +68,12 @@ public class EstudianteService implements IServicioEstudiante {
     }
 
     @Override
-    public void eliminarEstudiante(int id) {
+    public void eliminarEstudiante(int id) throws CustomeFieldValidationException {
+        Estudiante estudiante= new Estudiante();
+        estudiante =buscarPorId( new Long(id));
+        if(estudiante==null){
+            throw new CustomeFieldValidationException("El estudiante a eliminar no está registrado");
+        }
         repEstudiante.deleteById(new Long(id));
     }
 

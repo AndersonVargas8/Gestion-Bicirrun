@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,20 +59,25 @@ public class EstudianteController {
         return new ResponseEntity<EstudianteDTO>(estudiante, HttpStatus.CREATED);
     }
 
-    @PostMapping("/eliminarEstudiante")
-    public void eliminarEstudiante(@RequestParam int id) {
-        serEstudiante.eliminarEstudiante(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity eliminarEstudiante(@PathVariable int id) {
+        try {
+            System.out.println("El ide es"+id);
+            serEstudiante.eliminarEstudiante(id);
+        } catch (CustomeFieldValidationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<String>("Eliminado", HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity editarEstudiante(@PathVariable Long id,@RequestBody EstudianteDTO estudianteDto){
-        EstudianteDTO estudiante ;
-        try{
-             estudiante =  serEstudiante.editarEstudiante(id, estudianteDto);
-        }catch(CustomeFieldValidationException e){
+    public ResponseEntity editarEstudiante(@PathVariable Long id, @RequestBody EstudianteDTO estudianteDto) {
+        EstudianteDTO estudiante;
+        try {
+            estudiante = serEstudiante.editarEstudiante(id, estudianteDto);
+        } catch (CustomeFieldValidationException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<String>("Error al editar", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<EstudianteDTO>(estudiante, HttpStatus.CREATED);
