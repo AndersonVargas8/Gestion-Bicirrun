@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const $elementoParaConvertir = document.getElementById("tablaHorario");
         html2pdf()
             .set({
-                margin: 0.5,
+                margin: 1,
                 filename: document.getElementById("nombrePDF").value + " - Horario.pdf",
                 image: {
                     type: 'jpeg',
@@ -180,11 +180,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     unit: "in",
                     format: "a4",
                     orientation: 'landscape'
+                    
                 },
 
             })
             .from($elementoParaConvertir)
-            .save()
+            .output('dataurlnewwindow')
             .catch(err => console.log(err));
     });
 });

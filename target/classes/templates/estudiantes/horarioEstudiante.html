@@ -39,7 +39,7 @@
     <tbody>
         <tr th:each="turno,iStat:${turnos}">
             <td class="border" th:text="${iStat.count}"></td>
-            <td class="border" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${anio}"></td>
+            <td class="border" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${turno.anio}"></td>
             <td class="border" th:text="${turno.horario.descripcion}"></td>
             <td class="border valor-horas" th:text="${turno.horario.valor_horas}"></td>
             <td class="border" th:text="${turno.estacion.nombre}"></td>

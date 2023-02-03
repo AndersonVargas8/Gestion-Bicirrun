@@ -86,10 +86,10 @@ public class EstudianteController {
     @GetMapping("/horarioEstudiante/{id}")
     public String horarioEstudiante(Model model, @PathVariable Long id) {
         Estudiante estudiante = serEstudiante.buscarPorId(id);
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
+       // Date date = new Date(System.currentTimeMillis());
+        //SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
         model.addAttribute("turnos", serTurno.obtenerPorEstudiante(estudiante));
-        model.addAttribute("anio", formatter.format(date));
+        //model.addAttribute("anio", formatter.format(date));
         model.addAttribute("estudiante", estudiante);
         model.addAttribute("listTab", "estudiantes");
         return "estudiantes/horarioEstudiante";
