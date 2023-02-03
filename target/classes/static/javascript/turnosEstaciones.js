@@ -7,19 +7,32 @@ window.addEventListener('DOMContentLoaded', event => {
   // Toggle the side navigation
   const sidebarToggle = document.body.querySelector('#sidebarToggle');
   if (sidebarToggle) {
-      // Uncomment Below to persist sidebar toggle between refreshes
-      // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-      //     document.body.classList.toggle('sb-sidenav-toggled');
-      // }
-      sidebarToggle.addEventListener('click', event => {
-          event.preventDefault();
-          document.body.classList.toggle('sb-sidenav-toggled');
-          localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-      });
+    // Uncomment Below to persist sidebar toggle between refreshes
+    // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+    //     document.body.classList.toggle('sb-sidenav-toggled');
+    // }
+    sidebarToggle.addEventListener('click', event => {
+      event.preventDefault();
+      document.body.classList.toggle('sb-sidenav-toggled');
+      localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+    });
   }
-
+  addKeyUpTextareas();
 });
 
+//Event listener keyup enter on text areas
+function addKeyUpTextareas(){
+  const textareas = document.querySelectorAll(".observaciones");
+  for (let textarea of textareas) {
+    textarea.addEventListener("keyup", (event) => {
+      event.preventDefault();
+      isShift = !!window.event.shiftKey;
+      if (event.keyCode === 13 && !isShift) {
+        event.target.blur();
+      }
+    })
+  }
+}
 //Activar datepicker
 let fecha = window.location.pathname.split("/");
 fecha = fecha[fecha.length - 1];
@@ -98,7 +111,7 @@ $("#calendario")
     activarPlaceholders();
 
     let url = "/turnos/diaEstaciones/" + dia + "-" + mes + "-" + anio;
-    $("#contenido").load(url);
+    $("#contenido").load(url, addKeyUpTextareas);
   });
 
 //Activar selectores de mes
@@ -117,10 +130,8 @@ function diaAdelante() {
 
 function cambiarMes(adelantar = true) {
   let date = $("#calendario").data("datepicker").getDate();
-  let hours = date.getHours();
-  date.setHours(hours -5);
-  let aumento = date.getUTCDay() == 5 ? 3 : 1;
-  let decremento = date.getUTCDay() == 1 ? 3 : 1;
+  let aumento = date.getDay() == 5 ? 3 : 1;
+  let decremento = date.getDay() == 1 ? 3 : 1;
   if (adelantar) date.setDate(date.getDate() + aumento);
   else date.setDate(date.getDate() - decremento);
 
@@ -148,6 +159,8 @@ function cambiarObservacion(id, textarea) {
     },
   });
 }
+
+
 
 function cambiarEstado(id, idEstado) {
   $("#seleccionarEstado").modal("show");
@@ -303,7 +316,7 @@ function setDatepickerFechas(
 ) {
   try {
     $("#inputFechaForm").datepicker("destroy");
-  } catch {}
+  } catch { }
 
   dias = [0, 6].concat(diasDeshabilitados);
 
@@ -377,7 +390,7 @@ try {
   dselect(select_box_element, {
     search: true,
   });
-} catch (error) {}
+} catch (error) { }
 
 //Activar validación del form
 (function () {
@@ -415,7 +428,7 @@ function resetForm() {
     document
       .querySelector(".dselect-items .dropdown-item.active")
       .classList.remove("active");
-  } catch {}
+  } catch { }
 
   sincronizarFechas();
   sincronizarHorarios();
@@ -620,7 +633,6 @@ document.querySelector("#selectHorarioForm").addEventListener("change", () => {
     sincronizarEstaciones(fechaFormat, horario);
   }
 });
-
 //GUARDAR TURNO
 document.querySelector("#turnosForm").addEventListener("submit", (event) => {
   document.querySelector("#mensajeError").style.display = "none";

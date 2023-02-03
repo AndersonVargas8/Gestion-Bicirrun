@@ -92,7 +92,7 @@
                                                     <div th:text="${turno.estudiante}">Estudiante</div>
                                                     <div>
                                                         <div class="form-floating">
-                                                            <textarea class="form-control" id="obs"
+                                                            <textarea class="form-control observaciones" id="obs"
                                                                 th:value="${turno.observaciones}"
                                                                 th:text="${turno.observaciones}"
                                                                 th:onchange="cambiarObservacion([[${turno.id}]],this)">Observaciones</textarea>
