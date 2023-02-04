@@ -35,7 +35,7 @@ function crearTabla() {
 }
 
 function eliminaRegistro(estudiante) {
-    confirmarEliminación("se eliminará a "+estudiante.nombres+" definitivamente", (confirm) => {
+    confirmarEliminación(`Se eliminará a ${estudiante.nombres} definitivamente`, (confirm) => {
     if (confirm) {
         let boton = document.querySelector("#confirmarEliminacion #eliminar");
         activarSpinner(boton);
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const $elementoParaConvertir = document.getElementById("tablaHorario");
         html2pdf()
             .set({
-                margin: 1,
+                margin: 0.6,
                 filename: document.getElementById("nombrePDF").value + " - Horario.pdf",
                 image: {
                     type: 'jpeg',
