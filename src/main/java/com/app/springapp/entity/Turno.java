@@ -66,8 +66,7 @@ import com.app.springapp.dto.ReporteTurnosEstudiante;
 )
 public class Turno implements Comparable<Turno>, Cloneable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column

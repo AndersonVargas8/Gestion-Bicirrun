@@ -31,7 +31,7 @@ public class ReporteController {
             "reportes",
              this.reporteCumplidosIncumplidos("2000-01-01",     "2100-01-01").getBody()
         );
-        return "/reportes/index";
+        return "reportes/reportes";
     }
 
     /**
