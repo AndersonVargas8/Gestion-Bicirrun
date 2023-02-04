@@ -1,33 +1,71 @@
-<table class="table border border-2" id="tablaHorario">
+<table class="table border border-2 rounded" id="tablaHorario">
     <input th:value="${estudiante.nombres}+${estudiante.apellidos}" hidden id="nombrePDF"></input>
-   
+
     <thead>
-        <tr >
-            <th class="border-0 pb-0" colspan="5" th:text="'Nombre: '+${estudiante.nombres}+' '+${estudiante.apellidos}">
-            </th>
+        <tr>
+            <td colspan="8">
+                <div class="d-flex justify-content-between w-100 align-items-center pl-5 pr-5">
+                    <h5><strong>PLANILLA DE ASISTENCIA PROMOTORES BICIRRUN</strong></h5>
+                    <img th:src="@{/img/logo-planilla.png}" id="logo-planilla" alt="Logo UNAL" class="ml-1">
+                </div>
+            </td>
         </tr>
         <tr>
-            <th class="border-0 pt-0" colspan="5" th:text="'Teléfono: '+${estudiante.telefono}">
-            </th>
+            <td class="border-0 pt-4 pb-3 pl-3 pr-3" colspan="8">
+                <div class="d-flex justify-content-between">
+                    <p class="mb-0">
+                        <strong>Nombre: </strong><label th:text="${estudiante.nombres + ' ' + estudiante.apellidos}"></label>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Identificación: </strong><label th:text="${estudiante.documento}"></label>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Teléfono: </strong><label th:text="${estudiante.telefono}"></label>
+                    </p>
+                </div>
+            </td>
         </tr>
-        <tr>            
-            <th class="border" scope="col">Estación</th>
+        <tr>
+            <th class="border" scope="col">Turno</th>
             <th class="border" scope="col">Fecha</th>
             <th class="border" scope="col">Hora</th>
             <th class="border" scope="col">Valor horas</th>
+            <th class="border" scope="col">Estación</th>
             <th class="border" scope="col">Observaciones</th>
+            <th class="border" scope="col"># Balanceos</th>
             <th class="border" scope="col" width="150px">Firma</th>
         </tr>
     </thead>
     <tbody>
-        <tr th:each="turno:${turnos}">
-            <td class="border" th:text="${turno.estacion.nombre}"></td>
-            <td class="border" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${anio}"></td>
+        <tr th:each="turno,iStat:${turnos}">
+            <td class="border" th:text="${iStat.count}"></td>
+            <td class="border" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${turno.anio}"></td>
             <td class="border" th:text="${turno.horario.descripcion}"></td>
-            <td class="border" th:text="${turno.horario.valor_horas}"></td>
+            <td class="border valor-horas" th:text="${turno.horario.valor_horas}"></td>
+            <td class="border" th:text="${turno.estacion.nombre}"></td>
             <td class="border" th:text="${turno.observaciones}"></td>
-            <td class="border" ></td>
+            <td class="border"></td>
+            <td class="border"></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div class="d-flex justify-content-end pt-2 pb-2">
+                    <strong>Total horas programadas: </strong>
+                </div>
+            </td>
+            <td colspan="5">
+                <div class="d-flex justify-content-start pl-5" id="totalHoras">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="8">
+                <div class="m-4 d-flex justify-content-center">
+                    Firma coordinadora Bicirrun: 
+                    <div id="lineaFirma" class="w-25 ml-3"></div>
+                </div>
+
+            </td>
         </tr>
     </tbody>
-    
 </table>

@@ -1,0 +1,25 @@
+#tablaHorario{
+    border: 2px solid black !important;
+    border-radius: 5px;
+}
+
+#logo-planilla{
+    width: 300px;
+    height: 70px;;
+}
+
+thead td{
+    border:none;
+}
+
+thead td:first-child{
+    border-bottom: 2px solid black !important;
+}
+
+#lineaFirma{
+    border-bottom: 2px solid black !important;
+}
+
+#tablaHorario tbody td {
+    padding: 0.1rem 0.5rem !important;
+}

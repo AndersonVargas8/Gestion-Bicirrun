@@ -209,7 +209,7 @@
 
 
 #sidebar-wrapper {
-  max-height: 80vh;
+  max-height: 100vh;
   margin-left: -18rem;
   transition: margin 0.25s ease-out;
   padding: 30px 15px 5px 15px;

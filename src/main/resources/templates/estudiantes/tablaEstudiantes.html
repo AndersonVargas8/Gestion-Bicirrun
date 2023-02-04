@@ -1,6 +1,6 @@
 <div th:fragment="TablaFragment"  class="table-responsive">
-    <table id="userList" class="table  table-hover table-striped">
-        <thead class="thead-dark ">
+    <table id="userList" class="table table-striped">
+        <thead>
             <tr class="rounded-top">
                 <th scope="col">Documento</th>
                 <th scope="col">Nombre</th>
@@ -18,7 +18,7 @@
                 <td >
                     <button  type="button" class="btn btn-secondary m-1 text-white fa fa-calendar-check" th:onclick="horario([[${estudiante}]])"></button>
                     <button  type="button" class="btn btn-info m-1 text-white fa fa-pencil " th:onclick="editarForm([[${estudiante}]])"></button>  
-                    <button  type="button" class="btn btn-danger m-1 text-white fa fa-trash" ></button>
+                    <button  type="button" class="btn btn-danger m-1 text-white fa fa-trash" th:onclick="eliminaRegistro([[${estudiante}]])"></button>
                 </td>
                 
             </tr>

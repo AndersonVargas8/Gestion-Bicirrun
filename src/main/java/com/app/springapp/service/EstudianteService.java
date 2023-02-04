@@ -12,6 +12,7 @@ import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.EstudianteDTO;
 import com.app.springapp.entity.Estudiante;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
+import com.app.springapp.repository.CarreraRepository;
 import com.app.springapp.repository.EstudianteRepository;
 import com.app.springapp.util.Mapper;
 
@@ -21,25 +22,58 @@ public class EstudianteService implements IServicioEstudiante {
     @Autowired
     EstudianteRepository repEstudiante;
 
+    @Autowired
+    CarreraRepository repCarrera;
+
     @Override
     public EstudianteDTO guardarEstudiante(Estudiante estudiante) throws CustomeFieldValidationException {
-        if (estudiante.getDocumento().equals(null) || estudiante.getDocumento().isEmpty()) {
+        if(estudiante.getDocumento().equals(null)|| estudiante.getDocumento().isEmpty() ){
             throw new CustomeFieldValidationException("Documento vacío");
         }
-        if (buscarPorDocumento(estudiante.getDocumento()) != null) {
+        if(buscarPorDocumento(estudiante.getDocumento())!=null){
             throw new CustomeFieldValidationException("El estudiante ya existe");
         }
-        if (estudiante.getApellidos() == null || estudiante.getApellidos().isEmpty()) {
+        if(estudiante.getApellidos()==null||estudiante.getApellidos().isEmpty()){
             throw new CustomeFieldValidationException("Apellido vacío");
         }
-        if (estudiante.getNombres() == null || estudiante.getNombres().isEmpty()) {
+        if(estudiante.getNombres()==null||estudiante.getNombres().isEmpty()){
             throw new CustomeFieldValidationException("Nombre vacío");
         }
         return Mapper.mapToEstudianteDTO(repEstudiante.save(estudiante));
     }
 
     @Override
-    public void eliminarEstudiante(int id) {
+    public EstudianteDTO editarEstudiante(Long idEstudiante, EstudianteDTO estudianteDTO)
+            throws CustomeFieldValidationException {
+        
+        if (estudianteDTO.carrera==0) {
+            throw new CustomeFieldValidationException("No se especificó la carrera");
+        }
+        Estudiante estudiante = Mapper.mapToEstudiante(repCarrera, estudianteDTO);
+        estudiante.setId(idEstudiante);
+
+        if (estudiante.getDocumento().equals(null) ||
+                estudiante.getDocumento().isEmpty()) {
+            throw new CustomeFieldValidationException("Documento vacío");
+        }
+
+        if (estudiante.getApellidos() == null || estudiante.getApellidos().isEmpty()) {
+            throw new CustomeFieldValidationException("Apellido vacío");
+        }
+        if (estudiante.getNombres() == null || estudiante.getNombres().isEmpty()) {
+            throw new CustomeFieldValidationException("Nombre vacío");
+        }
+
+        return Mapper.mapToEstudianteDTO(repEstudiante.save(estudiante));
+    }
+
+    @Override
+    public void eliminarEstudiante(int id) throws CustomeFieldValidationException {
+        Estudiante estudiante= new Estudiante();
+        estudiante =buscarPorId( new Long(id));
+        if(estudiante==null){
+            throw new CustomeFieldValidationException("El estudiante a eliminar no está registrado");
+        }
         repEstudiante.deleteById(new Long(id));
     }
 
@@ -53,7 +87,7 @@ public class EstudianteService implements IServicioEstudiante {
         Estudiante estudiante = null;
         Optional<Estudiante> opEstudiante = repEstudiante.findById(new Long(id));
 
-        if (opEstudiante.isPresent()) {
+        if(opEstudiante.isPresent()){
             estudiante = opEstudiante.get();
         }
         return estudiante;

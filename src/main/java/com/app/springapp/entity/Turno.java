@@ -1,22 +1,69 @@
 package com.app.springapp.entity;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.SqlResultSetMapping;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.app.springapp.dto.ReporteTurnosEstudiante;
 
 /**
  * Esta clase permite manejar la persistencia de los turnos creados en la aplicación
  */
 @Entity
+@NamedNativeQueries({
+    @NamedNativeQuery(
+            name = "ReporteTurnosEstudiante",
+            query = "SELECT e.documento AS documento, e.nombres AS nombres, e.apellidos AS apellidos, " 
+            + "COUNT(t.id) AS turnosProgramados, SUM(h.valor_horas) AS horasProgramadas "
+            + "FROM turno t "
+            + "JOIN estudiante e ON t.estudiante_id = e.id "
+            + "JOIN horario h ON t.horario_id = h.id "
+            + "WHERE CAST(CONCAT(CONCAT(CONCAT(CONCAT(mes, '-'), dia), '-'), anio) AS DATE) BETWEEN CAST(:initDate AS DATE) AND CAST(:finalDate AS DATE) "
+            + "GROUP BY e.id "
+            + "ORDER BY turnosProgramados DESC",
+            resultSetMapping = "ReporteTurnosEstudiante"
+        ),
+    @NamedNativeQuery(
+        name = "ReporteTurnosEstado",
+        query = "SELECT e.documento AS documento, COUNT(t.id) AS countTurnos, SUM(h.valor_horas) AS sumHoras "
+        + "FROM turno t "
+        + "JOIN estudiante e ON t.estudiante_id = e.id "
+        + "JOIN horario h ON t.horario_id = h.id "
+        + "WHERE "
+            + "(CAST(CONCAT(CONCAT(CONCAT(CONCAT(mes, '-'), dia), '-'), anio) AS DATE) BETWEEN CAST(:initDate AS DATE) AND CAST(:finalDate AS DATE)) "
+        + "AND "
+            + "(t.estado_id = :estado_id) "
+        + "GROUP BY e.documento"
+    )
+})
+@SqlResultSetMapping(
+    name = "ReporteTurnosEstudiante", 
+    classes = @ConstructorResult(
+        targetClass = ReporteTurnosEstudiante.class,
+        columns = {
+            @ColumnResult(name = "documento", type = BigInteger.class),
+            @ColumnResult(name = "nombres", type = String.class),
+            @ColumnResult(name = "apellidos", type = String.class),
+            @ColumnResult(name = "turnosProgramados", type = BigInteger.class),
+            @ColumnResult(name = "horasProgramadas", type = BigInteger.class)
+        }
+    )
+)
 public class Turno implements Comparable<Turno>, Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

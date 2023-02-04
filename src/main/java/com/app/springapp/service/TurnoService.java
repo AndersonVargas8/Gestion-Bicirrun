@@ -1,15 +1,20 @@
 package com.app.springapp.service;
 
+import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.app.springapp.Exception.CustomeFieldValidationException;
 import com.app.springapp.dto.Calendario;
 import com.app.springapp.dto.CuposYTurnosEstacionesHorario;
+import com.app.springapp.dto.ReporteTurnosEstudiante;
 import com.app.springapp.dto.TurnoDTO;
 import com.app.springapp.dto.TurnosEstaciones;
 import com.app.springapp.entity.Cupo;
@@ -26,10 +32,10 @@ import com.app.springapp.entity.Estudiante;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Horario.Dia;
 import com.app.springapp.entity.Turno;
+import com.app.springapp.entity.Usuario;
 import com.app.springapp.interfacesServicios.IServicioEstacion;
 import com.app.springapp.interfacesServicios.IServicioEstudiante;
 import com.app.springapp.interfacesServicios.IServicioHorario;
-import com.app.springapp.interfacesServicios.IServicioTurno;
 import com.app.springapp.repository.CupoRepository;
 import com.app.springapp.repository.EstadoTurnoRepository;
 import com.app.springapp.repository.HorarioRepository;
@@ -38,7 +44,7 @@ import com.app.springapp.repository.TurnoRepository;
 import com.app.springapp.util.Mapper;
 
 @Service
-public class TurnoService implements IServicioTurno {
+public class TurnoService {
     @Autowired
     TurnoRepository repTurno;
 
@@ -65,17 +71,17 @@ public class TurnoService implements IServicioTurno {
     @Autowired
     HorarioRepository repHorario;
 
-    @Override
+    @PersistenceContext
+    EntityManager entityManager;
+
     public Turno obtenerPorId(long id) {
         return repTurno.findById(id).get();
     }
 
-    @Override
     public List<Turno> obtenerTodos() {
         return (List<Turno>) repTurno.findAll();
     }
 
-    @Override
     public List<Turno> obtenerPorDiaMes(int dia, int mes) {
         List<Turno> respuesta = repTurno.findByDiaAndMes(dia, mes);
         if (respuesta.isEmpty())
@@ -84,35 +90,30 @@ public class TurnoService implements IServicioTurno {
         return respuesta;
     }
 
-    @Override
     public List<Turno> obtenerPorFechaYEstacion(LocalDate fecha, Estacion estacion) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         List<Turno> turnos = repTurno.findByDiaAndMesAndAnioAndEstacion(dia, mes, anio, estacion);
         return turnos;
     }
 
-    @Override
     public List<Turno> obtenerPorFechaYEstacionYHorario(LocalDate fecha, Estacion estacion, Horario horario) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         List<Turno> turnos = repTurno.findByDiaAndMesAndAnioAndEstacionAndHorario(dia, mes, anio, estacion, horario);
         return turnos;
     }
 
-    @Override
     public int sumaTurnosFecha(LocalDate fecha) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnio(dia, mes, anio);
         return numeroTurnos;
     }
 
-    @Override
     public int sumaTurnosPorFechaYHorario(LocalDate fecha, Horario horario) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnioAndHorario(dia, mes, anio, horario);
         return numeroTurnos;
     }
 
-    @Override
     public int sumaTurnosPorFechaYHorarioYEstacion(LocalDate fecha, Horario horario, Estacion estacion) {
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnioAndEstacionAndHorario(dia, mes, anio, estacion,
@@ -120,7 +121,6 @@ public class TurnoService implements IServicioTurno {
         return numeroTurnos;
     }
 
-    @Override
     public boolean hayTurnosDisponibles(LocalDate fecha, Horario horario) {
         int valorDiaActual = DayOfWeek.from(fecha).getValue();
         String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
@@ -282,7 +282,6 @@ public class TurnoService implements IServicioTurno {
         return (int) numeroTurnosProgramados;
     }
 
-    @Override
     public TurnoDTO guardarTurno(TurnoDTO turnoDTO) throws CustomeFieldValidationException {
         Turno turno = Mapper.mapToTurno(turnoDTO, serEstacion, serEstudiante, serHorario, repEstadoTurno);
 
@@ -303,7 +302,6 @@ public class TurnoService implements IServicioTurno {
         return turnoDTO;
     }
 
-    @Override
     public void eliminarTurno(int idTurno) throws CustomeFieldValidationException {
         if (!repTurno.existsById(new Long(idTurno))) {
             throw new CustomeFieldValidationException("No existe un turno con el id proporcionado");
@@ -312,7 +310,6 @@ public class TurnoService implements IServicioTurno {
         repTurno.deleteById(new Long(idTurno));
     }
 
-    @Override
     public TurnoDTO editarTurno(int idTurno, TurnoDTO turnoDTO) throws CustomeFieldValidationException {
         Turno turnoActual = new Turno();
         boolean crearNuevo = true;
@@ -371,7 +368,6 @@ public class TurnoService implements IServicioTurno {
 
     }
 
-    @Override
     public TurnoDTO parcharTurno(int idTurno, TurnoDTO turnoDTO) throws CustomeFieldValidationException {
         if (!repTurno.existsById(new Long(idTurno))) {
             throw new CustomeFieldValidationException("No existe un turno con el id proporcionado");
@@ -431,14 +427,20 @@ public class TurnoService implements IServicioTurno {
         return Mapper.mapToTurnoDTO(turno);
     }
 
-    @Override
     public List<Turno> obtenerPorEstudiante(Estudiante estudiante) {
         List<Turno> respuesta = repTurno.findByEstudiante(estudiante);
         Collections.sort(respuesta);
         return respuesta;
     }
 
-    @Override
+    /**
+     * Retornna un objeto calendario con la información de turnos programados y
+     * cupos totales en el mes proporcionado
+     * 
+     * @param mes
+     * @param anio
+     * @return
+     */
     public Calendario getCalendario(int mes, int anio) {
         // Obtener la fecha con el mes y año dado
         LocalDate fecha = LocalDate.of(anio, mes, 1);
@@ -477,7 +479,11 @@ public class TurnoService implements IServicioTurno {
         return calendario;
     }
 
-    @Override
+    public class DiasDeshabilitados {
+        public List<Integer> diasDeshabilitados;
+        public List<String> fechasDeshabilitadas;
+    }
+
     public DiasDeshabilitados obtenerDiasDeshabilitados() {
         DiasDeshabilitados diasD = new DiasDeshabilitados();
         diasD.diasDeshabilitados = new ArrayList<>();
@@ -508,7 +514,6 @@ public class TurnoService implements IServicioTurno {
 
     }
 
-    @Override
     public DiasDeshabilitados obtenerDiasDeshabilitados(int idHorario) {
         DiasDeshabilitados diasD = new DiasDeshabilitados();
         diasD.diasDeshabilitados = new ArrayList<>();
@@ -561,8 +566,23 @@ public class TurnoService implements IServicioTurno {
         return diasD;
     }
 
-    @Override
-    public TurnosEstaciones obtenerTurnosEstaciones(LocalDate fecha) {
+    /**
+     * Se retornan todos los turnos programados en cada estación en la fecha
+     * indicada
+     * 
+     * @param fecha
+     * @return objeto TurnosEstaciones que contiene una lista de estaciones, cada
+     *         una con una lista de horarios
+     *         y cada lista de horarios con la lista de turnos.
+     */
+    public TurnosEstaciones obtenerTurnosEstaciones(Usuario loggedUser, LocalDate fecha) {
+        boolean isAdmin = loggedUser.getRol().getNombre().equals("ADMIN");
+        // Se obtiene las estaciones permitidas
+        Set<Long> idEstaciones = new HashSet<>();
+        for (Estacion estacion : loggedUser.getEstaciones()) {
+            idEstaciones.add(estacion.getId());
+        }
+
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         String fechaFormat = dia + "-" + mes + "-" + anio;
         TurnosEstaciones turnosEstaciones = new TurnosEstaciones(fechaFormat);
@@ -581,17 +601,19 @@ public class TurnoService implements IServicioTurno {
         List<Estacion> estaciones = serEstacion.obtenerTodas();
         // Se obtienen todos los horarios
         List<Horario> horarios = serHorario.obtenerTodos();
-        
+
         int valorDiaActual = DayOfWeek.from(fecha).getValue();
         String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
-        
-        for(IHorariosDiasNoDisponibles horarioNoDisp : horariosNoDisponiblesList){
-            if(horarioNoDisp.getDia().equals(nombreDia)){
+
+        for (IHorariosDiasNoDisponibles horarioNoDisp : horariosNoDisponiblesList) {
+            if (horarioNoDisp.getDia().equals(nombreDia)) {
                 horariosNoDisponibles.add(horarioNoDisp.getHorarioId());
             }
         }
 
         for (TurnoDTO turno : turnos) {
+            if (!isAdmin && !idEstaciones.contains(new Long(turno.idEstacion)))
+                continue;
             turnosEstaciones.agregarTurno(turno);
             long idHorario = turno.idHorario;
 
@@ -600,25 +622,85 @@ public class TurnoService implements IServicioTurno {
 
             cupos.substractCupo(turno.idEstacion, idHorario);
         }
-        
-        for(Estacion estacion: estaciones){
-            for(Horario horario: horarios){
+
+        for (Estacion estacion : estaciones) {
+            if (!isAdmin && !idEstaciones.contains(estacion.getId()))
+                continue;
+            for (Horario horario : horarios) {
                 long idHorario = horario.getId();
-                if(horariosNoDisponibles.contains(idHorario))
+                if (horariosNoDisponibles.contains(idHorario))
                     continue;
-            
+
                 if (horariosDependientes.containsKey(idHorario))
                     idHorario = horariosDependientes.get(idHorario);
-                
+
                 int numCupos = cupos.getCupos(estacion.getId(), idHorario);
 
-                if(numCupos > 0){
+                if (numCupos > 0) {
                     turnosEstaciones.agregarCuposDisponibles(estacion, horario, numCupos);
                 }
             }
         }
 
         return turnosEstaciones;
+    }
+
+    public List<ReporteTurnosEstudiante> getReporteProgramados(LocalDate initDate, LocalDate finalDate) {
+        if (initDate.compareTo(finalDate) > 0)
+            throw new IllegalArgumentException("La fecha inicial no puede ser anterior a la fecha final");
+
+        String initDateStr = initDate.getMonthValue() + "-" + initDate.getDayOfMonth() + "-" + initDate.getYear();
+        String finalDateStr = finalDate.getMonthValue() + "-" + finalDate.getDayOfMonth() + "-" + finalDate.getYear();
+
+        return repTurno.countProgramadosGroupEstudiante(entityManager, initDateStr, finalDateStr);
+    }
+
+    public List<ReporteTurnosEstudiante> getReporteCumplidos(List<ReporteTurnosEstudiante> reporteProgramados,
+            LocalDate initDate, LocalDate finalDate) {
+
+        if (initDate.compareTo(finalDate) > 0)
+            throw new IllegalArgumentException("La fecha inicial no puede ser anterior a la fecha final");
+
+        String initDateStr = initDate.getMonthValue() + "-" + initDate.getDayOfMonth() + "-" + initDate.getYear();
+        String finalDateStr = finalDate.getMonthValue() + "-" + finalDate.getDayOfMonth() + "-" + finalDate.getYear();
+
+        Map<Long, ReporteTurnosEstudiante> reporteCumplidos = repTurno.countCumplidosGroupEstudiante(entityManager, initDateStr, finalDateStr);
+
+        for(ReporteTurnosEstudiante repProgramado : reporteProgramados){
+            if(reporteCumplidos.containsKey(repProgramado.getDocumento())){
+                repProgramado.setTurnosCumplidos(reporteCumplidos.get(repProgramado.getDocumento()).getTurnosCumplidos());
+                repProgramado.setHorasCumplidas(reporteCumplidos.get(repProgramado.getDocumento()).getHorasCumplidas());
+            }else{
+                repProgramado.setTurnosCumplidos(0L);
+                repProgramado.setHorasCumplidas(0L);
+            }
+        }
+
+        return reporteProgramados;
+    }
+
+    public List<ReporteTurnosEstudiante> getReporteIncumplidos(List<ReporteTurnosEstudiante> reporteProgramados,
+            LocalDate initDate, LocalDate finalDate) {
+
+        if (initDate.compareTo(finalDate) > 0)
+            throw new IllegalArgumentException("La fecha inicial no puede ser anterior a la fecha final");
+
+        String initDateStr = initDate.getMonthValue() + "-" + initDate.getDayOfMonth() + "-" + initDate.getYear();
+        String finalDateStr = finalDate.getMonthValue() + "-" + finalDate.getDayOfMonth() + "-" + finalDate.getYear();
+
+        Map<Long, ReporteTurnosEstudiante> reporteIncumplidos = repTurno.countIncumplidosGroupEstudiante(entityManager, initDateStr, finalDateStr);
+
+        for(ReporteTurnosEstudiante repProgramado : reporteProgramados){
+            if(reporteIncumplidos.containsKey(repProgramado.getDocumento())){
+                repProgramado.setTurnosIncumplidos(reporteIncumplidos.get(repProgramado.getDocumento()).getTurnosIncumplidos());
+                repProgramado.setHorasIncumplidas(reporteIncumplidos.get(repProgramado.getDocumento()).getHorasIncumplidas());
+            }else{
+                repProgramado.setTurnosIncumplidos(0L);
+                repProgramado.setHorasIncumplidas(0L);
+            }
+        }
+
+        return reporteProgramados;
     }
 
 }
