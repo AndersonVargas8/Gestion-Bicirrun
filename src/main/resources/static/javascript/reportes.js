@@ -169,6 +169,9 @@ function actualizarTabla(reportes) {
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
+    if(reportes.length == 1 && reportes[0].apellidos == "FESTIVO") //VERIFICA SI EL REPORTE ES DEL ESTUDIANTE "FESTIVO"
+        reportes = [];
+
     if (reportes.length > 0) {
         let object = reportes[0];
         let titulos = ["Documento", "Nombres", "Apellidos"];
@@ -198,6 +201,8 @@ function actualizarTabla(reportes) {
         //Cargar tbody  
         let reporteContent = "";
         for (let reporte of reportes) {
+            if(reporte.apellidos == "FESTIVO")
+                continue;
             reporteContent += `<tr>
                 <td>${reporte.documento}</td>
                 <td>${reporte.nombres}</td>
