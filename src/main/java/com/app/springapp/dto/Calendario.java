@@ -233,7 +233,7 @@ public class Calendario {
                 this.estado = "vencido";
             } else if (this.cupos == this.turnosProgramados) {
                 this.estado = "completo";
-            } else if ((this.cupos - this.turnosProgramados) <= 5) {
+            } else if ((this.cupos - this.turnosProgramados)/this.cupos <= 0.3) {
                 this.estado = "medio";
             } else {
                 this.estado = "disponible";
