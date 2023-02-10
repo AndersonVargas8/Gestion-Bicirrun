@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.app.springapp.dto.CuposYTurnosEstacionesHorario;
+import com.app.springapp.dto.EstacionDTO;
 import com.app.springapp.entity.Estacion;
 import com.app.springapp.entity.Horario;
 import com.app.springapp.interfacesServicios.IServicioCupo;
@@ -43,6 +44,11 @@ public class EstacionService implements IServicioEstacion {
 
     @Override
     public List<Estacion> obtenerTodas() {
+        return (List<Estacion>) repEstacion.findAllByOrderByNombreAsc();
+    }
+
+    @Override
+    public List<Estacion> obtenerTodasHabilitadas() {
         return (List<Estacion>) repEstacion.findAllByOrderByIdAsc();
     }
 
@@ -63,7 +69,7 @@ public class EstacionService implements IServicioEstacion {
         // Se obtiene los horarios dependientes
         Map<Long, Long> horariosDependientes = repHorario.findHorariosDependientes();
         // Se obtienen todas las estaciones
-        List<Estacion> listaEstaciones = obtenerTodas();
+        List<Estacion> listaEstaciones = obtenerTodasHabilitadas();
 
         List<Estacion> estacionesDisponibles = new ArrayList<>();
 
@@ -96,6 +102,13 @@ public class EstacionService implements IServicioEstacion {
             }
         }
         return estacionesDisponibles;
+    }
+
+    @Override
+    public void updateEstacionesHabilitadas(List<EstacionDTO> estaciones) {
+        for(EstacionDTO estacion : estaciones){
+            repEstacion.updateIsHabilitada(estacion.getId(), estacion.getIs_habilitada());
+        }     
     }
 
 }
