@@ -136,7 +136,7 @@
                             </thead>
                             <tbody>
                                 <div th:each="reporte: ${reportes}" th:remove="tag">
-                                    <tr>
+                                    <tr th:if="${reporte.apellidos != 'FESTIVO'}">
                                         <td th:text="${reporte.documento}"></td>
                                         <td th:text="${reporte.nombres}"></td>
                                         <td th:text="${reporte.apellidos}"></td>

@@ -21,12 +21,16 @@ public class Estacion {
     @NotBlank
     private String nombre;
 
+    @Column
+    private Boolean isHabilitada;
+
     public Estacion() {
     }
 
     public Estacion(long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
+        this.isHabilitada = true;
     }
 
     
@@ -60,7 +64,6 @@ public class Estacion {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     
     /** 
      * @param o
@@ -96,6 +99,22 @@ public class Estacion {
             " id='" + getId() + "'" +
             ", nombre='" + getNombre() + "'" +
             "}";
+    }
+
+    public Boolean isHabilitada() {
+        return isHabilitada;
+    }
+
+    private void setIsHabilitada(Boolean isHabilitada) {
+        this.isHabilitada = isHabilitada;
+    }
+
+    public void habilitar(){
+        this.setIsHabilitada(true);
+    }
+
+    public void inhabilitar(){
+        this.setIsHabilitada(false);
     }
 
 }

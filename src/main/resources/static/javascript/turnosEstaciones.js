@@ -24,10 +24,10 @@ window.addEventListener('DOMContentLoaded', event => {
 function addKeyUpTextareas(){
   const textareas = document.querySelectorAll(".observaciones");
   for (let textarea of textareas) {
-    textarea.addEventListener("keyup", (event) => {
-      event.preventDefault();
+    textarea.addEventListener("keydown", (event) => {
       isShift = !!window.event.shiftKey;
       if (event.keyCode === 13 && !isShift) {
+        event.preventDefault();
         event.target.blur();
       }
     })

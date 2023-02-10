@@ -25,20 +25,21 @@ public interface CupoRepository extends CrudRepository<Cupo,Integer>{
 
     public Cupo findById(Long id);
 
+    @Query(value = "SELECT c FROM Cupo c WHERE c.horario = ?1 AND c.estacion.isHabilitada = true")
     public List<Cupo> findByHorario(Horario horario);
 
     @Query(value = "SELECT e.id FROM cupo c JOIN estacion e ON c.est_id = e.id WHERE c.hor_id = ?1", nativeQuery = true)
     public List<Integer> idEstacionesPorHorario(Long idHorario);
 
     
-    @Query("SELECT sum(c.num_cupos) FROM Cupo c WHERE c.horario = ?1")
+    @Query("SELECT sum(c.num_cupos) FROM Cupo c WHERE c.horario = ?1 AND c.estacion.isHabilitada = true")
     public long sumCuposByHorario(Horario horario);
 
-    @Query(value = "SELECT SUM(num_cupos) FROM Cupo")
+    @Query(value = "SELECT SUM(c.num_cupos) FROM Cupo c WHERE c.estacion.isHabilitada = true")
     public long sumTotalCupos();
 
         //Cupos por horario
-    @Query(value = "SELECT new com.app.springapp.dto.CountCuposDTO(horario.id, sum(num_cupos)) FROM Cupo GROUP BY hor_id") 
+    @Query(value = "SELECT new com.app.springapp.dto.CountCuposDTO(horario.id, sum(num_cupos)) FROM Cupo WHERE estacion.isHabilitada = true  GROUP BY hor_id") 
     public List<CountCuposDTO> countCuposGroupByHorario();
         
     default Map<Long, Integer> sumCuposGroupByHorario(){
@@ -53,7 +54,7 @@ public interface CupoRepository extends CrudRepository<Cupo,Integer>{
         long getHorarioId();
         long getSumCupos();
     }
-    @Query(value = "SELECT est_id AS estacionId, hor_id AS horarioId, sum(num_cupos) AS sumCupos FROM cupo GROUP BY hor_id, est_id", nativeQuery = true) 
+    @Query(value = "SELECT est_id AS estacionId, hor_id AS horarioId, sum(num_cupos) AS sumCupos FROM cupo INNER JOIN estacion e ON est_id = e.id WHERE e.is_habilitada = true GROUP BY hor_id, est_id", nativeQuery = true) 
     public List<ICountCuposEstacionAndHorario> countCuposGroupByEstacionHorario();
     
     default CuposYTurnosEstacionesHorario sumCuposGroupByEstacionHorario(CuposYTurnosEstacionesHorario cuposTurnos){

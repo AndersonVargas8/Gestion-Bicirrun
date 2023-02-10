@@ -598,7 +598,7 @@ public class TurnoService {
         List<IHorariosDiasNoDisponibles> horariosNoDisponiblesList = repHorario.findHorariosDiasNoDisponibles();
         List<Long> horariosNoDisponibles = new ArrayList<>();
         // Se obtienen todas las estaciones
-        List<Estacion> estaciones = serEstacion.obtenerTodas();
+        List<Estacion> estaciones = serEstacion.obtenerTodasHabilitadas();
         // Se obtienen todos los horarios
         List<Horario> horarios = serHorario.obtenerTodos();
 

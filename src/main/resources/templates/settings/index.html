@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajustes - Gestión Bicirrun</title>
+
+    <link rel="icon" type="image/x-icon" href="/img/favicon.png" th:href="@{img/favicon.png}" />
+
+    <!--JQUERY-->
+    <div th:replace="includes.html::jquery"></div>
+
+    <!--BOOTSTRAP-->
+    <div th:replace="includes.html::bootstrap"></div>
+
+    <!--FONT AWESOME-->
+    <div th:replace="includes.html::fontawesome"></div>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="../../static/css/settings.css" th:href="@{/css/settings.css}" />
+
+</head>
+
+
+<body>
+    <!--Navbar-->
+    <div th:include="navbar.html" th:remove="tag"></div>
+
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar" class="active pt-2 pr-1 pl-1">
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href="#"><span class="fa fa-tent"></span> Estaciones</a>
+                </li>
+                <!--<li>
+                    <a href="#"><span class="fa fa-clock"></span> Horarios</a>
+                </li>
+                <li>
+                    <a href="#"><span class="fa fa-user"></span> Usuarios</a>
+                </li>
+                <li>
+                    <a href="#"><span class="fa fa-paper-plane"></span> Contacto</a>
+                </li>-->
+            </ul>
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4">
+            <!--BOTÓN PARA EXPANDIR EL SIDEBAR
+                <div class="container-fluid">
+                        <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+                </div>
+                -->
+            <div class="d-flex justify-content-center mb-4">
+                <h2>Listado de estaciones</h2>
+            </div>
+
+            <div id="estaciones-content">
+                <h5 class="row-md-12">Habilitar o deshabilitar estaciones</h5>
+                <div id="list-estaciones">
+                    <ul class="list-group row">
+                        <div th:each="estacion: ${estaciones}" th:remove="tag">
+                            <li class="list-group-item pt-3 pb-3">
+                                <div class="form-switch row">
+                                    <div class="d-flex justify-content-start col-7">
+                                        <label class="form-check-label" th:for="${'e-' + estacion.id}"
+                                            th:text="${estacion.nombre}"></label>
+                                    </div>
+                                    <div class="col-5">
+                                        <input class="form-check-input" type="checkbox" role="switch" th:value="${estacion.id}"
+                                            th:id="${'e-' + estacion.id}" checked th:if="${estacion.isHabilitada}" onchange="cambiarEstadoEstacion()">
+                                        <input class="form-check-input" type="checkbox" role="switch" th:value="${estacion.id}"
+                                            th:id="${'e-' + estacion.id}" th:unless="${estacion.isHabilitada}" onchange="cambiarEstadoEstacion()">
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" value="Guardar cambios" class="btn m-2 guardar" id="btn-guardarEstaciones" disabled>Guardar
+                        cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--TOASTR-->
+    <div th:replace="includes.html::toastr"></div>
+
+    <!--JAVASCRIPT-->
+    <script src="../../static/javascript/settings.js" th:src="@{/javascript/settings.js}"></script>
+</body>
+
+</html>
