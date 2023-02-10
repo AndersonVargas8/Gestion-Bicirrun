@@ -218,10 +218,7 @@ public class Calendario {
          * @param turnosProgramados
          */
         public Dia(int numeroDia, int cupos, int turnosProgramados) {
-            if (cupos < turnosProgramados) {
-                throw new IllegalArgumentException(
-                        "El número de turnos programados no puede ser mayor al número de cupos");
-            }
+            
             this.numeroDia = numeroDia;
             this.cupos = cupos;
             this.turnosProgramados = turnosProgramados;
@@ -231,9 +228,9 @@ public class Calendario {
 
             if (fechaActual.compareTo(fechaDia) > 0) {
                 this.estado = "vencido";
-            } else if (this.cupos == this.turnosProgramados) {
+            } else if (this.turnosProgramados >= this.cupos) {
                 this.estado = "completo";
-            } else if ((this.cupos - this.turnosProgramados)/this.cupos <= 0.3) {
+            } else if ((double)(this.cupos - this.turnosProgramados)/(double)this.cupos <= 0.3) {
                 this.estado = "medio";
             } else {
                 this.estado = "disponible";
