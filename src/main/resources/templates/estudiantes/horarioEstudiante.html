@@ -36,10 +36,10 @@
             <th class="border" scope="col" width="150px">Firma</th>
         </tr>
     </thead>
-    <tbody>
-        <tr th:each="turno,iStat:${turnos}">
+    <tbody id="listaTurnos">
+        <tr th:each="turno,iStat:${turnos}" th:id="turno+${iStat.count}"class="turnoProgramado">
             <td class="border" th:text="${iStat.count}"></td>
-            <td class="border" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${turno.anio}"></td>
+            <td class="border" id="fecha" th:text="${turno.dia}+'/'+${turno.mes}+'/'+${turno.anio}"></td>
             <td class="border" th:text="${turno.horario.descripcion}"></td>
             <td class="border valor-horas" th:text="${turno.horario.valor_horas}"></td>
             <td class="border" th:text="${turno.estacion.nombre}"></td>

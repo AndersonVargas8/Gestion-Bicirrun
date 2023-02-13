@@ -100,8 +100,47 @@
                         <h5 class="modal-title" id="exampleModalLabel">Turnos del estudiante</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4 d-flex justify-content-center" id="divHorarioEstudiante"></div>
+                    <div class="row px-4 py-0 justify-content-center">
+                        <!--Fecha inicial-->
+                        <div class="form-group justify-content-center col-3">
+                            <label class="col-form-label form-control-label"><b>Fecha inicial</b></label>
+                            <div class="">
+                                <div class="input-group">
+                                    <input type="text" id="selInitDate" class="form-select
+                                w-85 selectCalendar" placeholder="Seleccione" required autocomplete="off">
+                                    <span class="input-group-text btn-calendar-form" id="spanCalendar" onclick="$('#selInitDate').datepicker('show');
+                                document.querySelector('#selInitDate').focus()">
+                                        <i class="fa-solid fa-calendar-day w-100" style="margin:0;"></i></span>
+                                    <span class="input-group-text" id="loadingFechas" style="display: none;">
+                                        <i class="fa-solid fa-sync fa-spin" style="margin:0;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Fecha final-->
+                        <div class="form-group justify-content-center mb-4 col-3">
+                            <label class="col-form-label form-control-label"><b>Fecha final</b></label>
+                            <div class="">
+                                <div class="input-group">
+                                    <input type="text" id="selFinalDate" class="form-select
+                                w-85 selectCalendar" placeholder="Seleccione" required autocomplete="off">
+                                    <span class="input-group-text btn-calendar-form" id="spanCalendar" onclick="$('#selFinalDate').datepicker('show');
+                                document.querySelector('#selFinalDate').focus()">
+                                        <i class="fa-solid fa-calendar-day w-100" style="margin:0;"></i></span>
+                                    <span class="input-group-text" id="loadingFechas" style="display: none;">
+                                        <i class="fa-solid fa-sync fa-spin" style="margin:0;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col align-self-center">
+                            <button type="button" id="botonAplicar" class="btn btn-success " onclick="aplicarFiltro()">
+                                <span class="fa fa-filter"></span>&nbsp;Aplicar filtro</button>
+                        </div>
+                    </div>
+                    <div class="modal-body p-4 pt-0 d-flex justify-content-center" id="divHorarioEstudiante"></div>
                     <div class="modal-footer">
+
                         <button type="button" id="botonImprimir" class="btn btn-primary">
                             <span class="fa fa-file-pdf"></span>&nbsp;Descargar</button>
                     </div>
@@ -112,6 +151,8 @@
         <div class="card table-card">
             <div th:include="./estudiantes/tablaEstudiantes.html" id="TablaId"></div>
         </div>
+        <!--DATEPICKER-->
+        <div th:replace="includes.html::datepicker"></div>
         <!--DATATABLE-->
         <div th:replace="includes.html::datatable"></div>
 
