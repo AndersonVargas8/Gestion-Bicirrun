@@ -36,29 +36,29 @@ function crearTabla() {
 
 function eliminaRegistro(estudiante) {
     confirmarEliminación(`Se eliminará a ${estudiante.nombres} definitivamente`, (confirm) => {
-    if (confirm) {
-        let boton = document.querySelector("#confirmarEliminacion #eliminar");
-        activarSpinner(boton);
-        $.ajax({
-          url: "/estudiantes/" + estudiante.id,
-          type: "DELETE",
-          success: function () {
-            $("#TablaId").load("/estudiantes/TablaEstudiantes", { limit: 25 }, function () {
-                crearTabla();
+        if (confirm) {
+            let boton = document.querySelector("#confirmarEliminacion #eliminar");
+            activarSpinner(boton);
+            $.ajax({
+                url: "/estudiantes/" + estudiante.id,
+                type: "DELETE",
+                success: function () {
+                    $("#TablaId").load("/estudiantes/TablaEstudiantes", { limit: 25 }, function () {
+                        crearTabla();
+                    });
+                    desactivarSpinner(boton);
+                    $("#confirmarEliminacion").modal("hide");
+                    defaultSuccessNotify("Estudiante eliminado");
+                },
+                error: function (jqXHR) {
+                    desactivarSpinner(boton);
+                    $("#confirmarEliminacion").modal("hide");
+                    defaultErrorNotify();
+                    console.log("error " + jqXHR.status + " " + jqXHR.responseText);
+                },
             });
-            desactivarSpinner(boton);
-            $("#confirmarEliminacion").modal("hide");
-            defaultSuccessNotify("Estudiante eliminado");
-          },
-          error: function (jqXHR) {
-            desactivarSpinner(boton);
-            $("#confirmarEliminacion").modal("hide");
-            defaultErrorNotify();
-            console.log("error " + jqXHR.status + " " + jqXHR.responseText);
-          },
-        });
-      }
-  });
+        }
+    });
 }
 function editarForm(estudiante) {
     $("#modalRegistro .modal-title").text("Modificar información")
@@ -69,8 +69,8 @@ function editarForm(estudiante) {
     let carrera = document.querySelector("#inputState option[value='" + estudiante.carrera.id + "']");
     carrera.selected = true;
     document.querySelector(".dselect-wrapper button").innerHTML = carrera.text;
-    edicion=true;
-    id_edicion=estudiante.id
+    edicion = true;
+    id_edicion = estudiante.id
     $("#modalRegistro").modal('show');
 }
 function crearNuevo() {
@@ -81,8 +81,8 @@ function crearNuevo() {
     let carrera = document.querySelector("#inputState option[value='" + 1 + "']");
     carrera.selected = true;
     document.querySelector(".dselect-wrapper button").innerHTML = carrera.text;
-    edicion=false;
-    id_edicion=0
+    edicion = false;
+    id_edicion = 0
 
 }
 
@@ -104,7 +104,7 @@ function Guardar() {
     if (edicion) {
         url = "/estudiantes/" + id_edicion;
         type = "PUT";
-      }
+    }
     $.ajax({
         url: url,
         type: type,
@@ -136,10 +136,24 @@ function Guardar() {
 
 }
 
-function editarPressed() {
+//Activar Datepickers
+$("#selInitDate").datepicker({
+    language: "es",
+    autoclose: true,
+    format: "dd MM yyyy",
+    todayHighlight: true,
+    weekStart: 0,
+    disableTouchKeyboard: true,
+});
 
-}
-
+$("#selFinalDate").datepicker({
+    language: "es",
+    autoclose: true,
+    format: "dd MM yyyy",
+    todayHighlight: true,
+    weekStart: 0,
+    disableTouchKeyboard: true,
+});
 
 
 function horario(estudiante) {
@@ -147,14 +161,65 @@ function horario(estudiante) {
     $("#divHorarioEstudiante").load(url, () => {
         const horas = document.querySelectorAll('.valor-horas');
         let sumHoras = 0;
-        for(let hora of horas){
+        for (let hora of horas) {
             sumHoras += Number(hora.innerHTML);
         }
 
         document.querySelector("#totalHoras").innerHTML = sumHoras;
         $("#ModalEstudiante").modal('show');
     });
+}
 
+function aplicarFiltro() {
+    let fechaInicial = $("#selInitDate").data("datepicker").getDate();
+    let fechaFinal = $("#selFinalDate").data("datepicker").getDate();
+    let lista = document.querySelector("#listaTurnos").getElementsByClassName("turnoProgramado");
+    let pos = 1;
+    let cantHoras = 0;
+    console.log("Fecha inicial: " + fechaInicial + " Fecha final:" + fechaFinal)
+    for (var i = 0; i < lista.length; i++) {
+        var fechaDividida = lista[i].children[1].innerHTML.split('/')
+        var fecha = new Date(fechaDividida[2], fechaDividida[1] - 1, fechaDividida[0]);
+        if (fechaInicial != null || fechaFinal != null) {
+            if (fechaInicial != null && fechaFinal != null) {
+                if (fecha > fechaFinal || fecha < fechaInicial) {
+                    var elemento = document.getElementById("turno" + (i + 1));
+                    elemento.style.display = "none";
+                } else {
+                    lista[i].children[0].innerHTML = pos;
+                    pos++;
+                    cantHoras += parseInt(lista[i].children[3].innerHTML);
+                    var elemento = document.getElementById("turno" + (i + 1));
+                    elemento.style.display = "table-row";
+                }
+            } else if (fechaInicial != null) {
+                if (fecha < fechaInicial) {
+                    var elemento = document.getElementById("turno" + (i + 1));
+                    elemento.style.display = "none";
+                } else {
+                    lista[i].children[0].innerHTML = pos;
+                    pos++;
+                    cantHoras += parseInt(lista[i].children[3].innerHTML);
+                    var elemento = document.getElementById("turno" + (i + 1));
+                    elemento.style.display = "table-row";
+                }
+            } else if (fechaFinal != null) {
+                if (fecha > fechaFinal) {
+                    var elemento = document.getElementById("turno" + (i + 1));
+                    elemento.style.display = "none";
+                } else {
+                    lista[i].children[0].innerHTML = pos;
+                    pos++;
+                    cantHoras += parseInt(lista[i].children[3].innerHTML);
+                    var elemento = document.getElementById("turno" + (i + 1));
+                    elemento.style.display = "table-row";
+                }
+            }
+            document.getElementById("totalHoras").innerHTML = cantHoras
+        }
+
+
+    }
 
 
 }
@@ -180,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     unit: "in",
                     format: "a4",
                     orientation: 'landscape'
-                    
+
                 },
 
             })
