@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,6 +46,7 @@ import com.app.springapp.util.Mapper;
 
 @Service
 public class TurnoService {
+        private static final Logger logger = Logger.getLogger(TurnoService.class.getName());
     @Autowired
     TurnoRepository repTurno;
 
@@ -75,14 +77,17 @@ public class TurnoService {
     EntityManager entityManager;
 
     public Turno obtenerPorId(long id) {
+        logger.info("Obteniendo turno por ID: " + id);
         return repTurno.findById(id).get();
     }
 
     public List<Turno> obtenerTodos() {
+        logger.info("Obteniendo todos los turnos");
         return (List<Turno>) repTurno.findAll();
     }
 
     public List<Turno> obtenerPorDiaMes(int dia, int mes) {
+        logger.info("Obteniendo turnos por día: " + dia + " y mes: " + mes);
         List<Turno> respuesta = repTurno.findByDiaAndMes(dia, mes);
         if (respuesta.isEmpty())
             return null;
@@ -91,18 +96,21 @@ public class TurnoService {
     }
 
     public List<Turno> obtenerPorFechaYEstacion(LocalDate fecha, Estacion estacion) {
+        logger.info("Obteniendo turnos por fecha: " + fecha + " y estación: " + estacion);
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         List<Turno> turnos = repTurno.findByDiaAndMesAndAnioAndEstacion(dia, mes, anio, estacion);
         return turnos;
     }
 
     public List<Turno> obtenerPorFechaYEstacionYHorario(LocalDate fecha, Estacion estacion, Horario horario) {
+        logger.info("Obteniendo turnos por fecha: " + fecha + ", estación: " + estacion + " y horario: " + horario);
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         List<Turno> turnos = repTurno.findByDiaAndMesAndAnioAndEstacionAndHorario(dia, mes, anio, estacion, horario);
         return turnos;
     }
 
     public int sumaTurnosFecha(LocalDate fecha) {
+        logger.info("Sumando turnos por fecha: " + fecha);
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnio(dia, mes, anio);
         return numeroTurnos;
@@ -115,6 +123,7 @@ public class TurnoService {
     }
 
     public int sumaTurnosPorFechaYHorarioYEstacion(LocalDate fecha, Horario horario, Estacion estacion) {
+        logger.info("Sumando turnos por fecha: " + fecha + ", horario: " + horario + " y estación: " + estacion);
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
         int numeroTurnos = (int) repTurno.countByDiaAndMesAndAnioAndEstacionAndHorario(dia, mes, anio, estacion,
                 horario);
@@ -122,9 +131,11 @@ public class TurnoService {
     }
 
     public boolean hayTurnosDisponibles(LocalDate fecha, Horario horario) {
+        logger.info("Verificando disponibilidad de turnos para fecha: " + fecha + " y horario: " + horario);
         int valorDiaActual = DayOfWeek.from(fecha).getValue();
         String nombreDia = Calendario.convertirNumeroADia(valorDiaActual);
         if (horario.diaNoDisponible(nombreDia)) {
+            logger.info("El horario no está disponible para el día: " + nombreDia);
             return false;
         }
         int numeroCupos = serCupo.cantidadCuposPorHorario(horario);
@@ -162,6 +173,8 @@ public class TurnoService {
      * @throws CustomeFieldValidationException
      */
     public long cantidadTurnosProgramados(Turno turno) throws CustomeFieldValidationException {
+        logger.info("Calculando la cantidad de turnos programados para el turno: " + turno);
+        
         Horario horario = turno.getHorario();
 
         Cupo cupo = null;
@@ -196,6 +209,8 @@ public class TurnoService {
      */
     public long cantidadTurnosProgramados(int dia, int mes, int anio, Estacion estacion, Horario horario)
             throws CustomeFieldValidationException {
+        logger.info("Calculando la cantidad de turnos programados para el día: " + dia + ", mes: " + mes + ", año: " + anio + ", estación: " + estacion + ", horario: " + horario);
+        
         Turno turno = new Turno();
         turno.setDia(dia);
         turno.setMes(mes);
@@ -214,6 +229,8 @@ public class TurnoService {
      * @throws CustomeFieldValidationException
      */
     public boolean turnoEstaDisponible(Turno turno) throws CustomeFieldValidationException {
+        logger.info("Verificando disponibilidad del turno: " + turno);
+        
         LocalDate fecha = LocalDate.of(turno.getAnio(), turno.getMes(), turno.getDia());
         int valorDiaSemana = fecha.get(WeekFields.ISO.dayOfWeek());
         String nombreDia = Calendario.convertirNumeroADia(valorDiaSemana).toLowerCase();
@@ -277,45 +294,55 @@ public class TurnoService {
      * @return
      */
     public int turnosProgramadosPorHorario(int dia, int mes, int anio, Horario horario) {
+        logger.info("Calculando turnos programados para el día: " + dia + ", mes: " + mes + ", año: " + anio + ", horario: " + horario);
         long numeroTurnosProgramados = repTurno.countByDiaAndMesAndAnioAndHorario(dia, mes, anio, horario);
-
+        logger.info("Cantidad de turnos programados: " + numeroTurnosProgramados);
         return (int) numeroTurnosProgramados;
     }
 
     public TurnoDTO guardarTurno(TurnoDTO turnoDTO) throws CustomeFieldValidationException {
+        logger.info("Guardando turno: " + turnoDTO);
         Turno turno = Mapper.mapToTurno(turnoDTO, serEstacion, serEstudiante, serHorario, repEstadoTurno);
 
         // Validar dia disponible
         if (!turnoEstaDisponible(turno)) {
+            logger.warning("No hay turnos disponibles en la fecha, horario y estación indicados: " + turno);
             throw new CustomeFieldValidationException(
                     "No hay turnos disponibles en la fecha, horario y estación indicados");
         }
 
         // Validar estudiante disponibnle
         if (!estudianteEstaDisponible(turno)) {
+            logger.warning("El estudiante ya tiene un turno programado en el mismo horario: " + turno);
             throw new CustomeFieldValidationException("El estudiante ya tiene un turno programado en el mismo horario");
         }
 
         repTurno.save(turno);
 
         turnoDTO = Mapper.mapToTurnoDTO(turno);
+         logger.info("Turno guardado exitosamente: " + turnoDTO);
         return turnoDTO;
     }
 
     public void eliminarTurno(int idTurno) throws CustomeFieldValidationException {
+        logger.info("Eliminando turno con ID: " + idTurno);
         if (!repTurno.existsById(new Long(idTurno))) {
+            logger.warning("No existe un turno con el id proporcionado: " + idTurno);
             throw new CustomeFieldValidationException("No existe un turno con el id proporcionado");
         }
         Turno turno = obtenerPorId(idTurno);
         repTurno.deleteById(new Long(idTurno));
+        logger.info("Turno eliminado: " + turno);
     }
 
     public TurnoDTO editarTurno(int idTurno, TurnoDTO turnoDTO) throws CustomeFieldValidationException {
+        logger.info("Editando turno con ID: " + idTurno + ", nuevos datos: " + turnoDTO);
         Turno turnoActual = new Turno();
         boolean crearNuevo = true;
         if (repTurno.existsById(new Long(idTurno))) {
             turnoActual = obtenerPorId(idTurno).clone();
             crearNuevo = false;
+             logger.info("Turno existente encontrado: " + turnoActual);
         }
 
         Turno turno = Mapper.mapToTurno(turnoDTO, serEstacion, serEstudiante, serHorario, repEstadoTurno);
@@ -332,11 +359,13 @@ public class TurnoService {
 
             // Validar dia disponible
             if (!turnoEstaDisponible(turno)) {
+                logger.warning("No hay turnos disponibles en la fecha, horario y estación indicados: " + turno);
                 throw new CustomeFieldValidationException(
                         "No hay turnos disponibles en la fecha, horario y estación indicados");
             }
             // Validar estudiante disponibnle
             if (!estudianteEstaDisponible(turno)) {
+                logger.warning("El estudiante ya tiene un turno programado en el mismo horario: " + turno);
                 throw new CustomeFieldValidationException(
                         "El estudiante ya tiene un turno programado en el mismo horario");
             }
@@ -369,7 +398,9 @@ public class TurnoService {
     }
 
     public TurnoDTO parcharTurno(int idTurno, TurnoDTO turnoDTO) throws CustomeFieldValidationException {
+        logger.info("Parchando turno con ID: " + idTurno + ", nuevos datos: " + turnoDTO);
         if (!repTurno.existsById(new Long(idTurno))) {
+            logger.warning("No existe un turno con el id proporcionado: " + idTurno);
             throw new CustomeFieldValidationException("No existe un turno con el id proporcionado");
         }
 
