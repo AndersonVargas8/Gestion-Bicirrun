@@ -19,6 +19,18 @@
         <appender-ref ref="FILE" />
     </logger>
 
+     <logger name="com.app.springapp.service.HorarioService" level="INFO" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+
+     <logger name="com.app.springapp.service.TurnoService" level="INFO" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+
+     <logger name="com.app.springapp.service.UsuarioService" level="INFO" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="FILE" />
     </root>
