@@ -33,8 +33,9 @@ public class UsuarioController {
     @GetMapping({ "/", "/login" })
     public String index() {
         if(serUsuario.hayUsuarioLogueado())
-            return "redirect:/inicio"; 
+            return "redirect:/inicio";
         return "index";
+
     }
 
     @PostMapping(value = "/user", consumes = "application/json")

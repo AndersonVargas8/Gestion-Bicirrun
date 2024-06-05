@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +22,8 @@ import com.app.springapp.repository.TurnoRepository;
 @Lazy
 @Service
 public class HorarioService implements IServicioHorario{
+    private static final Logger logger = Logger.getLogger(HorarioService.class.getName());
+
     @Autowired
     HorarioRepository repHorario;
 
@@ -35,22 +38,31 @@ public class HorarioService implements IServicioHorario{
 
     @Override
     public int guardarHorario(Horario horario) {
+        logger.info("Guardando horario: " + horario);
         repHorario.save(horario);
+        logger.info("Horario guardado exitosamente");
         return 0;
     }
 
     @Override
     public List<Horario> obtenerTodos() {
-        return (List<Horario>)repHorario.findAll();
+        logger.info("Obteniendo todos los horarios");
+        List<Horario> horarios = (List<Horario>) repHorario.findAll();
+        logger.info("Horarios obtenidos: " + horarios.size());
+        return horarios;
     }
 
     @Override
     public Horario buscarPorId(int id) {
-        return repHorario.findById(new Long(id)).get();
+        logger.info("Buscando horario por ID: " + id);
+        Horario horario = repHorario.findById((long) id).orElse(null);
+        logger.info("Horario encontrado: " + horario);
+        return horario;
     }
 
     @Override
     public List<Horario> obtenerDisponiblesPorFecha(LocalDate fecha) {
+        logger.info("Obteniendo horarios disponibles para la fecha: " + fecha);
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
 
         // Se obtienen los cupos en cada horario
@@ -68,7 +80,7 @@ public class HorarioService implements IServicioHorario{
         String nombreDia = Calendario.convertirNumeroADia(valorDiaSemana).toLowerCase();
 
         Map<Long, Long> horariosIndependientes = new HashMap<>();
-        for(Map.Entry<Long, Long> entry: horariosDependientes.entrySet()){
+        for (Map.Entry<Long, Long> entry : horariosDependientes.entrySet()) {
             horariosIndependientes.put(entry.getValue(), entry.getKey());
         }
 
@@ -100,8 +112,8 @@ public class HorarioService implements IServicioHorario{
                 horariosDisponibles.add(horario);
             };
         }
+
+        logger.info("Horarios disponibles encontrados: " + horariosDisponibles.size());
         return horariosDisponibles;
     }
-
-    
 }
