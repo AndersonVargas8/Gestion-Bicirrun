@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,7 +27,6 @@ import com.app.springapp.util.Mapper;
 
 @Service
 public class UsuarioService {
-    private static final Logger logger = Logger.getLogger(UsuarioService.class.getName());
 
     @Autowired
     UsuarioRepository repUser;
@@ -46,32 +44,25 @@ public class UsuarioService {
     EstacionRepository repEstacion;
 
     public List<UsuarioDTO> obtenerUsuarios() {
-        logger.info("Entering method obtenerUsuarios");
         Iterable<Usuario> users = repUser.findAll();
+
         List<UsuarioDTO> usersDto = new ArrayList<>();
 
         for (Usuario user : users) {
             usersDto.add(Mapper.mapToUsuarioDto(user));
         }
 
-        logger.info("Exiting method obtenerUsuarios with usersDto: " + usersDto);
         return usersDto;
     }
 
     public UsuarioDTO obtenerUsuarioPorId(Long id) throws UsernameOrIdNotFound {
-        logger.info("Entering method obtenerUsuarioPorId with id: " + id);
         Usuario user = repUser.findById(id).orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe"));
-        UsuarioDTO userDto = Mapper.mapToUsuarioDto(user);
-        logger.info("Exiting method obtenerUsuarioPorId with userDto: " + userDto);
-        return userDto;
+        return Mapper.mapToUsuarioDto(user);
     }
 
     public UsuarioDTO crearUsuario(UsuarioDTO userDto) throws CustomeFieldValidationException {
-        logger.info("Entering method crearUsuario with userDto: " + userDto);
-        if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-            logger.severe("Passwords do not match");
+        if (!userDto.getPassword().equals(userDto.getConfirmPassword()))
             throw new CustomeFieldValidationException("Las contraseñas no coinciden");
-        }
 
         String encodePassword = bCryptPasswordEncoder.encode(userDto.getPassword());
         Rol role = repRol.findByNombre("ESTACION");
@@ -83,6 +74,7 @@ public class UsuarioService {
 
         for (Long estacionId : userDto.getEstaciones()) {
             Optional<Estacion> estacion = repEstacion.findById(estacionId);
+
             if (estacion.isPresent()) {
                 user.addEstacion(estacion.get());
             }
@@ -91,24 +83,20 @@ public class UsuarioService {
         try {
             user = repUser.save(user);
         } catch (DataIntegrityViolationException e) {
-            logger.severe("Data integrity violation: " + e.getMessage());
             throw new CustomeFieldValidationException("El usuario ingresado ya existe");
         } catch (Exception e) {
-            logger.severe("Error saving user: " + e.getMessage());
             throw new CustomeFieldValidationException("Error al guardar el usuario");
         }
 
-        UsuarioDTO createdUserDto = Mapper.mapToUsuarioDto(user);
-        logger.info("Exiting method crearUsuario with createdUserDto: " + createdUserDto);
-        return createdUserDto;
+        return Mapper.mapToUsuarioDto(user);
     }
 
+    // @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UsuarioDTO actualizarUsuario(UsuarioDTO userDto) throws UsernameOrIdNotFound, CustomeFieldValidationException, Exception {
-        logger.info("Entering method actualizarUsuario with userDto: " + userDto);
         Usuario user = repUser.findById((long) userDto.getId())
                 .orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe"));
 
-        userDto.setId(null);
+            userDto.setId(null);
         Field[] fields = userDto.getClass().getDeclaredFields();
 
         for (Field field : fields) {
@@ -123,7 +111,7 @@ public class UsuarioService {
                         ArrayList<Long> estacionesId = userDto.getEstaciones();
                         for (Long idEstacion: estacionesId){
                             Estacion estacion = repEstacion.findById(idEstacion)
-                                    .orElseThrow(() -> new UsernameOrIdNotFound("El id de estación no existe"));
+                            .orElseThrow(() -> new UsernameOrIdNotFound("El id de estación no existe"));
 
                             user.addEstacion(estacion);
                         }
@@ -140,7 +128,7 @@ public class UsuarioService {
                     if(fieldName.equals("Password")){
                         if(!userDto.getPassword().equals(userDto.getConfirmPassword()))
                             throw new CustomeFieldValidationException("Las contraseñas no coinciden");
-
+                        
                         String encode = bCryptPasswordEncoder.encode(userDto.getPassword());
                         userDto.setPassword(encode);
                     }
@@ -149,30 +137,26 @@ public class UsuarioService {
             }
         }
 
-
+        
         user = repUser.save(user);
-        UsuarioDTO updatedUserDto = Mapper.mapToUsuarioDto(user);
-        logger.info("Exiting method actualizarUsuario with updatedUserDto: " + updatedUserDto);
-        return updatedUserDto;
+
+        return Mapper.mapToUsuarioDto(user);
     }
 
-    public void eliminarUsuario(Long id) throws UsernameOrIdNotFound {
-        logger.info("Entering method eliminarUsuario with id: " + id);
+    
+     //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+     public void eliminarUsuario(Long id) throws UsernameOrIdNotFound {
         Usuario user = repUser.findById(id)
-                .orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe"));
+        .orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe"));;
         repUser.delete(user);
-        logger.info("Exiting method eliminarUsuario");
-    }
+     }
+     
 
     public boolean isLoggedUserADMIN() {
-        logger.info("Entering method isLoggedUserADMIN");
-        boolean result = loggedUserHasRole("ROLE_ADMIN");
-        logger.info("Exiting method isLoggedUserADMIN with result: " + result);
-        return result;
+        return loggedUserHasRole("ROLE_ADMIN");
     }
 
     public boolean loggedUserHasRole(String role) {
-        logger.info("Entering method loggedUserHasRole with role: " + role);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails loggedUser = null;
         Object roles = null;
@@ -212,7 +196,7 @@ public class UsuarioService {
      */
 
     public Usuario getLoggedUser() throws Exception {
-        logger.info("Entering method getLoggedUser");
+        // Obtener el usuario logeado
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         UserDetails loggedUser = null;
@@ -226,20 +210,18 @@ public class UsuarioService {
                 .findByUsername(loggedUser.getUsername())
                 .orElseThrow(() -> new Exception("Ocurrió un problema al obtener el usuario de la sesión"));
 
-        logger.info("Exiting method getLoggedUser with myUser: " + myUser);
         return myUser;
     }
 
     public boolean hayUsuarioLogueado() {
-        logger.info("Entering method hayUsuarioLogueado");
-        boolean isLoggedIn = false;
+        Usuario usuario;
         try {
-            Usuario usuario = getLoggedUser();
-            isLoggedIn = usuario != null;
+            usuario = getLoggedUser();
+            if (usuario != null)
+                return true;
         } catch (Exception e) {
-            logger.warning("No logged-in user found: " + e.getMessage());
+            return false;
         }
-        logger.info("Exiting method hayUsuarioLogueado with isLoggedIn: " + isLoggedIn);
-        return isLoggedIn;
+        return false;
     }
 }

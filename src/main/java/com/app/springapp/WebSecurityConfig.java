@@ -1,7 +1,5 @@
 package com.app.springapp;
 
-import com.app.springapp.controller.RecaptchaFilter;
-import com.app.springapp.service.RecaptchaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,14 +17,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     String[] resources = new String[] {
             "/include/**", "/css/**", "/icons/**", "/img/**", "/javascript/**", "/layer/**, /fuentes/**"
     };
-    @Autowired
-    private RecaptchaService recaptchaService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(resources).permitAll().antMatchers("/", "/login", "/turnos/horariosDisponibles/{fecha}", "/user/**", "/recaptcha").permitAll()
+                .antMatchers(resources).permitAll().antMatchers("/", "/login", "/turnos/horariosDisponibles/{fecha}", "/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -41,9 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .logout()
                 .permitAll()
-                .logoutSuccessUrl("/login?logout")
-                .and()
-                .addFilterBefore(new RecaptchaFilter(recaptchaService), UsernamePasswordAuthenticationFilter.class);
+                .logoutSuccessUrl("/login?logout");
     }
 
     @Bean

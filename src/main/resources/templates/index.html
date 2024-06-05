@@ -21,10 +21,6 @@
     <!-- Nuestro css-->
     <link rel="stylesheet" type="text/css" href="../static/css/index.css" th:href="@{/css/index.css}">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/favicon.png}">
-
-    <!--Recaptcha de google -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 </head>
 
 <body>
@@ -65,11 +61,6 @@
                         <input type="password" id="passwordInput" name="password" class="form-control input_pass" value=""
                             placeholder="Contraseña">
                     </div>
-                    <div class="mb-3">
-                        <div class="g-recaptcha" data-sitekey="6LcH9-wpAAAAAEV05qwmUQGAn_jusa52-IKO3cR7">
-
-                        </div>
-                    </div>
                     <button type="submit" class="btn mt-4"><i class="fas fa-sign-in-alt"></i> Ingresar</button>
                 </form>
                 <!--<div class="col-12 forgot-password"> 
@@ -78,10 +69,6 @@
                 <div th:if="${param.error}" class="alert alert-danger" role="alert">
                     Usuario o contraseña inválidos.
                 </div>
-                <div th:if="${param.captchaError}" class="alert alert-danger" role="alert">
-                    Falló la validación de Captcha.
-                </div>
-
                 <div th:if="${param.logout}" class="alert alert-success" role="alert">
                     Se ha cerrado la sesión.
                 </div>
