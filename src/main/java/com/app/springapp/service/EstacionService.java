@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -24,6 +25,9 @@ import com.app.springapp.repository.TurnoRepository;
 @Lazy
 @Service
 public class EstacionService implements IServicioEstacion {
+
+    private static final Logger logger = Logger.getLogger(EstacionService.class.getName());
+
     @Autowired
     EstacionRepository repEstacion;
 
@@ -44,21 +48,31 @@ public class EstacionService implements IServicioEstacion {
 
     @Override
     public List<Estacion> obtenerTodas() {
-        return (List<Estacion>) repEstacion.findAllByOrderByNombreAsc();
+        logger.info("Obteniendo todas las estaciones");
+        List<Estacion> result = (List<Estacion>) repEstacion.findAllByOrderByNombreAsc();
+        logger.info("Se obtuvieron todas las estaciones");
+        return result;
     }
 
     @Override
     public List<Estacion> obtenerTodasHabilitadas() {
-        return (List<Estacion>) repEstacion.findAllByOrderByIdAsc();
+        logger.info("Obteniendo todas las estaciones habilitadas");
+        List<Estacion> result = (List<Estacion>) repEstacion.findAllByOrderByIdAsc();
+        logger.info("Se obtuvieron todas las estaciones habilitadas");
+        return result;
     }
 
     @Override
     public Estacion buscarPorId(int id) {
-        return repEstacion.findById(new Long(id)).get();
+        logger.info("Buscando estación por ID: " + id);
+        Estacion result = repEstacion.findById(new Long(id)).get();
+        logger.info("Se encontró la estación con ID: " + id);
+        return result;
     }
 
     @Override
     public List<Estacion> obtenerDisponiblesPorFechaYHorario(LocalDate fecha, Horario horario) {
+        logger.info("Obteniendo estaciones disponibles para la fecha: " + fecha + " y horario: " + horario);
         int dia = fecha.getDayOfMonth(), mes = fecha.getMonthValue(), anio = fecha.getYear();
 
         CuposYTurnosEstacionesHorario cuposTurnos = new CuposYTurnosEstacionesHorario();
@@ -101,14 +115,17 @@ public class EstacionService implements IServicioEstacion {
                 estacionesDisponibles.add(estacion);
             }
         }
+        logger.info("Se obtuvieron las estaciones disponibles para la fecha y horario especificados");
         return estacionesDisponibles;
     }
 
     @Override
     public void updateEstacionesHabilitadas(List<EstacionDTO> estaciones) {
+        logger.info("Actualizando estaciones habilitadas");
         for(EstacionDTO estacion : estaciones){
             repEstacion.updateIsHabilitada(estacion.getId(), estacion.getIs_habilitada());
-        }     
+        }
+        logger.info("Se actualizaron las estaciones habilitadas");
     }
 
 }
