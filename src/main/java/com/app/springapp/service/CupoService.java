@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.logging.Logger;
-
+ 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -21,14 +20,10 @@ import com.app.springapp.entity.Horario;
 import com.app.springapp.entity.Horario.Dia;
 import com.app.springapp.interfacesServicios.IServicioCupo;
 import com.app.springapp.interfacesServicios.IServicioHorario;
-import com.app.springapp.repository.CupoRepository;
-import com.app.springapp.repository.HorarioRepository;
+import com.app.springapp.repository.CupoRepository;import com.app.springapp.repository.HorarioRepository;
 import com.app.springapp.repository.HorarioRepository.IHorariosDiasNoDisponibles;
-
 @Service
-public class CupoService implements IServicioCupo {
-    private static final Logger logger = Logger.getLogger(CupoService.class.getName());
-
+public class CupoService implements IServicioCupo{
     @Autowired
     CupoRepository repCupo;
 
@@ -40,51 +35,43 @@ public class CupoService implements IServicioCupo {
     HorarioRepository repHorario;
 
     @Override
-    public List<Cupo> obtenerTodos() {
-        logger.info("Fetching all cupos...");
-        return (List<Cupo>) repCupo.findAll();
+    public List<Cupo> obtenerTodos() {  
+        return (List<Cupo>)repCupo.findAll();
     }
-
     @Override
-    public List<Cupo> obtenerTodosViernes() {
-        logger.info("Fetching all cupos for Viernes...");
-        return (List<Cupo>) repCupo.findAllViernes();
+    public List<Cupo> obtenerTodosViernes() {  
+        return (List<Cupo>)repCupo.findAllViernes();
     }
 
     @Override
     public List<Cupo> buscarPorHorario(Horario horario) {
-        logger.info("Fetching cupos by Horario...");
         return repCupo.findByHorario(horario);
     }
 
     @Override
-    public int cantidadCuposPorHorario(Horario horario) {
-        logger.info("Calculating cantidad cupos por Horario...");
+    public int cantidadCuposPorHorario(Horario horario){
         long numeroCupos = repCupo.sumCuposByHorario(horario);
-        return (int) numeroCupos;
+        return (int)numeroCupos;
     }
 
     @Override
     public Cupo buscarPorId(int id) {
-        logger.info("Fetching Cupo by ID...");
         return repCupo.findById(new Long(id));
     }
 
     @Override
     public Cupo buscarPorEstacionYHorario(Estacion estacion, Horario horario) {
-        logger.info("Fetching Cupo by Estacion and Horario...");
         Cupo cupo = null;
-        try {
+        try{
             cupo = repCupo.findByEstacionAndHorario(estacion, horario).get();
-        } catch (NoSuchElementException e) {
+        }catch(NoSuchElementException e){
             return null;
         }
         return cupo;
     }
 
     @Override
-    public List<Integer> idEstacionesPorHorario(int idHorario) {
-        logger.info("Fetching ID Estaciones by Horario...");
+    public List<Integer> idEstacionesPorHorario(int idHorario){
         return repCupo.idEstacionesPorHorario(new Long(idHorario));
     }
 
@@ -98,11 +85,11 @@ public class CupoService implements IServicioCupo {
     public HashMap<Integer, Integer> cantidadCuposAlDia(){
         int totalCupos = (int)repCupo.sumTotalCupos();
         Map<Long, Integer> cuposHorarios = repCupo.sumCuposGroupByHorario();
-
+        
         HashMap<Integer,Integer> cupos = new HashMap<>();
 
         List<IHorariosDiasNoDisponibles> horariosDiasNoDisp = repHorario.findHorariosDiasNoDisponibles();
-
+        
         
         for(int i = 1; i <= 5; i++){
             //Se guarda la suma de cupos total de todos los horarios para el día correspondiente
@@ -119,18 +106,18 @@ public class CupoService implements IServicioCupo {
     }
 
     @Override
-    public int cantidadCuposPorFecha(int dia, int mes, int anio) {
-        logger.info("Calculating cantidad cupos por Fecha...");
-        LocalDate fecha = LocalDate.of(anio, mes, dia);
+    public int cantidadCuposPorFecha(int dia, int mes, int anio){
+        LocalDate fecha = LocalDate.of(anio,mes,dia);
+
         int valorDiaSemana = fecha.get(WeekFields.ISO.dayOfWeek());
+
         return cantidadCuposAlDia().get(valorDiaSemana);
     }
 
     @Override
-    public int obtenerNumeroCupos(Cupo cupo) {
-        logger.info("Fetching numero cupos...");
+    public int obtenerNumeroCupos(Cupo cupo){
         int numeroCupos = cupo.getNum_cupos();
-        if (cupo.tieneCupoCompartido()) {
+        if(cupo.tieneCupoCompartido()){
             numeroCupos += cupo.getCupoCompartido().getNum_cupos();
         }
         return numeroCupos;
@@ -138,39 +125,39 @@ public class CupoService implements IServicioCupo {
 
     @Override
     public int cantidadCupos(LocalDate fecha, Horario horario, Estacion estacion) {
-        logger.info("Calculating cantidad cupos...");
         int valorDiaSemana = fecha.get(WeekFields.ISO.dayOfWeek());
         String nombreDia = Calendario.convertirNumeroADia(valorDiaSemana).toLowerCase();
-        if (horario.diaNoDisponible(nombreDia)) {
+        if(horario.diaNoDisponible(nombreDia)){
             return 0;
         }
         Cupo cupo = buscarPorEstacionYHorario(estacion, horario);
-        if (cupo == null) {
+        if(cupo ==  null){
             return 0;
         }
         int numCupos = obtenerNumeroCupos(cupo);
+
         return numCupos;
     }
-
     @Override
     public int cantidadCuposAbsolutos(Horario horario) {
-        logger.info("Calculating cantidad cupos absolutos...");
         int numeroCupos = cantidadCuposPorHorario(horario);
 
-        if (numeroCupos == 0) {
+        if(numeroCupos == 0){
             List<Cupo> cupos = buscarPorHorario(horario);
             Set<Horario> horariosIndependientes = new HashSet<>();
-            for (Cupo cupo : cupos) {
-                if (cupo.tieneCupoCompartido()) {
+            for(Cupo cupo: cupos){
+                if(cupo.tieneCupoCompartido()){
                     horariosIndependientes.add(cupo.getCupoCompartido().getHorario());
                 }
             }
 
-            for (Horario horarioIt : horariosIndependientes) {
+            for(Horario horarioIt: horariosIndependientes){
                 numeroCupos += cantidadCuposPorHorario(horarioIt);
             }
         }
 
         return numeroCupos;
     }
+
 }
+
